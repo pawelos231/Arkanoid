@@ -1,0 +1,1 @@
+const piec: number = 5
