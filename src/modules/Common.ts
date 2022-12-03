@@ -7,7 +7,7 @@ export class Common {
             return;
           }
     }
-    bindElement(elementToFindById: string){
+    bindElement(elementToFindById: string): HTMLElement{
         const element: HTMLElement | null = document.getElementById(elementToFindById);
         console.log(element)
         if(!element){
@@ -15,7 +15,7 @@ export class Common {
         }
         return element
     }
-    changeVisbilityOfGivenElement(element: HTMLElement | null, flag: boolean){
+    changeVisbilityOfGivenElement(element: HTMLElement | null, flag: boolean): void{
         flag ? 
         element?.classList.remove(HIDDEN) : 
         element?.classList.add(HIDDEN)

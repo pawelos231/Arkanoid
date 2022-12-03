@@ -4,6 +4,6 @@ const fetchVars =async() =>{
 }
 fetchVars()
 
-import {menu} from './modules/mainMenu.esm.js'
+import {menu} from './modules/mainMenu.js'
 menu.turnOnAndOffEl()
 console.log(menu)

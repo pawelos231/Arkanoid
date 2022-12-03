@@ -3,7 +3,7 @@
     "target": "es2016",
     "rootDir": "./src",
     "outDir": "./public",                                 
-                               
+    "module": "ES2015",                               
     "esModuleInterop": true,                             
     "forceConsistentCasingInFileNames": true,            
     "strict": true,                                      

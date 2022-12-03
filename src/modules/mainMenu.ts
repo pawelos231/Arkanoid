@@ -1,4 +1,4 @@
-import {Common} from './Common.esm.js'
+import {Common} from './Common.js'
 class Menu extends Common{
     data: string
     constructor(data: string){

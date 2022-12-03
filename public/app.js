@@ -12,6 +12,6 @@ const fetchVars = () => __awaiter(void 0, void 0, void 0, function* () {
     yield fetch("http://localhost:8081/handler").then((res) => res.json()).then(data => console.log(data));
 });
 fetchVars();
-import { menu } from './modules/mainMenu.esm.js';
+import { menu } from './modules/mainMenu.js';
 menu.turnOnAndOffEl();
 console.log(menu);
