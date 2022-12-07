@@ -1,16 +1,24 @@
 const HIDDEN = "hidden";
 export class Common {
     constructor(elementId) {
-        this.elementId = this.bindElement(elementId);
+        this.elementId = this.bindElementById(elementId);
         if (typeof elementId === "undefined") {
             return;
         }
     }
-    bindElement(elementToFindById) {
+    bindElementById(elementToFindById) {
         const element = document.getElementById(elementToFindById);
         console.log(element);
         if (!element) {
             throw new Error(`nie znaleziono elementu ${elementToFindById}`);
+        }
+        return element;
+    }
+    bindElementByClass(elementToFindByClass) {
+        const element = document.documentElement.querySelector(elementToFindByClass);
+        console.log(element);
+        if (!element) {
+            throw new Error(`nie znaleziono elementu ${elementToFindByClass}`);
         }
         return element;
     }

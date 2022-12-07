@@ -20,9 +20,11 @@ document.querySelector(".formToRegister")?.addEventListener("submit", (e: any)=>
         }
     })
 })
+
+
 document.querySelector(".checkIfLoginOrRegister")?.addEventListener("click", 
-function(this: Element){
-    console.log(String(this.attributes[0].nodeValue))
+function(this: Element): void{
+    const ValueOfEl: string = String(this.attributes[0].nodeValue)
 })
 
-menu.turnOnAndOffEl()
+menu.switchBetweenRegisterAndLogin()

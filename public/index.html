@@ -9,6 +9,8 @@
   </head>
   <body>
     <div id="MenuElement">
+
+
       <form class="formToRegister">
         <input
           class="reginp"
@@ -30,6 +32,24 @@
         />
         <input id="sendUserInputsRequest" type="submit" value="Zarejestruj się"></input>
         <p name="register" class="checkIfLoginOrRegister">Chce się zalogować</p>
+      </form>
+
+
+      <form class="formToLogin hidden">
+        <input
+          class="reginp"
+          required
+          type="text"
+          placeholder="Wprowadz nick"
+        />
+        <input
+          class="reginp"
+          required
+          type="text"
+          placeholder="Wprowadz hasło"
+        />
+        <input id="sendUserInputsRequest" type="submit" value="Zarejestruj się"></input>
+        <p name="register" class="checkIfLoginOrRegister">Chce się Zarejestrować</p>
       </form>
     </div>
     <script type="module" src="app.js"></script>

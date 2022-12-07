@@ -19,6 +19,6 @@ import { ValidateInput } from './helpers/InputValidation.js';
     });
 });
 (_b = document.querySelector(".checkIfLoginOrRegister")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", function () {
-    console.log(String(this.attributes[0].nodeValue));
+    const ValueOfEl = String(this.attributes[0].nodeValue);
 });
-menu.turnOnAndOffEl();
+menu.switchBetweenRegisterAndLogin();
