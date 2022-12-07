@@ -8,7 +8,29 @@
     <link rel="stylesheet" href="./styles/style.css" />
   </head>
   <body>
-    <div id="MenuElement"></div>
+    <div id="MenuElement">
+      <form class="formToRegister">
+        <input
+          class="reginp"
+           required
+          type="text"
+          placeholder="Wprowadz imie"
+        />
+        <input
+          class="reginp"
+          required
+          type="email"
+          placeholder="Wprowadz email"
+        />
+        <input
+          class="reginp"
+          required
+          type="text"
+          placeholder="Wprowadz hasło"
+        />
+        <input id="sendUserInputsRequest" type="submit">Wyślij</input>
+      </form>
+    </div>
     <script type="module" src="app.js"></script>
   </body>
 </html>

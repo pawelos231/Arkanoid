@@ -1,17 +1,21 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-const piec = 5;
-const fetchVars = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield fetch("http://localhost:8081/handler").then((res) => res.json()).then(data => console.log(data));
-});
-fetchVars();
+/*
+const piec: number = 5
+const fetchVars =async() =>{
+ await fetch("http://localhost:8081/handler").then((res: Response) => res.json()).then(data => console.log(data))
+}
+fetchVars()
+
+*/
+var _a;
 import { menu } from './modules/mainMenu.js';
+import { ValidateInput } from './helpers/InputValidation.js';
+(_a = document.querySelector(".formToRegister")) === null || _a === void 0 ? void 0 : _a.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const inputs = document.querySelectorAll(".reginp");
+    inputs.forEach(item => {
+        if (ValidateInput(item.value)) {
+            console.log("wszystko gra");
+        }
+    });
+});
 menu.turnOnAndOffEl();
-console.log(menu);
