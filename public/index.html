@@ -5,12 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/menu.css" />
   </head>
   <body>
-    <div id="MenuElement">
 
 
+    <div id="RegisterElement">
+      <!-- FORMS TO LOGIN / REGISTER-->
       <form class="formToRegister">
         <input
           class="reginp"
@@ -31,9 +32,7 @@
           placeholder="Wprowadz hasło"
         />
         <input id="sendUserInputsRequest" type="submit" value="Zarejestruj się"></input>
-        <p name="register" class="checkIfLoginOrRegister">Chce się zalogować</p>
       </form>
-
 
       <form class="formToLogin hidden">
         <input
@@ -48,10 +47,33 @@
           type="text"
           placeholder="Wprowadz hasło"
         />
-        <input id="sendUserInputsRequest" type="submit" value="Zarejestruj się"></input>
-        <p name="register" class="checkIfLoginOrRegister">Chce się Zarejestrować</p>
+        <input id="sendUserInputsRequest" type="submit" value="Zaloguj się"></input>
       </form>
+
+      <p name="register" class="checkIfLoginOrRegister">Chce się zalogować</p>
     </div>
+
+
+    <p class="Stats">Statystyki</p>
+  
+    <div class="modal">
+      <div class="innerModal">
+        <h2>Najlepsze Statystyki Graczy</h2>
+        <ul>
+          <li>text</li>
+          <li>text</li>
+          <li>text</li>
+          <li>text</li>
+          <li>text</li>
+          <li>text</li>
+          <li>text</li>
+          <li>text</li>
+          <li>text</li>
+          <li>text</li>
+        </ul>
+      </div>
+    </div>
+   
     <script type="module" src="app.js"></script>
   </body>
 </html>

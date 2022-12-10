@@ -22,3 +22,4 @@ import { ValidateInput } from './helpers/InputValidation.js';
     const ValueOfEl = String(this.attributes[0].nodeValue);
 });
 menu.switchBetweenRegisterAndLogin();
+menu.switchStatsModalState();

@@ -28,3 +28,4 @@ function(this: Element): void{
 })
 
 menu.switchBetweenRegisterAndLogin()
+menu.switchStatsModalState();
