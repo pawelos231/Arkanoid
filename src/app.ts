@@ -9,18 +9,6 @@ fetchVars()
 */
 
 import {menu} from './modules/mainMenu.js'
-import {ValidateInput} from './helpers/InputValidation.js'
-
-document.querySelector(".formToRegister")?.addEventListener("submit", (e: any)=>{
-	e.preventDefault();    
-    const inputs: NodeListOf<any> = document.querySelectorAll(".reginp")
-    inputs.forEach(item=>{
-        if(ValidateInput(item.value)){
-            console.log("wszystko gra")
-        }
-    })
-})
-
 
 document.querySelector(".checkIfLoginOrRegister")?.addEventListener("click", 
 function(this: Element): void{
@@ -29,3 +17,4 @@ function(this: Element): void{
 
 menu.switchBetweenRegisterAndLogin()
 menu.switchStatsModalState();
+menu.SendUserDataToBackend();

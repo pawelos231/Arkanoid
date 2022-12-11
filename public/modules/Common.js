@@ -8,7 +8,6 @@ export class Common {
     }
     bindElementById(elementToFindById) {
         const element = document.getElementById(elementToFindById);
-        console.log(element);
         if (!element) {
             throw new Error(`nie znaleziono elementu ${elementToFindById}`);
         }
@@ -16,7 +15,6 @@ export class Common {
     }
     bindElementByClass(elementToFindByClass) {
         const element = document.documentElement.querySelector(elementToFindByClass);
-        console.log(element);
         if (!element) {
             throw new Error(`nie znaleziono elementu ${elementToFindByClass}`);
         }

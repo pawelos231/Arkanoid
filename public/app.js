@@ -6,20 +6,11 @@ const fetchVars =async() =>{
 fetchVars()
 
 */
-var _a, _b;
+var _a;
 import { menu } from './modules/mainMenu.js';
-import { ValidateInput } from './helpers/InputValidation.js';
-(_a = document.querySelector(".formToRegister")) === null || _a === void 0 ? void 0 : _a.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const inputs = document.querySelectorAll(".reginp");
-    inputs.forEach(item => {
-        if (ValidateInput(item.value)) {
-            console.log("wszystko gra");
-        }
-    });
-});
-(_b = document.querySelector(".checkIfLoginOrRegister")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", function () {
+(_a = document.querySelector(".checkIfLoginOrRegister")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", function () {
     const ValueOfEl = String(this.attributes[0].nodeValue);
 });
 menu.switchBetweenRegisterAndLogin();
 menu.switchStatsModalState();
+menu.SendUserDataToBackend();

@@ -1,10 +1,13 @@
 import {Common} from './Common.js'
+import { Validator } from '../helpers/InputValidation.js'
 const REGISTER_FORMS: string = "RegisterElement"
 const FORM_TO_REGISTER: string = ".formToRegister"
 const CHECK_IF_LOGIN_OR_REGISTER: string = ".checkIfLoginOrRegister"
 const FORM_TO_LOGIN: string = ".formToLogin"
 const STATS_ELELEMENT: string = ".Stats"
 const MODAL_STATS_ELEMENT: string = ".modal"
+
+
 
 class Menu extends Common{
     data: string
@@ -38,6 +41,11 @@ class Menu extends Common{
             this.changeVisbilityOfGivenElement(ModalElementStats, flag)
             flag = !flag
         })
+    }
+
+    SendUserDataToBackend(){
+        const validator: Validator = new Validator(".reginp")
+        validator.checkPasswordValidation()
     }
 
 

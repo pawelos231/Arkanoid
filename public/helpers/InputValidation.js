@@ -1,7 +1,14 @@
-export const ValidateInput = (input, regex = "") => {
-    if (input == "") {
-        alert("Nie mozna wprowadzać pustych wartości");
-        return false;
+import { Common } from "../modules/Common";
+const INVALID = "Invalid";
+export class Validator extends Common {
+    constructor(input) {
+        super("RegisterElement");
+        this.input = input;
     }
-    return true;
-};
+    checkPasswordValidation() {
+        const element = this.bindElementByClass(this.input);
+        element.addEventListener("click", () => {
+            console.log("siema");
+        });
+    }
+}

@@ -1,4 +1,5 @@
 import { Common } from './Common.js';
+import { Validator } from '../helpers/InputValidation.js';
 const REGISTER_FORMS = "RegisterElement";
 const FORM_TO_REGISTER = ".formToRegister";
 const CHECK_IF_LOGIN_OR_REGISTER = ".checkIfLoginOrRegister";
@@ -30,6 +31,10 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(ModalElementStats, flag);
             flag = !flag;
         });
+    }
+    SendUserDataToBackend() {
+        const validator = new Validator(".reginp");
+        validator.checkPasswordValidation();
     }
 }
 export const menu = new Menu('siema');
