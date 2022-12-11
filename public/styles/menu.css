@@ -5,6 +5,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 4;
+    background-color: transparent;
+    backdrop-filter: blur(5px);
+    border: 1px solid white;
 }
 .hidden{
     display: none !important; 
@@ -124,9 +128,11 @@ body{
 .modal{
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(2px);
+    background-color: transparent;
     position: absolute;
     display: flex;
+    z-index: 5;
     justify-content: center;
     align-items: center;
 }
@@ -147,4 +153,8 @@ body{
     font-size: 20px;
     flex-direction: column;
     align-items: center;
+}
+
+.webgl{
+    position: absolute;
 }

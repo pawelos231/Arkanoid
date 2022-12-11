@@ -25,7 +25,7 @@ class Menu extends Common {
     switchStatsModalState() {
         const StatsElement = this.bindElementByClass(STATS_ELELEMENT);
         const ModalElementStats = this.bindElementByClass(MODAL_STATS_ELEMENT);
-        let flag = false;
+        let flag = true;
         StatsElement.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(ModalElementStats, flag);
             flag = !flag;

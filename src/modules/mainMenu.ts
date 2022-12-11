@@ -33,7 +33,7 @@ class Menu extends Common{
         const StatsElement: HTMLElement | null = this.bindElementByClass(STATS_ELELEMENT)
         const ModalElementStats: HTMLElement| null = this.bindElementByClass(MODAL_STATS_ELEMENT)
 
-        let flag: boolean = false
+        let flag: boolean = true
         StatsElement.addEventListener("click", () =>{
             this.changeVisbilityOfGivenElement(ModalElementStats, flag)
             flag = !flag
