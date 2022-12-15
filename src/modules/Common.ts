@@ -15,7 +15,7 @@ export class Common {
         return element
     }
     bindElementByClass(elementToFindByClass: string): HTMLElement{
-        const element: HTMLElement | null = document.documentElement.querySelector(elementToFindByClass);
+        const element: HTMLElement | null = document.documentElement.querySelector("." + elementToFindByClass);
         if(!element){
             throw new Error(`nie znaleziono elementu ${elementToFindByClass}`)
         }
@@ -25,5 +25,13 @@ export class Common {
         flag ? 
         element?.classList.remove(HIDDEN) : 
         element?.classList.add(HIDDEN)
+    }
+
+    bindMultipleElements(elementsTobBind: string): NodeListOf<Element>{  
+        const element: NodeListOf<Element> = document.querySelectorAll("."+ elementsTobBind)
+        if(!element){
+            throw new Error(`nie znaleziono elementu ${elementsTobBind}`)
+        }
+        return element
     }
 }

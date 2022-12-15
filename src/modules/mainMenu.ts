@@ -1,11 +1,13 @@
 import {Common} from './Common.js'
 import { Validator } from '../helpers/InputValidation.js'
+import { Fetcher } from '../helpers/Fetcher.js'
 const REGISTER_FORMS: string = "RegisterElement"
-const FORM_TO_REGISTER: string = ".formToRegister"
-const CHECK_IF_LOGIN_OR_REGISTER: string = ".checkIfLoginOrRegister"
-const FORM_TO_LOGIN: string = ".formToLogin"
-const STATS_ELELEMENT: string = ".Stats"
-const MODAL_STATS_ELEMENT: string = ".modal"
+const FORM_TO_REGISTER: string = "formToRegister"
+const CHECK_IF_LOGIN_OR_REGISTER: string = "checkIfLoginOrRegister"
+const FORM_TO_LOGIN: string = "formToLogin"
+const STATS_ELELEMENT: string = "Stats"
+const MODAL_STATS_ELEMENT: string = "modal"
+const PASSWORD_INPUT_ELEMENT: string = "password"
 
 
 
@@ -15,8 +17,11 @@ class Menu extends Common{
         super(REGISTER_FORMS)
         this.data = data;
     }
+
+    formElementRegister: HTMLElement | null = this.bindElementByClass(FORM_TO_REGISTER)
+
     switchBetweenRegisterAndLogin(): void{
-        const formElementRegister: HTMLElement | null = this.bindElementByClass(FORM_TO_REGISTER)
+        
 
         const changeValueOfMenuToLogin: HTMLElement | null = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER)
 
@@ -24,7 +29,7 @@ class Menu extends Common{
 
         let flag: boolean = false
         changeValueOfMenuToLogin.addEventListener("click", () =>{
-            this.changeVisbilityOfGivenElement(formElementRegister, flag)
+            this.changeVisbilityOfGivenElement(this.formElementRegister, flag)
             flag = !flag;
             changeValueOfMenuToLogin.textContent = "Chce się zarejestrować"
             this.changeVisbilityOfGivenElement(formElementLogin, flag)
@@ -44,8 +49,10 @@ class Menu extends Common{
     }
 
     SendUserDataToBackend(){
-        const validator: Validator = new Validator(".reginp")
+        const validator: Validator = new Validator(PASSWORD_INPUT_ELEMENT)
+        const fetcher: Fetcher = new Fetcher(this.formElementRegister)
         validator.checkPasswordValidation()
+        fetcher.SendData();
     }
 
 
