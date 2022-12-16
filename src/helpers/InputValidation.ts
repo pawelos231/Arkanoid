@@ -1,30 +1,47 @@
 import { Common } from "../modules/Common"
-
-
-
-const INVALID: string = "invalid"
+import { INVALID } from "../constants/classNames"
 
 export class Validator extends Common {
     input: string
-    constructor(input: string){
+    value: string | undefined
+    constructor(input: string, value?: string){
         super("RegisterElement")
         this.input = input
+        this.value = value
     }
-    checkPasswordValidation(){
+    DisplayBadPassword(){
         const elements: NodeListOf<Element> | null = this.bindMultipleElements(this.input)
-        elements.forEach((item)=>{
+
+        elements.forEach((item: Element)=>{
             item.addEventListener("keyup", (e: any)=>{
                 const value: string = e.target.value
-                const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/
-                ;
-                const checked = value.match(regex)
-                console.log(checked)
+
+                const regex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/;
+
+                const checked: RegExpMatchArray | null = value.match(regex)
+                
+
                 if(checked == null){
                     item.classList.add(INVALID)
-                }else{
+                }
+                else{
                     item.classList.remove(INVALID)
                 }
+
             })
         })
+    }
+
+    CheckPassword(){
+        
+        if(this.value){
+            const regex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/;
+            const checked: RegExpMatchArray | null = this.value.match(regex)
+            if(checked !== null){
+                return true
+            }
+            return false
+        }
+        return false
     }
 }

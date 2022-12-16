@@ -1,4 +1,4 @@
-const HIDDEN: string = "hidden"
+import { HIDDEN } from "../constants/classNames";
 export class Common {
     elementId: HTMLElement | null;
     constructor(elementId: string){

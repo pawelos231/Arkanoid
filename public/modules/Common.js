@@ -1,4 +1,4 @@
-const HIDDEN = "hidden";
+import { HIDDEN } from "../constants/classNames";
 export class Common {
     constructor(elementId) {
         this.elementId = this.bindElementById(elementId);

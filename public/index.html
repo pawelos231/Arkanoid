@@ -12,20 +12,23 @@
 
     <div id="RegisterElement">
       <!-- FORMS TO LOGIN / REGISTER-->
-      <form class="formToRegister">
+      <form id="form" class="formToRegister">
         <input
+        name="imie"
           class="reginp"
           required
           type="text"
           placeholder="Wprowadz imie"
         />
         <input
+        name="nick"
           class="reginp"
           required
           type="text"
           placeholder="Wprowadz nick"
         />
         <input
+          name="haslo"
           class="reginp password"
           required
           title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
@@ -35,14 +38,16 @@
         <input id="sendUserInputsRequest" type="submit" value="Zarejestruj się"></input>
       </form>
 
-      <form class="formToLogin hidden">
+      <form id="form" class="formToLogin hidden">
         <input
+          name="nick"
           class="reginp"
           required
           type="text"
           placeholder="Wprowadz nick"
         />
         <input
+          name="haslo"
           class="reginp password"
           required
           type="text"

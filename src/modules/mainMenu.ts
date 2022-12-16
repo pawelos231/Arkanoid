@@ -1,6 +1,7 @@
 import {Common} from './Common.js'
 import { Validator } from '../helpers/InputValidation.js'
 import { Fetcher } from '../helpers/Fetcher.js'
+
 const REGISTER_FORMS: string = "RegisterElement"
 const FORM_TO_REGISTER: string = "formToRegister"
 const CHECK_IF_LOGIN_OR_REGISTER: string = "checkIfLoginOrRegister"
@@ -51,7 +52,7 @@ class Menu extends Common{
     SendUserDataToBackend(){
         const validator: Validator = new Validator(PASSWORD_INPUT_ELEMENT)
         const fetcher: Fetcher = new Fetcher(this.formElementRegister)
-        validator.checkPasswordValidation()
+        validator.DisplayBadPassword()
         fetcher.SendData();
     }
 
