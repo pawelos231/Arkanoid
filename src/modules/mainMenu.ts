@@ -32,7 +32,8 @@ class Menu extends Common{
         changeValueOfMenuToLogin.addEventListener("click", () =>{
             this.changeVisbilityOfGivenElement(this.formElementRegister, flag)
             flag = !flag;
-            changeValueOfMenuToLogin.textContent = "Chce się zarejestrować"
+            
+            flag == true ? changeValueOfMenuToLogin.textContent = "Chce się zarejestrować" : changeValueOfMenuToLogin.textContent = "Chce się zalogować"
             this.changeVisbilityOfGivenElement(formElementLogin, flag)
         })
         
