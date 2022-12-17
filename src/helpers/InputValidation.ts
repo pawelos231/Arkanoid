@@ -32,8 +32,8 @@ export class Validator extends Common {
         })
     }
 
-    CheckPass(){
-        
+    CheckPass(): boolean{
+          
         if(this.value){
             const regex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/;
             const checked: RegExpMatchArray | null = this.value.match(regex)
