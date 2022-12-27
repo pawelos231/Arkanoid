@@ -36,7 +36,7 @@ class Menu extends Common {
     }
     SendUserDataToBackend() {
         const validator = new Validator(PASSWORD_INPUT_ELEMENT);
-        const fetcher = new Fetcher(this.formElementRegister);
+        const fetcher = new Fetcher(this.elementId);
         validator.DisplayBadPassword();
         fetcher.SendData();
     }

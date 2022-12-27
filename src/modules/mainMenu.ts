@@ -20,10 +20,10 @@ class Menu extends Common{
     }
 
     formElementRegister: HTMLElement | null = this.bindElementByClass(FORM_TO_REGISTER)
+    
 
     switchBetweenRegisterAndLogin(): void{
         
-
         const changeValueOfMenuToLogin: HTMLElement | null = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER)
 
         const formElementLogin: HTMLElement | null = this.bindElementByClass(FORM_TO_LOGIN)
@@ -52,7 +52,7 @@ class Menu extends Common{
 
     SendUserDataToBackend(){
         const validator: Validator = new Validator(PASSWORD_INPUT_ELEMENT)
-        const fetcher: Fetcher = new Fetcher(this.formElementRegister)
+        const fetcher: Fetcher = new Fetcher(this.elementId)
         validator.DisplayBadPassword()
         fetcher.SendData();
     }

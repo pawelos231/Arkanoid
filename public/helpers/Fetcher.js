@@ -19,14 +19,14 @@ export class Fetcher extends Common {
         const RegisterElemement = this.bindElementById(REGISTER_FORMS);
         this.changeVisbilityOfGivenElement(RegisterElemement, false);
     }
-    async sendDataToBackend(form) {
+    async sendDataToBackend(form, parentName) {
         const LoginStatus = this.bindElementByClass(LOGIN_STATUS_MESSAGE);
         const startGamePanel = this.bindElementByClass(START_THE_GAME);
         let obj = {};
         for (const [key, value] of form) {
             obj[key] = value;
         }
-        await fetch(`${DEVELEPOMENT_URL}/register`, {
+        await fetch(`${DEVELEPOMENT_URL}/${parentName}`, {
             method: POST,
             body: JSON.stringify(obj)
         })
@@ -51,7 +51,14 @@ export class Fetcher extends Common {
         if (this.formElement == null)
             throw new Error(ELEMENT_DOES_NOT_EXIST);
         this.formElement.addEventListener("submit", async (e) => {
+            var _a;
             e.preventDefault();
+            let items = (_a = this === null || this === void 0 ? void 0 : this.formElement) === null || _a === void 0 ? void 0 : _a.children;
+            if (items) {
+                for (let item of items) {
+                    console.log(item.nodeName);
+                }
+            }
             const formData = new FormData(newForm);
             for (const [key, value] of formData) {
                 if (key !== PASSWORD)
@@ -60,13 +67,14 @@ export class Fetcher extends Common {
                 elements.forEach((item) => {
                     //check if parent element contains hidden class if yes then proceed to validate further
                     const change = item.parentElement.classList.contains(HIDDEN);
+                    const parentName = item.parentElement.name;
                     //if yes then return, there is no need to validate
                     if (change)
                         return;
                     const validator = new Validator(PASSWORD_INPUT_ELEMENT, item.value);
                     const returnValue = validator.CheckPass();
                     if (returnValue)
-                        this.sendDataToBackend(formData);
+                        this.sendDataToBackend(formData, parentName);
                     else
                         throw new Error(MUST_PUT_VALID_PASS);
                 });
