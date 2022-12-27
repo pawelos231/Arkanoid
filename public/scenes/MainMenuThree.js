@@ -6,6 +6,7 @@ import { EffectComposer } from "../../node_modules/three/examples/jsm/postproces
 import { RenderPass } from "../../node_modules/three/examples/jsm/postprocessing/RenderPass.js";
 // @ts-ignore
 import { UnrealBloomPass } from "../../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js";
+const NUMBER_OF_STARS = 600;
 const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 const geometry = new THREE.TorusGeometry(0.7, 0.2, 16, 100);
@@ -39,7 +40,7 @@ const material = new THREE.PointsMaterial({
     color: "#0000ff",
 });
 let arrOfParticles = [];
-Array(600)
+Array(NUMBER_OF_STARS)
     .fill(0)
     .forEach(() => {
     arrOfParticles.push(addParticle());

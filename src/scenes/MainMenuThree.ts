@@ -8,11 +8,11 @@ import { RenderPass } from "../../node_modules/three/examples/jsm/postprocessing
 // @ts-ignore
 import { UnrealBloomPass } from "../../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
+const NUMBER_OF_STARS = 600;
 
 
 
 const canvas: HTMLCanvasElement | OffscreenCanvas | undefined | any = document.querySelector("canvas.webgl");
-
 const scene: THREE.Scene = new THREE.Scene();
 
 const geometry: THREE.TorusGeometry = new THREE.TorusGeometry(0.7, 0.2, 16, 100);
@@ -65,7 +65,7 @@ const material: THREE.PointsMaterial = new THREE.PointsMaterial({
 });
 
 let arrOfParticles: addParticleReturnFuncInterface[] = [];
-Array(600)
+Array(NUMBER_OF_STARS)
   .fill(0)
   .forEach(() => {
     arrOfParticles.push(addParticle());

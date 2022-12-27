@@ -162,3 +162,67 @@ body{
 .invalid{
     border: 1px solid red !important;
 }
+
+.startTheGame{
+    z-index: 2;
+    width: 25%;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 70%;
+    border-radius: 2%;
+    gap: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    z-index: 4;
+    background-color: transparent;
+    backdrop-filter: blur(5px);
+    border: 1px solid white;
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both infinite; 
+}
+.startTheGame:hover{
+    animation: none;
+}
+@keyframes shake {
+    10%, 90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    
+    20%, 80% {
+      transform: translate3d(2px, 0, 0);
+    }
+  
+    30%, 50%, 70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+  
+    40%, 60% {
+      transform: translate3d(4px, 0, 0);
+    }
+  }
+.startTheGame > div{
+    width: 60%;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    font-size: 22px;
+    background-color: red;
+    transition: .2s;
+}
+
+.startTheGame> div:hover{
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.LoginStatus{
+    position: absolute;
+    top: 0;
+    z-index: 22;
+    color: green;
+    font-size: 32px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}

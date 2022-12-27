@@ -7,12 +7,21 @@ const ELEMENT_DOES_NOT_EXIST = "element nie istnieje";
 const PASSWORD = "haslo";
 const MUST_PUT_VALID_PASS = "Musisz wprowadzić poprawne hasło !";
 const MUST_PUT_VALID_VAL = "Musisz wprowadzić wartości !";
+const REGISTER_FORMS = "RegisterElement";
+const LOGIN_STATUS_MESSAGE = "LoginStatus";
+const START_THE_GAME = "startTheGame";
 export class Fetcher extends Common {
     constructor(formElement) {
         super("form");
         this.formElement = formElement;
     }
+    makeLoginPanelInvisible() {
+        const RegisterElemement = this.bindElementById(REGISTER_FORMS);
+        this.changeVisbilityOfGivenElement(RegisterElemement, false);
+    }
     async sendDataToBackend(form) {
+        const LoginStatus = this.bindElementByClass(LOGIN_STATUS_MESSAGE);
+        const startGamePanel = this.bindElementByClass(START_THE_GAME);
         let obj = {};
         for (const [key, value] of form) {
             obj[key] = value;
@@ -21,8 +30,21 @@ export class Fetcher extends Common {
             method: POST,
             body: JSON.stringify(obj)
         })
-            .then(res => res.json())
-            .then(data => console.log(data));
+            .then((res) => res.json())
+            .then((data) => {
+            LoginStatus.textContent = data.message;
+            if (data.status === 0) {
+                LoginStatus.style.color = "red";
+            }
+            if (data.status === 1) {
+                LoginStatus.style.color = "green";
+                setTimeout(() => {
+                    LoginStatus.textContent = "";
+                    this.makeLoginPanelInvisible();
+                    this.changeVisbilityOfGivenElement(startGamePanel, true);
+                }, 1000);
+            }
+        });
     }
     SendData() {
         let newForm = this.elementId;

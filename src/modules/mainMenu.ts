@@ -4,8 +4,8 @@ import { Fetcher } from '../helpers/Fetcher.js'
 
 const REGISTER_FORMS: string = "RegisterElement"
 const FORM_TO_REGISTER: string = "formToRegister"
-const CHECK_IF_LOGIN_OR_REGISTER: string = "checkIfLoginOrRegister"
 const FORM_TO_LOGIN: string = "formToLogin"
+const CHECK_IF_LOGIN_OR_REGISTER: string = "checkIfLoginOrRegister"
 const STATS_ELELEMENT: string = "Stats"
 const MODAL_STATS_ELEMENT: string = "modal"
 const PASSWORD_INPUT_ELEMENT: string = "password"
@@ -56,9 +56,6 @@ class Menu extends Common{
         validator.DisplayBadPassword()
         fetcher.SendData();
     }
-
-
-
 
 }
 export const menu: Menu = new Menu('siema')

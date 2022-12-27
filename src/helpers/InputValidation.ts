@@ -20,7 +20,6 @@ export class Validator extends Common {
 
                 const checked: RegExpMatchArray | null = value.match(regex)
                 
-
                 if(checked == null){
                     item.classList.add(INVALID)
                 }
