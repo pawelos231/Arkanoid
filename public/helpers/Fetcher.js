@@ -47,40 +47,41 @@ export class Fetcher extends Common {
         });
     }
     SendData() {
+        var _a;
         let newForm = this.elementId;
         if (this.formElement == null)
             throw new Error(ELEMENT_DOES_NOT_EXIST);
-        this.formElement.addEventListener("submit", async (e) => {
-            var _a;
-            e.preventDefault();
-            let items = (_a = this === null || this === void 0 ? void 0 : this.formElement) === null || _a === void 0 ? void 0 : _a.children;
-            if (items) {
-                for (let item of items) {
-                    console.log(item.nodeName);
+        const items = (_a = this === null || this === void 0 ? void 0 : this.formElement) === null || _a === void 0 ? void 0 : _a.children;
+        let arr = [];
+        if (items) {
+            for (let item of items) {
+                if (item.nodeName === "FORM") {
+                    arr.push(item);
                 }
             }
-            const formData = new FormData(newForm);
-            for (const [key, value] of formData) {
-                if (key !== PASSWORD)
-                    continue;
-                const elements = this.bindMultipleElements(PASSWORD_INPUT_ELEMENT);
-                elements.forEach((item) => {
-                    //check if parent element contains hidden class if yes then proceed to validate further
-                    const change = item.parentElement.classList.contains(HIDDEN);
-                    const parentName = item.parentElement.name;
-                    //if yes then return, there is no need to validate
-                    if (change)
+        }
+        arr.forEach((item) => {
+            item.addEventListener("submit", (e) => {
+                e.preventDefault();
+                let newForm2 = item;
+                const newFormData = new FormData(newForm2);
+                for (const [key, value] of newFormData) {
+                    if (key !== PASSWORD)
+                        continue;
+                    const contains = item.classList.contains(HIDDEN);
+                    if (contains)
                         return;
-                    const validator = new Validator(PASSWORD_INPUT_ELEMENT, item.value);
+                    const validator = new Validator(PASSWORD_INPUT_ELEMENT, value);
                     const returnValue = validator.CheckPass();
                     if (returnValue)
-                        this.sendDataToBackend(formData, parentName);
-                    else
-                        throw new Error(MUST_PUT_VALID_PASS);
-                });
-                if (value === "")
-                    throw new Error(MUST_PUT_VALID_VAL);
-            }
+                        this.sendDataToBackend(newFormData, item.name);
+                    else {
+                        console.log("podaj poprawne hasło");
+                    }
+                    if (value === "")
+                        throw new Error(MUST_PUT_VALID_VAL);
+                }
+            });
         });
     }
     FetchData(url) {

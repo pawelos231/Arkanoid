@@ -114,6 +114,9 @@ body{
     font-size: 25px;
     background-color: black;
 }
+.formToLogin > input:focus{
+    outline: 0;
+}
 
 .Stats{
     position: absolute;

@@ -62,44 +62,48 @@ export class Fetcher extends Common {
 
     SendData(): void{
         let newForm = this.elementId as HTMLFormElement | undefined
-
         if(this.formElement == null) throw new Error(ELEMENT_DOES_NOT_EXIST)
-        this.formElement.addEventListener("submit", async (e: SubmitEvent)=>{
-             e.preventDefault()
-             let items = this?.formElement?.children
+        const items: HTMLCollection = this?.formElement?.children
+        let arr: any = []
              if(items){
              for(let item of items){
-                console.log(item.nodeName)
+                if(item.nodeName === "FORM"){
+                    arr.push(item)
+                }
              }
             }
-             const formData: FormData = new FormData(newForm);
+        arr.forEach((item : any) =>{
+           
+            item.addEventListener("submit", (e: any)=>{
+                e.preventDefault()
+                let newForm2 = item as HTMLFormElement | undefined
+                const newFormData: FormData = new FormData(newForm2)
+                for (const [key, value] of newFormData) {
+                    if(key !== PASSWORD) continue
 
-             for (const [key, value] of formData) {
-                if(key !== PASSWORD) continue
-                
-                
-                const elements: NodeListOf<Element> | null = this.bindMultipleElements(PASSWORD_INPUT_ELEMENT)
-                elements.forEach((item: any)=>{
-                    //check if parent element contains hidden class if yes then proceed to validate further
-                    const change: boolean = item.parentElement.classList.contains(HIDDEN);
-                    const parentName: string = item.parentElement.name
+                    const contains: boolean = item.classList.contains(HIDDEN)
 
-                    //if yes then return, there is no need to validate
-                    if(change) return;
-                    const validator: Validator = new Validator(PASSWORD_INPUT_ELEMENT, item.value)
+                    if(contains) return
+
+                    const validator: Validator = new Validator(PASSWORD_INPUT_ELEMENT, value as string)
+
                     const returnValue: boolean = validator.CheckPass()
 
-                    if(returnValue) this.sendDataToBackend(formData, parentName)
-                    else throw new Error(MUST_PUT_VALID_PASS) 
-     
-                })
+                    if(returnValue) this.sendDataToBackend(newFormData, item.name)
+                    else{
+                        console.log("podaj poprawne hasło")
+                    }
 
-                if(value === "") throw new Error(MUST_PUT_VALID_VAL)           
-            }
+                    if(value === "") throw new Error(MUST_PUT_VALID_VAL)   
+                }
             })
-        
+        })  
     }
-    FetchData(url: string){
+
+
+
+    FetchData(url: string)
+    {
 
     }
     
