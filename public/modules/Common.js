@@ -32,4 +32,7 @@ export class Common {
         }
         return element;
     }
+    displayMessageAtTheTopOfTheScreen(message) {
+        console.log(message);
+    }
 }

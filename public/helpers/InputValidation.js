@@ -23,14 +23,12 @@ export class Validator extends Common {
         });
     }
     CheckPass() {
-        if (this.value) {
-            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/;
-            const checked = this.value.match(regex);
-            if (checked !== null) {
-                return true;
-            }
+        if (!this.value)
             return false;
-        }
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/;
+        const checked = this.value.match(regex);
+        if (checked !== null)
+            return true;
         return false;
     }
 }

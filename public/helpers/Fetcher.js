@@ -75,9 +75,8 @@ export class Fetcher extends Common {
                     const returnValue = validator.CheckPass();
                     if (returnValue)
                         this.sendDataToBackend(newFormData, item.name);
-                    else {
-                        console.log("podaj poprawne hasło");
-                    }
+                    else
+                        throw new Error(MUST_PUT_VALID_PASS);
                     if (value === "")
                         throw new Error(MUST_PUT_VALID_VAL);
                 }

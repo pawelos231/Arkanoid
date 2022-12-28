@@ -34,4 +34,7 @@ export class Common {
         }
         return element
     }
+    displayMessageAtTheTopOfTheScreen(message: string){
+        console.log(message)
+    }
 }

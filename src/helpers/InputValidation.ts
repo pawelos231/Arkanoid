@@ -9,7 +9,7 @@ export class Validator extends Common {
         this.input = input
         this.value = value
     }
-    DisplayBadPassword(){
+    DisplayBadPassword(): void{
         const elements: NodeListOf<Element> | null = this.bindMultipleElements(this.input)
 
         elements.forEach((item: Element)=>{
@@ -32,15 +32,16 @@ export class Validator extends Common {
     }
 
     CheckPass(): boolean{
-          
-        if(this.value){
-            const regex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/;
-            const checked: RegExpMatchArray | null = this.value.match(regex)
-            if(checked !== null){
-                return true
-            }
-            return false
-        }
+        if(!this.value) return false
+     
+        const regex: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/;
+
+        const checked: RegExpMatchArray | null = this.value.match(regex)
+
+        if(checked !== null) return true
+
         return false
+        
+
     }
 }
