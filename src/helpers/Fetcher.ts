@@ -28,7 +28,7 @@ export class Fetcher extends Common {
         this.changeVisbilityOfGivenElement(RegisterElemement, false)
     }
 
-    async sendDataToBackend(form: FormData, parentName: string): Promise<void>{
+    async sendDataToBackendAuth(form: FormData, parentName: string): Promise<void>{
       
         const LoginStatus: HTMLElement | null = this.bindElementByClass(LOGIN_STATUS_MESSAGE)
         const startGamePanel: HTMLElement | null = this.bindElementByClass(START_THE_GAME)
@@ -89,7 +89,7 @@ export class Fetcher extends Common {
 
                     const returnValue: boolean = validator.CheckPass()
 
-                    if(returnValue) this.sendDataToBackend(newFormData, item.name)
+                    if(returnValue) this.sendDataToBackendAuth(newFormData, item.name)
                     else throw new Error(MUST_PUT_VALID_PASS)
 
                     if(value === "") throw new Error(MUST_PUT_VALID_VAL)   
@@ -100,8 +100,12 @@ export class Fetcher extends Common {
 
 
 
-    FetchData(url: string)
+    FetchData(url: string): void
     {
+
+    }
+
+    sendDataToBackend<T>(url: string, data: T): void{
 
     }
     
