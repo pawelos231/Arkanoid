@@ -1,4 +1,5 @@
 import { HIDDEN } from "../constants/classNames";
+const REGISTER_FORMS = "RegisterElement"
 export class Common {
     elementId: HTMLElement | null;
     constructor(elementId: string){
@@ -36,5 +37,9 @@ export class Common {
     }
     displayMessageAtTheTopOfTheScreen(message: string){
         console.log(message)
+    }
+    makeLoginPanelInvisible(): void{
+        const RegisterElemement: HTMLElement | null = this.bindElementById(REGISTER_FORMS)
+        this.changeVisbilityOfGivenElement(RegisterElemement, false)
     }
 }

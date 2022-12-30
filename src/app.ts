@@ -15,6 +15,4 @@ function(this: Element): void{
     const ValueOfEl: string = String(this.attributes[0].nodeValue)
 })
 
-menu.switchBetweenRegisterAndLogin()
-menu.switchStatsModalState();
-menu.SendUserDataToBackend();
+menu.start()

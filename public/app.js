@@ -11,6 +11,4 @@ import { menu } from './modules/mainMenu.js';
 (_a = document.querySelector(".checkIfLoginOrRegister")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", function () {
     const ValueOfEl = String(this.attributes[0].nodeValue);
 });
-menu.switchBetweenRegisterAndLogin();
-menu.switchStatsModalState();
-menu.SendUserDataToBackend();
+menu.start();

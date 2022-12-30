@@ -7,7 +7,6 @@ const ELEMENT_DOES_NOT_EXIST = "element nie istnieje";
 const PASSWORD = "haslo";
 const MUST_PUT_VALID_PASS = "Musisz wprowadzić poprawne hasło !";
 const MUST_PUT_VALID_VAL = "Musisz wprowadzić wartości !";
-const REGISTER_FORMS = "RegisterElement";
 const LOGIN_STATUS_MESSAGE = "LoginStatus";
 const START_THE_GAME = "startTheGame";
 export class Fetcher extends Common {
@@ -15,11 +14,7 @@ export class Fetcher extends Common {
         super("form");
         this.formElement = formElement;
     }
-    makeLoginPanelInvisible() {
-        const RegisterElemement = this.bindElementById(REGISTER_FORMS);
-        this.changeVisbilityOfGivenElement(RegisterElemement, false);
-    }
-    async sendDataToBackend(form, parentName) {
+    async sendDataToBackendAuth(form, parentName) {
         const LoginStatus = this.bindElementByClass(LOGIN_STATUS_MESSAGE);
         const startGamePanel = this.bindElementByClass(START_THE_GAME);
         let obj = {};
@@ -38,6 +33,7 @@ export class Fetcher extends Common {
             }
             if (data.status === 1) {
                 LoginStatus.style.color = "green";
+                localStorage.setItem("game", "1");
                 setTimeout(() => {
                     LoginStatus.textContent = "";
                     this.makeLoginPanelInvisible();
@@ -74,7 +70,7 @@ export class Fetcher extends Common {
                     const validator = new Validator(PASSWORD_INPUT_ELEMENT, value);
                     const returnValue = validator.CheckPass();
                     if (returnValue)
-                        this.sendDataToBackend(newFormData, item.name);
+                        this.sendDataToBackendAuth(newFormData, item.name);
                     else
                         throw new Error(MUST_PUT_VALID_PASS);
                     if (value === "")
@@ -84,5 +80,7 @@ export class Fetcher extends Common {
         });
     }
     FetchData(url) {
+    }
+    sendDataToBackend(url, data) {
     }
 }

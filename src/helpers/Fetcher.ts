@@ -11,7 +11,7 @@ const MUST_PUT_VALID_PASS = "Musisz wprowadzić poprawne hasło !"
 const MUST_PUT_VALID_VAL = "Musisz wprowadzić wartości !"
 
 
-const REGISTER_FORMS = "RegisterElement"
+
 const LOGIN_STATUS_MESSAGE = "LoginStatus"
 const START_THE_GAME = "startTheGame"
 
@@ -20,12 +20,6 @@ export class Fetcher extends Common {
     constructor(formElement: HTMLElement | null){
         super("form")
         this.formElement = formElement
-    }
-
-
-    makeLoginPanelInvisible(): void{
-        const RegisterElemement: HTMLElement | null = this.bindElementById(REGISTER_FORMS)
-        this.changeVisbilityOfGivenElement(RegisterElemement, false)
     }
 
     async sendDataToBackendAuth(form: FormData, parentName: string): Promise<void>{
@@ -50,6 +44,7 @@ export class Fetcher extends Common {
             }
             if(data.status === 1){
                 LoginStatus.style.color = "green"
+                localStorage.setItem("game", "1")
                 setTimeout(()=>{
                     LoginStatus.textContent = ""
                     this.makeLoginPanelInvisible()
