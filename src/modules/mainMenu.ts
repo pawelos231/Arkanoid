@@ -1,6 +1,10 @@
 import {Common} from './Common.js'
 import { Validator } from '../helpers/InputValidation.js'
 import { Fetcher } from '../helpers/Fetcher.js'
+import { Media } from './Media.js'
+const I_WANT_TO_REGISTER = "Chce się zarejestrować"
+const I_WANT_TO_LOGIN = "Chce się zalogować"
+
 
 const REGISTER_FORMS: string = "RegisterElement"
 const FORM_TO_REGISTER: string = "formToRegister"
@@ -13,6 +17,9 @@ const START_GAME = "Start"
 const MAIN_MENU_LEVEL_SELECT= "mainLevelSelect"
 const START_THE_GAME = "startTheGame"
 const BACK_TO_MENU = "backToMenu"
+const OPEN_SETTINGS = "Ustawienia"
+const OPENED_SETTINGS_PAGE = "OpenedSettings"
+const CLOSE_SETTINGS = "closeSettings"
 
 
 class Menu extends Common{
@@ -36,7 +43,7 @@ class Menu extends Common{
             this.changeVisbilityOfGivenElement(this.formElementRegister, flag)
             flag = !flag;
             
-            flag == true ? changeValueOfMenuToLogin.textContent = "Chce się zarejestrować" : changeValueOfMenuToLogin.textContent = "Chce się zalogować"
+            flag == true ? changeValueOfMenuToLogin.textContent = I_WANT_TO_REGISTER : changeValueOfMenuToLogin.textContent = I_WANT_TO_LOGIN
             this.changeVisbilityOfGivenElement(formElementLogin, flag)
         })
         
@@ -60,16 +67,16 @@ class Menu extends Common{
         fetcher.SendData();
     }
     StartGame(): void{
-        const niewiem: null | string = localStorage.getItem("game")
+        const isLogged: null | string = localStorage.getItem("game")
         const startGamePanel: HTMLElement | null = this.bindElementByClass(START_THE_GAME)
         const BackToMenuPanel: HTMLElement | null = this.bindElementByClass(BACK_TO_MENU)
-        if(niewiem) {
+        if(isLogged) {
             this.makeLoginPanelInvisible()
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         }
         const StartGameButton: HTMLElement | null = this.bindElementByClass(START_GAME)
         const LevelSelect: HTMLElement | null = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT)  
-        
+
         StartGameButton.addEventListener("click", () =>{
             this.changeVisbilityOfGivenElement(LevelSelect, true)
             this.changeVisbilityOfGivenElement(startGamePanel, false)
@@ -79,11 +86,28 @@ class Menu extends Common{
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         })
     }
+    
+    openSettings(): void{
+        const OpenSettings: HTMLElement | null = this.bindElementByClass(OPEN_SETTINGS)
+        const OpenedSettingsPage: HTMLElement | null = this.bindElementByClass(OPENED_SETTINGS_PAGE)
+        const CloseSettings: HTMLElement | null = this.bindElementByClass(CLOSE_SETTINGS)
+        const media: Media = new Media(0.3, 0.4, true, true, null)
+        OpenSettings.addEventListener("click", ()=>{
+            this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
+            media.playMusic()
+        })
+        CloseSettings.addEventListener("click", ()=>{
+            this.changeVisbilityOfGivenElement(OpenedSettingsPage, false)
+            media.stopMusic()
+        })
+
+    }
     start():void{
         this.switchBetweenRegisterAndLogin()
         this.switchStatsModalState();
         this.SendUserDataToBackend();
         this.StartGame()
+        this.openSettings()
     }
 
 }

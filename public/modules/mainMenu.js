@@ -1,6 +1,9 @@
 import { Common } from './Common.js';
 import { Validator } from '../helpers/InputValidation.js';
 import { Fetcher } from '../helpers/Fetcher.js';
+import { Media } from './Media.js';
+const I_WANT_TO_REGISTER = "Chce się zarejestrować";
+const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
 const FORM_TO_REGISTER = "formToRegister";
 const FORM_TO_LOGIN = "formToLogin";
@@ -12,6 +15,9 @@ const START_GAME = "Start";
 const MAIN_MENU_LEVEL_SELECT = "mainLevelSelect";
 const START_THE_GAME = "startTheGame";
 const BACK_TO_MENU = "backToMenu";
+const OPEN_SETTINGS = "Ustawienia";
+const OPENED_SETTINGS_PAGE = "OpenedSettings";
+const CLOSE_SETTINGS = "closeSettings";
 class Menu extends Common {
     constructor(data) {
         super(REGISTER_FORMS);
@@ -25,7 +31,7 @@ class Menu extends Common {
         changeValueOfMenuToLogin.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(this.formElementRegister, flag);
             flag = !flag;
-            flag == true ? changeValueOfMenuToLogin.textContent = "Chce się zarejestrować" : changeValueOfMenuToLogin.textContent = "Chce się zalogować";
+            flag == true ? changeValueOfMenuToLogin.textContent = I_WANT_TO_REGISTER : changeValueOfMenuToLogin.textContent = I_WANT_TO_LOGIN;
             this.changeVisbilityOfGivenElement(formElementLogin, flag);
         });
     }
@@ -45,10 +51,10 @@ class Menu extends Common {
         fetcher.SendData();
     }
     StartGame() {
-        const niewiem = localStorage.getItem("game");
+        const isLogged = localStorage.getItem("game");
         const startGamePanel = this.bindElementByClass(START_THE_GAME);
         const BackToMenuPanel = this.bindElementByClass(BACK_TO_MENU);
-        if (niewiem) {
+        if (isLogged) {
             this.makeLoginPanelInvisible();
             this.changeVisbilityOfGivenElement(startGamePanel, true);
         }
@@ -63,11 +69,26 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(startGamePanel, true);
         });
     }
+    openSettings() {
+        const OpenSettings = this.bindElementByClass(OPEN_SETTINGS);
+        const OpenedSettingsPage = this.bindElementByClass(OPENED_SETTINGS_PAGE);
+        const CloseSettings = this.bindElementByClass(CLOSE_SETTINGS);
+        const media = new Media(0.3, 0.4, true, true, null);
+        OpenSettings.addEventListener("click", () => {
+            this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
+            media.playMusic();
+        });
+        CloseSettings.addEventListener("click", () => {
+            this.changeVisbilityOfGivenElement(OpenedSettingsPage, false);
+            media.stopMusic();
+        });
+    }
     start() {
         this.switchBetweenRegisterAndLogin();
         this.switchStatsModalState();
         this.SendUserDataToBackend();
         this.StartGame();
+        this.openSettings();
     }
 }
 export const menu = new Menu('siema');

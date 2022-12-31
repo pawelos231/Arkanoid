@@ -93,8 +93,6 @@ export class Fetcher extends Common {
         })  
     }
 
-
-
     FetchData(url: string): void
     {
 
