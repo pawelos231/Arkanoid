@@ -10,7 +10,7 @@ const FORM_TO_REGISTER = "formToRegister";
 const FORM_TO_LOGIN = "formToLogin";
 const CHECK_IF_LOGIN_OR_REGISTER = "checkIfLoginOrRegister";
 const STATS_ELELEMENT = "Stats";
-const MODAL_STATS_ELEMENT = "modal";
+const MODAL_STATS_ELEMENT = "modalStats";
 const PASSWORD_INPUT_ELEMENT = "password";
 const START_GAME = "Start";
 const MAIN_MENU_LEVEL_SELECT = "mainLevelSelect";
@@ -21,10 +21,12 @@ const OPENED_SETTINGS_PAGE = "OpenedSettings";
 const CLOSE_SETTINGS = "closeSettings";
 const MUSIC_RANGE = "musicRange";
 const SOUND_RANGE = "soundRange";
+const INNER_MODAL_STATS_ELEMENT = "innerModalStats";
 const RESET_INPUT_SETTINGS = "resetInputsSettings";
 class Menu extends Common {
     constructor() {
         super(REGISTER_FORMS);
+        this.fetcher = new Fetcher(this.elementId);
         this.formElementRegister = this.bindElementByClass(FORM_TO_REGISTER);
     }
     switchBetweenRegisterAndLogin() {
@@ -38,20 +40,30 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(formElementLogin, flag);
         });
     }
-    switchStatsModalState() {
+    async switchStatsModalState() {
         const StatsElement = this.bindElementByClass(STATS_ELELEMENT);
         const ModalElementStats = this.bindElementByClass(MODAL_STATS_ELEMENT);
+        const ResultsCheckBoard = this.bindElementByClass(INNER_MODAL_STATS_ELEMENT);
         let flag = true;
-        StatsElement.addEventListener("click", () => {
+        StatsElement.addEventListener("click", async () => {
+            ResultsCheckBoard.children[1].textContent = "";
+            const fetchData = this.fetcher.FetchData("http://localhost:8081/stats");
+            ResultsCheckBoard.children[0].textContent = "ładuje";
+            const stats = await fetchData;
+            ResultsCheckBoard.children[0].textContent = "Najlepsze Statystyki Graczy";
+            stats.map((value) => {
+                const element = document.createElement("li");
+                element.textContent = value;
+                ResultsCheckBoard.children[1].appendChild(element);
+            });
             this.changeVisbilityOfGivenElement(ModalElementStats, flag);
             flag = !flag;
         });
     }
     SendUserDataToBackend() {
         const validator = new Validator(PASSWORD_INPUT_ELEMENT);
-        const fetcher = new Fetcher(this.elementId);
         validator.DisplayBadPassword();
-        fetcher.SendData();
+        this.fetcher.SendData();
     }
     StartGame() {
         const isLogged = localStorage.getItem("game");
@@ -59,10 +71,12 @@ class Menu extends Common {
         const BackToMenuPanel = this.bindElementByClass(BACK_TO_MENU);
         const StartGameButton = this.bindElementByClass(START_GAME);
         const LevelSelect = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT);
-        if (isLogged) {
-            this.makeLoginPanelInvisible();
-            this.changeVisbilityOfGivenElement(startGamePanel, true);
+        /*
+        if(isLogged) {
+            this.makeLoginPanelInvisible()
+            this.changeVisbilityOfGivenElement(startGamePanel, true)
         }
+        */
         StartGameButton.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(LevelSelect, true);
             this.changeVisbilityOfGivenElement(startGamePanel, false);

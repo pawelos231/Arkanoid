@@ -13,7 +13,7 @@ const FORM_TO_REGISTER: string = "formToRegister"
 const FORM_TO_LOGIN: string = "formToLogin"
 const CHECK_IF_LOGIN_OR_REGISTER: string = "checkIfLoginOrRegister"
 const STATS_ELELEMENT: string = "Stats"
-const MODAL_STATS_ELEMENT: string = "modal"
+const MODAL_STATS_ELEMENT: string = "modalStats"
 const PASSWORD_INPUT_ELEMENT: string = "password"
 const START_GAME = "Start"
 const MAIN_MENU_LEVEL_SELECT= "mainLevelSelect"
@@ -24,6 +24,7 @@ const OPENED_SETTINGS_PAGE = "OpenedSettings"
 const CLOSE_SETTINGS = "closeSettings"
 const MUSIC_RANGE = "musicRange" 
 const SOUND_RANGE = "soundRange"
+const INNER_MODAL_STATS_ELEMENT = "innerModalStats"
 const RESET_INPUT_SETTINGS = "resetInputsSettings"
 
 class Menu extends Common{
@@ -31,7 +32,7 @@ class Menu extends Common{
     constructor(){
         super(REGISTER_FORMS)
     }
-
+    fetcher: Fetcher = new Fetcher(this.elementId)
     formElementRegister: HTMLElement | null = this.bindElementByClass(FORM_TO_REGISTER)
     
 
@@ -52,23 +53,32 @@ class Menu extends Common{
         
     }
 
-    switchStatsModalState(): void{
+    async switchStatsModalState(): Promise<void>{
         const StatsElement: HTMLElement | null = this.bindElementByClass(STATS_ELELEMENT)
         const ModalElementStats: HTMLElement| null = this.bindElementByClass(MODAL_STATS_ELEMENT)
-
+        const ResultsCheckBoard: HTMLElement | null = this.bindElementByClass(INNER_MODAL_STATS_ELEMENT)
         let flag: boolean = true
-        StatsElement.addEventListener("click", () =>{
+        StatsElement.addEventListener("click", async () =>{
+            ResultsCheckBoard.children[1].textContent = ""
+            const fetchData = this.fetcher.FetchData("http://localhost:8081/stats")
+            ResultsCheckBoard.children[0].textContent = "ładuje"
+            const stats = await fetchData
+            ResultsCheckBoard.children[0].textContent = "Najlepsze Statystyki Graczy"
+            stats.map((value: string) =>{
+                const element: HTMLLIElement  = document.createElement("li")
+                element.textContent = value
+                ResultsCheckBoard.children[1].appendChild(element)
+            })
             this.changeVisbilityOfGivenElement(ModalElementStats, flag)
             flag = !flag
         })
     }
-
     SendUserDataToBackend(): void{
         const validator: Validator = new Validator(PASSWORD_INPUT_ELEMENT)
-        const fetcher: Fetcher = new Fetcher(this.elementId)
         validator.DisplayBadPassword()
-        fetcher.SendData();
+        this.fetcher.SendData();
     }
+
     StartGame(): void{
         const isLogged: null | string = localStorage.getItem("game")
         const startGamePanel: HTMLElement | null = this.bindElementByClass(START_THE_GAME)
@@ -76,11 +86,12 @@ class Menu extends Common{
         const StartGameButton: HTMLElement | null = this.bindElementByClass(START_GAME)
         const LevelSelect: HTMLElement | null = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT)  
 
+        /*        
         if(isLogged) {
             this.makeLoginPanelInvisible()
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         }  
-
+        */
         StartGameButton.addEventListener("click", () =>{
             this.changeVisbilityOfGivenElement(LevelSelect, true)
             this.changeVisbilityOfGivenElement(startGamePanel, false)

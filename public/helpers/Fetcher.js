@@ -1,7 +1,7 @@
 import { Common } from "../modules/Common";
 import { Validator } from "./InputValidation";
 import { HIDDEN } from "../constants/classNames";
-import { DEVELEPOMENT_URL, POST } from '../constants/Fetchers';
+import { DEVELEPOMENT_URL, POST, GET } from '../constants/Fetchers';
 const PASSWORD_INPUT_ELEMENT = "password";
 const ELEMENT_DOES_NOT_EXIST = "element nie istnieje";
 const PASSWORD = "haslo";
@@ -28,10 +28,11 @@ export class Fetcher extends Common {
             .then((res) => res.json())
             .then((data) => {
             LoginStatus.textContent = data.message;
-            if (data.status === 0) {
+            const statusOfMessage = data.status;
+            if (statusOfMessage === 0) {
                 LoginStatus.style.color = "red";
             }
-            if (data.status === 1) {
+            if (statusOfMessage === 1) {
                 LoginStatus.style.color = "green";
                 localStorage.setItem("game", "1");
                 setTimeout(() => {
@@ -79,8 +80,17 @@ export class Fetcher extends Common {
             });
         });
     }
-    FetchData(url) {
+    async FetchData(url) {
+        const data = await fetch(url, {
+            method: GET
+        })
+            .then(res => res.json())
+            .then(data => {
+            return data;
+        })
+            .catch(err => { throw new Error(err); });
+        return data;
     }
-    sendDataToBackend(url, data) {
+    async sendDataToBackend(url, data) {
     }
 }

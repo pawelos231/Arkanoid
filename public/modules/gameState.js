@@ -1,8 +1,9 @@
 import { Common } from "./Common";
-class GameState extends Common {
-    constructor(level, pointsToWin) {
+export class GameState extends Common {
+    constructor(level, pointsToWin, numberOfBricks) {
         super("siema");
         this.level = level;
         this.pointsToWin = pointsToWin;
+        this.numberOfBricks = numberOfBricks;
     }
 }

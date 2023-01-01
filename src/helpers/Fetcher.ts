@@ -39,10 +39,11 @@ export class Fetcher extends Common {
         .then((res: Response) => res.json())
         .then((data: responseData)=> {
             LoginStatus.textContent = data.message
-            if(data.status === 0){
+            const statusOfMessage: number = data.status 
+            if(statusOfMessage === 0){
                 LoginStatus.style.color = "red"
             }
-            if(data.status === 1){
+            if(statusOfMessage === 1){
                 LoginStatus.style.color = "green"
                 localStorage.setItem("game", "1")
                 setTimeout(()=>{
@@ -93,12 +94,20 @@ export class Fetcher extends Common {
         })  
     }
 
-    FetchData(url: string): void
+    async FetchData(url: string): Promise<any>
     {
-
+        const data = await fetch(url, {
+            method: GET
+        })
+        .then(res => res.json())
+        .then(data => {
+            return data
+        })
+        .catch(err => {throw new Error(err)})
+        return data
     }
 
-    sendDataToBackend<T>(url: string, data: T): void{
+    async sendDataToBackend<T>(url: string, data: T): Promise<void>{
 
     }
     
