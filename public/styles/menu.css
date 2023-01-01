@@ -268,3 +268,20 @@ body{
 .closeSettings:hover{
     transform: scale(1.05);
 }
+
+.resetInputsSettings{
+    width: 30%;
+    color: white;
+    display: flex;
+    border-radius: 5px;
+    margin-top: 30px;
+    cursor: pointer;
+    transition: 0.2s;
+    justify-content: center;
+    align-items: center;
+    height: 5%;
+    background-color: red;
+}
+.resetInputsSettings:hover{
+    transform: scale(1.05);
+}

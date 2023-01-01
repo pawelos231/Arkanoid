@@ -2,6 +2,7 @@ import { Common } from './Common.js';
 import { Validator } from '../helpers/InputValidation.js';
 import { Fetcher } from '../helpers/Fetcher.js';
 import { Media } from './Media.js';
+import { loader } from "./Loader";
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -20,6 +21,7 @@ const OPENED_SETTINGS_PAGE = "OpenedSettings";
 const CLOSE_SETTINGS = "closeSettings";
 const MUSIC_RANGE = "musicRange";
 const SOUND_RANGE = "soundRange";
+const RESET_INPUT_SETTINGS = "resetInputsSettings";
 class Menu extends Common {
     constructor() {
         super(REGISTER_FORMS);
@@ -75,9 +77,14 @@ class Menu extends Common {
         const OpenedSettingsPage = this.bindElementByClass(OPENED_SETTINGS_PAGE);
         const CloseSettings = this.bindElementByClass(CLOSE_SETTINGS);
         const increaseVolume = this.bindElementByClass(MUSIC_RANGE);
-        const media = new Media(0.3, 0.4, true, true);
+        const resetInputsSettings = this.bindElementByClass(RESET_INPUT_SETTINGS);
+        const backgroundAudio = loader.loadSound("https://media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4");
+        const media = new Media(0.5, 0.5, true, true, backgroundAudio);
         OpenSettings.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
+            resetInputsSettings.addEventListener("click", () => {
+                media.resetValuesToDefault(increaseVolume);
+            });
             media.playMusic();
             media.changeVolumeOfBackgroundMusic(increaseVolume);
         });

@@ -2,6 +2,8 @@ import {Common} from './Common.js'
 import { Validator } from '../helpers/InputValidation.js'
 import { Fetcher } from '../helpers/Fetcher.js'
 import { Media } from './Media.js'
+import { loader } from "./Loader"
+
 const I_WANT_TO_REGISTER = "Chce się zarejestrować"
 const I_WANT_TO_LOGIN = "Chce się zalogować"
 
@@ -22,6 +24,7 @@ const OPENED_SETTINGS_PAGE = "OpenedSettings"
 const CLOSE_SETTINGS = "closeSettings"
 const MUSIC_RANGE = "musicRange" 
 const SOUND_RANGE = "soundRange"
+const RESET_INPUT_SETTINGS = "resetInputsSettings"
 
 class Menu extends Common{
  
@@ -93,9 +96,15 @@ class Menu extends Common{
         const OpenedSettingsPage: HTMLElement | null = this.bindElementByClass(OPENED_SETTINGS_PAGE)
         const CloseSettings: HTMLElement | null = this.bindElementByClass(CLOSE_SETTINGS)
         const increaseVolume: HTMLElement | null = this.bindElementByClass(MUSIC_RANGE)
-        const media: Media = new Media(0.3, 0.4, true, true)
+        const resetInputsSettings: HTMLElement | null = this.bindElementByClass(RESET_INPUT_SETTINGS)
+        const backgroundAudio: HTMLAudioElement = loader.loadSound("https://media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4")
+
+        const media: Media = new Media(0.5, 0.5, true, true, backgroundAudio)
         OpenSettings.addEventListener("click", ()=>{
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
+            resetInputsSettings.addEventListener("click",() => {
+                media.resetValuesToDefault(increaseVolume)
+            })
             media.playMusic()
             media.changeVolumeOfBackgroundMusic(increaseVolume)
         })
