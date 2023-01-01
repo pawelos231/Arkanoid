@@ -18,11 +18,12 @@ const BACK_TO_MENU = "backToMenu";
 const OPEN_SETTINGS = "Ustawienia";
 const OPENED_SETTINGS_PAGE = "OpenedSettings";
 const CLOSE_SETTINGS = "closeSettings";
+const MUSIC_RANGE = "musicRange";
+const SOUND_RANGE = "soundRange";
 class Menu extends Common {
-    constructor(data) {
+    constructor() {
         super(REGISTER_FORMS);
         this.formElementRegister = this.bindElementByClass(FORM_TO_REGISTER);
-        this.data = data;
     }
     switchBetweenRegisterAndLogin() {
         const changeValueOfMenuToLogin = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER);
@@ -54,12 +55,12 @@ class Menu extends Common {
         const isLogged = localStorage.getItem("game");
         const startGamePanel = this.bindElementByClass(START_THE_GAME);
         const BackToMenuPanel = this.bindElementByClass(BACK_TO_MENU);
+        const StartGameButton = this.bindElementByClass(START_GAME);
+        const LevelSelect = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT);
         if (isLogged) {
             this.makeLoginPanelInvisible();
             this.changeVisbilityOfGivenElement(startGamePanel, true);
         }
-        const StartGameButton = this.bindElementByClass(START_GAME);
-        const LevelSelect = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT);
         StartGameButton.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(LevelSelect, true);
             this.changeVisbilityOfGivenElement(startGamePanel, false);
@@ -73,10 +74,12 @@ class Menu extends Common {
         const OpenSettings = this.bindElementByClass(OPEN_SETTINGS);
         const OpenedSettingsPage = this.bindElementByClass(OPENED_SETTINGS_PAGE);
         const CloseSettings = this.bindElementByClass(CLOSE_SETTINGS);
-        const media = new Media(0.3, 0.4, true, true, null);
+        const increaseVolume = this.bindElementByClass(MUSIC_RANGE);
+        const media = new Media(0.3, 0.4, true, true);
         OpenSettings.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             media.playMusic();
+            media.changeVolumeOfBackgroundMusic(increaseVolume);
         });
         CloseSettings.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, false);
@@ -91,4 +94,4 @@ class Menu extends Common {
         this.openSettings();
     }
 }
-export const menu = new Menu('siema');
+export const menu = new Menu();

@@ -20,13 +20,13 @@ const BACK_TO_MENU = "backToMenu"
 const OPEN_SETTINGS = "Ustawienia"
 const OPENED_SETTINGS_PAGE = "OpenedSettings"
 const CLOSE_SETTINGS = "closeSettings"
-
+const MUSIC_RANGE = "musicRange" 
+const SOUND_RANGE = "soundRange"
 
 class Menu extends Common{
-    data: string
-    constructor(data: string){
+ 
+    constructor(){
         super(REGISTER_FORMS)
-        this.data = data;
     }
 
     formElementRegister: HTMLElement | null = this.bindElementByClass(FORM_TO_REGISTER)
@@ -70,12 +70,13 @@ class Menu extends Common{
         const isLogged: null | string = localStorage.getItem("game")
         const startGamePanel: HTMLElement | null = this.bindElementByClass(START_THE_GAME)
         const BackToMenuPanel: HTMLElement | null = this.bindElementByClass(BACK_TO_MENU)
+        const StartGameButton: HTMLElement | null = this.bindElementByClass(START_GAME)
+        const LevelSelect: HTMLElement | null = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT)  
+
         if(isLogged) {
             this.makeLoginPanelInvisible()
             this.changeVisbilityOfGivenElement(startGamePanel, true)
-        }
-        const StartGameButton: HTMLElement | null = this.bindElementByClass(START_GAME)
-        const LevelSelect: HTMLElement | null = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT)  
+        }  
 
         StartGameButton.addEventListener("click", () =>{
             this.changeVisbilityOfGivenElement(LevelSelect, true)
@@ -91,10 +92,12 @@ class Menu extends Common{
         const OpenSettings: HTMLElement | null = this.bindElementByClass(OPEN_SETTINGS)
         const OpenedSettingsPage: HTMLElement | null = this.bindElementByClass(OPENED_SETTINGS_PAGE)
         const CloseSettings: HTMLElement | null = this.bindElementByClass(CLOSE_SETTINGS)
-        const media: Media = new Media(0.3, 0.4, true, true, null)
+        const increaseVolume: HTMLElement | null = this.bindElementByClass(MUSIC_RANGE)
+        const media: Media = new Media(0.3, 0.4, true, true)
         OpenSettings.addEventListener("click", ()=>{
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
             media.playMusic()
+            media.changeVolumeOfBackgroundMusic(increaseVolume)
         })
         CloseSettings.addEventListener("click", ()=>{
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, false)
@@ -111,4 +114,4 @@ class Menu extends Common{
     }
 
 }
-export const menu: Menu = new Menu('siema')
+export const menu: Menu = new Menu()
