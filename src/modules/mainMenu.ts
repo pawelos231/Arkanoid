@@ -3,6 +3,7 @@ import { Validator } from '../helpers/InputValidation.js'
 import { Fetcher } from '../helpers/Fetcher.js'
 import { Media } from './Media.js'
 import { loader } from "./Loader"
+import { levelSelect } from './LevelSelect.js'
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować"
 const I_WANT_TO_LOGIN = "Chce się zalogować"
@@ -57,20 +58,26 @@ class Menu extends Common{
         const StatsElement: HTMLElement | null = this.bindElementByClass(STATS_ELELEMENT)
         const ModalElementStats: HTMLElement| null = this.bindElementByClass(MODAL_STATS_ELEMENT)
         const ResultsCheckBoard: HTMLElement | null = this.bindElementByClass(INNER_MODAL_STATS_ELEMENT)
+
         let flag: boolean = true
+
         StatsElement.addEventListener("click", async () =>{
-            ResultsCheckBoard.children[1].textContent = ""
-            const fetchData = this.fetcher.FetchData("http://localhost:8081/stats")
+            this.changeVisbilityOfGivenElement(ModalElementStats, flag)
+            flag = !flag
+
+            const fetchData: Promise<string[]> = this.fetcher.FetchData<string[]>("http://localhost:8081/stats")
+
             ResultsCheckBoard.children[0].textContent = "ładuje"
             const stats = await fetchData
+            ResultsCheckBoard.children[1].textContent = ""
             ResultsCheckBoard.children[0].textContent = "Najlepsze Statystyki Graczy"
+
             stats.map((value: string) =>{
                 const element: HTMLLIElement  = document.createElement("li")
                 element.textContent = value
                 ResultsCheckBoard.children[1].appendChild(element)
             })
-            this.changeVisbilityOfGivenElement(ModalElementStats, flag)
-            flag = !flag
+            
         })
     }
     SendUserDataToBackend(): void{
@@ -86,15 +93,16 @@ class Menu extends Common{
         const StartGameButton: HTMLElement | null = this.bindElementByClass(START_GAME)
         const LevelSelect: HTMLElement | null = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT)  
 
-        /*        
+              
         if(isLogged) {
             this.makeLoginPanelInvisible()
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         }  
-        */
+        
         StartGameButton.addEventListener("click", () =>{
             this.changeVisbilityOfGivenElement(LevelSelect, true)
             this.changeVisbilityOfGivenElement(startGamePanel, false)
+            levelSelect.handleOnClickLevel()
         })
         BackToMenuPanel.addEventListener("click", ()=>{
             this.changeVisbilityOfGivenElement(LevelSelect, false)
@@ -108,9 +116,12 @@ class Menu extends Common{
         const CloseSettings: HTMLElement | null = this.bindElementByClass(CLOSE_SETTINGS)
         const increaseVolume: HTMLElement | null = this.bindElementByClass(MUSIC_RANGE)
         const resetInputsSettings: HTMLElement | null = this.bindElementByClass(RESET_INPUT_SETTINGS)
+
+
         const backgroundAudio: HTMLAudioElement = loader.loadSound("https://media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4")
 
         const media: Media = new Media(0.5, 0.5, true, true, backgroundAudio)
+
         OpenSettings.addEventListener("click", ()=>{
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
             resetInputsSettings.addEventListener("click",() => {
@@ -119,6 +130,7 @@ class Menu extends Common{
             media.playMusic()
             media.changeVolumeOfBackgroundMusic(increaseVolume)
         })
+
         CloseSettings.addEventListener("click", ()=>{
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, false)
             media.stopMusic()

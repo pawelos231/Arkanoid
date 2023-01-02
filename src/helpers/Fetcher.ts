@@ -94,8 +94,10 @@ export class Fetcher extends Common {
         })  
     }
 
-    async FetchData(url: string): Promise<any>
+    async FetchData<T>(url: string): Promise<T>
     {
+        //const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
+        //await delay(1000)
         const data = await fetch(url, {
             method: GET
         })

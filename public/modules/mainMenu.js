@@ -3,6 +3,7 @@ import { Validator } from '../helpers/InputValidation.js';
 import { Fetcher } from '../helpers/Fetcher.js';
 import { Media } from './Media.js';
 import { loader } from "./Loader";
+import { levelSelect } from './LevelSelect.js';
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -46,18 +47,18 @@ class Menu extends Common {
         const ResultsCheckBoard = this.bindElementByClass(INNER_MODAL_STATS_ELEMENT);
         let flag = true;
         StatsElement.addEventListener("click", async () => {
-            ResultsCheckBoard.children[1].textContent = "";
+            this.changeVisbilityOfGivenElement(ModalElementStats, flag);
+            flag = !flag;
             const fetchData = this.fetcher.FetchData("http://localhost:8081/stats");
             ResultsCheckBoard.children[0].textContent = "ładuje";
             const stats = await fetchData;
+            ResultsCheckBoard.children[1].textContent = "";
             ResultsCheckBoard.children[0].textContent = "Najlepsze Statystyki Graczy";
             stats.map((value) => {
                 const element = document.createElement("li");
                 element.textContent = value;
                 ResultsCheckBoard.children[1].appendChild(element);
             });
-            this.changeVisbilityOfGivenElement(ModalElementStats, flag);
-            flag = !flag;
         });
     }
     SendUserDataToBackend() {
@@ -71,15 +72,14 @@ class Menu extends Common {
         const BackToMenuPanel = this.bindElementByClass(BACK_TO_MENU);
         const StartGameButton = this.bindElementByClass(START_GAME);
         const LevelSelect = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT);
-        /*
-        if(isLogged) {
-            this.makeLoginPanelInvisible()
-            this.changeVisbilityOfGivenElement(startGamePanel, true)
+        if (isLogged) {
+            this.makeLoginPanelInvisible();
+            this.changeVisbilityOfGivenElement(startGamePanel, true);
         }
-        */
         StartGameButton.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(LevelSelect, true);
             this.changeVisbilityOfGivenElement(startGamePanel, false);
+            levelSelect.handleOnClickLevel();
         });
         BackToMenuPanel.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(LevelSelect, false);

@@ -13,21 +13,29 @@
     flex-wrap: wrap;
 }
 
-.mainLevelSelect > div{
-    flex-basis: 10%;
+.mainLevelSelect > .mainLevelSelectMenu{
     display: flex;
     justify-content: center;
-    transition: .3s;
-    cursor: pointer;
     align-items: center;
-    aspect-ratio: 1/1;
+    width: 100%;
+    height: 100%;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.mainLevelSelect > .mainLevelSelectMenu> div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-basis: 10%;
     background-color: red;
-    border-radius: 2px;
+    cursor: pointer;
+    transition: .2s;
+    height: 15%;
 }
 .hidden{
     display: none !important; 
 }
-.mainLevelSelect > div:hover{
+.mainLevelSelectMenu > div:hover{
     transform: scale(1.05);
 }
 .backToMenu{
@@ -35,4 +43,9 @@
     top: 0;
     left: 0;
     font-size: 30px;
+    cursor: pointer;
+    transition: .15s;
+}
+.backToMenu:hover{
+    transform: scale(.95);
 }
