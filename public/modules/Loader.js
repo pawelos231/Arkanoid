@@ -3,7 +3,7 @@ class Loader {
     }
     loadSound(soundUrl) {
         const audio = new Audio();
-        audio.addEventListener('canplaythrough', event => this.itemLoaded(event), false);
+        audio.addEventListener('canplaythrough', (event) => this.itemLoaded(event), false);
         audio.src = soundUrl;
         return audio;
     }

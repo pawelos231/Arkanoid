@@ -9,9 +9,6 @@ const ELEMENT_DOES_NOT_EXIST = "element nie istnieje"
 const PASSWORD = "haslo"
 const MUST_PUT_VALID_PASS = "Musisz wprowadzić poprawne hasło !"
 const MUST_PUT_VALID_VAL = "Musisz wprowadzić wartości !"
-
-
-
 const LOGIN_STATUS_MESSAGE = "LoginStatus"
 const START_THE_GAME = "startTheGame"
 
@@ -57,26 +54,23 @@ export class Fetcher extends Common {
     }
 
     SendData(): void{
-        let newForm = this.elementId as HTMLFormElement | undefined
         if(this.formElement == null) throw new Error(ELEMENT_DOES_NOT_EXIST)
-        const items: HTMLCollection = this?.formElement?.children
-        let arr: any = []
-             if(items){
-             for(let item of items){
-                if(item.nodeName === "FORM"){
-                    arr.push(item)
-                }
-             }
-            }
-        arr.forEach((item : any) =>{
+
+        const allRegisterElementItems: HTMLCollection = this?.formElement?.children
+
+        const loginAndRegisterFormNodes: Element[] = Array.from(allRegisterElementItems).filter((item: Element) => item.nodeName == "FORM")
+
+        loginAndRegisterFormNodes.forEach((item : any) =>{
            
-            item.addEventListener("submit", (e: any)=>{
+            item.addEventListener("submit", (e: { preventDefault: () => void; })=>{
                 e.preventDefault()
                 let newForm2 = item as HTMLFormElement | undefined
                 const newFormData: FormData = new FormData(newForm2)
                 for (const [key, value] of newFormData) {
+                    //if the name of the input is not Password then continue with loop
                     if(key !== PASSWORD) continue
 
+                    //check Password only if this is the form that is not currently hidden aka visible
                     const contains: boolean = item.classList.contains(HIDDEN)
 
                     if(contains) return
@@ -85,7 +79,9 @@ export class Fetcher extends Common {
 
                     const returnValue: boolean = validator.CheckPass()
 
-                    if(returnValue) this.sendDataToBackendAuth(newFormData, item.name)
+                    if(returnValue){ 
+                        this.sendDataToBackendAuth(newFormData, item.name)
+                    }
                     else throw new Error(MUST_PUT_VALID_PASS)
 
                     if(value === "") throw new Error(MUST_PUT_VALID_VAL)   

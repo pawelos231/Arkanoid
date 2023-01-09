@@ -72,10 +72,10 @@ class Menu extends Common {
         const BackToMenuPanel = this.bindElementByClass(BACK_TO_MENU);
         const StartGameButton = this.bindElementByClass(START_GAME);
         const LevelSelect = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT);
-        if (isLogged) {
-            this.makeLoginPanelInvisible();
-            this.changeVisbilityOfGivenElement(startGamePanel, true);
-        }
+        // if(isLogged) {
+        //     this.makeLoginPanelInvisible()
+        //     this.changeVisbilityOfGivenElement(startGamePanel, true)
+        // }  
         StartGameButton.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(LevelSelect, true);
             this.changeVisbilityOfGivenElement(startGamePanel, false);

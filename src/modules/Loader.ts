@@ -4,7 +4,7 @@ class Loader{
     }
     loadSound(soundUrl: string): HTMLAudioElement{
         const audio: HTMLAudioElement = new Audio()
-        audio.addEventListener('canplaythrough', event => this.itemLoaded(event), false)
+        audio.addEventListener('canplaythrough', (event: Event) => this.itemLoaded(event), false)
         audio.src = soundUrl
         return audio
     }

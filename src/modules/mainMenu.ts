@@ -94,10 +94,10 @@ class Menu extends Common{
         const LevelSelect: HTMLElement | null = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT)  
 
               
-        if(isLogged) {
-            this.makeLoginPanelInvisible()
-            this.changeVisbilityOfGivenElement(startGamePanel, true)
-        }  
+        // if(isLogged) {
+        //     this.makeLoginPanelInvisible()
+        //     this.changeVisbilityOfGivenElement(startGamePanel, true)
+        // }  
         
         StartGameButton.addEventListener("click", () =>{
             this.changeVisbilityOfGivenElement(LevelSelect, true)
@@ -137,6 +137,7 @@ class Menu extends Common{
         })
 
     }
+
     start():void{
         this.switchBetweenRegisterAndLogin()
         this.switchStatsModalState();

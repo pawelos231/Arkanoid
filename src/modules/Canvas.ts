@@ -5,10 +5,12 @@ class Canvas extends Common{
     constructor(){
         super(GAME_CANVAS)
     }
-    configureCanvas(){
-        if(!this.elementId) throw new Error("nie")
+    configureCanvas(): void{
+        if(!this.elementId) throw new Error("Element nie istnieje")
+
         const canvas = this.elementId as HTMLCanvasElement;
+
         canvas.getContext("2d")
     }
 }
-export const canvas = new Canvas()
+export const canvas: Canvas = new Canvas()

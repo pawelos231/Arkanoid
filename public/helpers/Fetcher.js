@@ -45,33 +45,28 @@ export class Fetcher extends Common {
     }
     SendData() {
         var _a;
-        let newForm = this.elementId;
         if (this.formElement == null)
             throw new Error(ELEMENT_DOES_NOT_EXIST);
-        const items = (_a = this === null || this === void 0 ? void 0 : this.formElement) === null || _a === void 0 ? void 0 : _a.children;
-        let arr = [];
-        if (items) {
-            for (let item of items) {
-                if (item.nodeName === "FORM") {
-                    arr.push(item);
-                }
-            }
-        }
-        arr.forEach((item) => {
+        const allRegisterElementItems = (_a = this === null || this === void 0 ? void 0 : this.formElement) === null || _a === void 0 ? void 0 : _a.children;
+        const loginAndRegisterFormNodes = Array.from(allRegisterElementItems).filter((item) => item.nodeName == "FORM");
+        loginAndRegisterFormNodes.forEach((item) => {
             item.addEventListener("submit", (e) => {
                 e.preventDefault();
                 let newForm2 = item;
                 const newFormData = new FormData(newForm2);
                 for (const [key, value] of newFormData) {
+                    //if the name of the input is not Password then continue with loop
                     if (key !== PASSWORD)
                         continue;
+                    //check Password only if this is the form that is not currently hidden aka visible
                     const contains = item.classList.contains(HIDDEN);
                     if (contains)
                         return;
                     const validator = new Validator(PASSWORD_INPUT_ELEMENT, value);
                     const returnValue = validator.CheckPass();
-                    if (returnValue)
+                    if (returnValue) {
                         this.sendDataToBackendAuth(newFormData, item.name);
+                    }
                     else
                         throw new Error(MUST_PUT_VALID_PASS);
                     if (value === "")

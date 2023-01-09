@@ -25,6 +25,7 @@ pointLight.position.z = 10;
 pointLight.intensity = 0.07;
 
 let Particle: THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial>;
+
 interface addParticleReturnFuncInterface {
   Particle: THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial>;
   material: THREE.MeshStandardMaterial;
@@ -65,19 +66,19 @@ const material: THREE.PointsMaterial = new THREE.PointsMaterial({
 });
 
 let arrOfParticles: addParticleReturnFuncInterface[] = [];
+
 Array(NUMBER_OF_STARS)
   .fill(0)
   .forEach(() => {
     arrOfParticles.push(addParticle());
   });
 
-  const sphere: THREE.Points<THREE.TorusGeometry, THREE.PointsMaterial>  = new THREE.Points(geometry, material);
+const sphere: THREE.Points<THREE.TorusGeometry, THREE.PointsMaterial>  = new THREE.Points(geometry, material);
 
 interface Sizes {
   width: number,
   height: number
 }
-
 const sizes: Sizes = {
   width: window.innerWidth,
   height: window.innerHeight,

@@ -4,22 +4,22 @@ export class Common {
     elementId: HTMLElement | null;
     constructor(elementId: string){
         this.elementId = this.bindElementById(elementId)
-        if (typeof elementId === "undefined") {
-            return;
-          }
+        if (typeof elementId === "undefined") return
     }
     bindElementById(elementToFindById: string): HTMLElement{
+
         const element: HTMLElement | null = document.getElementById(elementToFindById);
-        if(!element){
-            throw new Error(`nie znaleziono elementu ${elementToFindById}`)
-        }
+
+        if(!element) throw new Error(`nie znaleziono elementu ${elementToFindById}`)
+    
         return element
     }
     bindElementByClass(elementToFindByClass: string): HTMLElement{
+
         const element: HTMLElement | null = document.documentElement.querySelector("." + elementToFindByClass);
-        if(!element){
-            throw new Error(`nie znaleziono elementu ${elementToFindByClass}`)
-        }
+
+        if(!element) throw new Error(`nie znaleziono elementu ${elementToFindByClass}`)
+        
         return element
     }
     changeVisbilityOfGivenElement(element: HTMLElement | null, flag: boolean): void{
@@ -29,11 +29,11 @@ export class Common {
     }
 
     bindMultipleElements(elementsTobBind: string): NodeListOf<Element>{  
-        const element: NodeListOf<Element> = document.querySelectorAll("."+ elementsTobBind)
-        if(!element){
-            throw new Error(`nie znaleziono elementu ${elementsTobBind}`)
-        }
-        return element
+        const elements: NodeListOf<Element> = document.querySelectorAll("."+ elementsTobBind)
+        
+        if(!elements) throw new Error(`nie znaleziono elementu ${elementsTobBind}`)
+        
+        return elements
     }
     displayMessageAtTheTopOfTheScreen(message: string){
         console.log(message)

@@ -6,7 +6,7 @@ class Canvas extends Common {
     }
     configureCanvas() {
         if (!this.elementId)
-            throw new Error("nie");
+            throw new Error("Element nie istnieje");
         const canvas = this.elementId;
         canvas.getContext("2d");
     }
