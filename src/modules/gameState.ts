@@ -1,13 +1,19 @@
-import { Common } from "./Common";
 
-export class GameState extends Common{
+export class GameState{
     level: number
     pointsToWin: number
     numberOfBricks: number
     constructor(level: number, pointsToWin: number, numberOfBricks: number){
-        super("siema")
         this.level = level
         this.pointsToWin = pointsToWin
         this.numberOfBricks = numberOfBricks
+    }
+    displayGameState(){
+        enum Direction {
+            Up = 1,
+            Down,
+            Left, 
+            Right
+        }
     }
 }

@@ -86,11 +86,8 @@ export class Fetcher extends Common {
         const data = await fetch(url, {
             method: GET
         })
-            .then(res => res.json())
-            .then(data => {
-            return data;
-        })
-            .catch(err => { throw new Error(err); });
+            .then((res) => res.json())
+            .catch((err) => { throw new Error(err); });
         return data;
     }
     async sendDataToBackend(url, data) {

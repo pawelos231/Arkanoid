@@ -101,11 +101,9 @@ export class Fetcher extends Common {
         const data = await fetch(url, {
             method: GET
         })
-        .then(res => res.json())
-        .then(data => {
-            return data
-        })
-        .catch(err => {throw new Error(err)})
+        .then((res: Response) => res.json())
+        .catch((err: any) => {throw new Error(err)})
+
         return data
     }
 
