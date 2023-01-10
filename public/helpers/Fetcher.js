@@ -48,7 +48,8 @@ export class Fetcher extends Common {
         if (this.formElement == null)
             throw new Error(ELEMENT_DOES_NOT_EXIST);
         const allRegisterElementItems = (_a = this === null || this === void 0 ? void 0 : this.formElement) === null || _a === void 0 ? void 0 : _a.children;
-        const loginAndRegisterFormNodes = Array.from(allRegisterElementItems).filter((item) => item.nodeName == "FORM");
+        const FORM = "FORM";
+        const loginAndRegisterFormNodes = Array.from(allRegisterElementItems).filter((item) => item.nodeName.toUpperCase() == FORM);
         loginAndRegisterFormNodes.forEach((item) => {
             item.addEventListener("submit", (e) => {
                 e.preventDefault();

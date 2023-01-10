@@ -57,8 +57,8 @@ export class Fetcher extends Common {
         if(this.formElement == null) throw new Error(ELEMENT_DOES_NOT_EXIST)
 
         const allRegisterElementItems: HTMLCollection = this?.formElement?.children
-
-        const loginAndRegisterFormNodes: Element[] = Array.from(allRegisterElementItems).filter((item: Element) => item.nodeName == "FORM")
+        const FORM = "FORM"
+        const loginAndRegisterFormNodes: Element[] = Array.from(allRegisterElementItems).filter((item: Element) => item.nodeName.toUpperCase() == FORM)
 
         loginAndRegisterFormNodes.forEach((item : any) =>{
            

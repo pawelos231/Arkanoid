@@ -1,4 +1,5 @@
 import { Common } from "./Common";
+import { canvas } from "./Canvas";
 const LEVEL_SELECT = "levelSelect";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
 class LevelSelect extends Common {
@@ -10,7 +11,7 @@ class LevelSelect extends Common {
         const ArrayOfLevels = Array.from(levelSelect.children);
         ArrayOfLevels.forEach((item) => {
             item.addEventListener("click", () => {
-                console.log(item);
+                canvas.draw();
             });
         });
     }
