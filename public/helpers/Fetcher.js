@@ -64,8 +64,8 @@ export class Fetcher extends Common {
                     if (contains)
                         return;
                     const validator = new Validator(PASSWORD_INPUT_ELEMENT, value);
-                    const returnValue = validator.CheckPass();
-                    if (returnValue) {
+                    const CorrectPassword = validator.CheckPass();
+                    if (CorrectPassword) {
                         this.sendDataToBackendAuth(newFormData, item.name);
                     }
                     else

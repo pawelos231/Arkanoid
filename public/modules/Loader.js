@@ -8,6 +8,8 @@ class Loader {
         return audio;
     }
     itemLoaded(event) {
+        if (!event.target)
+            return;
         event.target.removeEventListener(event.type, this.itemLoaded, false);
     }
 }

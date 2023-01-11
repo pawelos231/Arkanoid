@@ -3,7 +3,7 @@ const REGISTER_FORMS = "RegisterElement";
 export class Common {
     constructor(elementId) {
         this.elementId = this.bindElementById(elementId);
-        if (typeof elementId === "undefined")
+        if (typeof elementId === "undefined" || elementId === null)
             return;
     }
     bindElementById(elementToFindById) {

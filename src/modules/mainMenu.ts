@@ -34,14 +34,14 @@ class Menu extends Common{
         super(REGISTER_FORMS)
     }
     fetcher: Fetcher = new Fetcher(this.elementId)
-    formElementRegister: HTMLElement | null = this.bindElementByClass(FORM_TO_REGISTER)
+    formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
     
 
     switchBetweenRegisterAndLogin(): void{
         
-        const changeValueOfMenuToLogin: HTMLElement | null = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER)
+        const changeValueOfMenuToLogin: HTMLElement = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER)
 
-        const formElementLogin: HTMLElement | null = this.bindElementByClass(FORM_TO_LOGIN)
+        const formElementLogin: HTMLElement = this.bindElementByClass(FORM_TO_LOGIN)
 
         let flag: boolean = false
         changeValueOfMenuToLogin.addEventListener("click", () =>{
@@ -55,9 +55,9 @@ class Menu extends Common{
     }
 
     async switchStatsModalState(): Promise<void>{
-        const StatsElement: HTMLElement | null = this.bindElementByClass(STATS_ELELEMENT)
-        const ModalElementStats: HTMLElement| null = this.bindElementByClass(MODAL_STATS_ELEMENT)
-        const ResultsCheckBoard: HTMLElement | null = this.bindElementByClass(INNER_MODAL_STATS_ELEMENT)
+        const StatsElement: HTMLElement = this.bindElementByClass(STATS_ELELEMENT)
+        const ModalElementStats: HTMLElement = this.bindElementByClass(MODAL_STATS_ELEMENT)
+        const ResultsCheckBoard: HTMLElement = this.bindElementByClass(INNER_MODAL_STATS_ELEMENT)
 
         let flag: boolean = true
 
@@ -68,7 +68,7 @@ class Menu extends Common{
             const fetchData: Promise<string[]> = this.fetcher.FetchData<string[]>("http://localhost:8081/stats")
 
             ResultsCheckBoard.children[0].textContent = "ładuje"
-            const stats = await fetchData
+            const stats: string[] = await fetchData
             ResultsCheckBoard.children[1].textContent = ""
             ResultsCheckBoard.children[0].textContent = "Najlepsze Statystyki Graczy"
 
@@ -88,10 +88,10 @@ class Menu extends Common{
 
     StartGame(): void{
         const isLogged: null | string = localStorage.getItem("game")
-        const startGamePanel: HTMLElement | null = this.bindElementByClass(START_THE_GAME)
-        const BackToMenuPanel: HTMLElement | null = this.bindElementByClass(BACK_TO_MENU)
-        const StartGameButton: HTMLElement | null = this.bindElementByClass(START_GAME)
-        const LevelSelect: HTMLElement | null = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT)  
+        const startGamePanel: HTMLElement = this.bindElementByClass(START_THE_GAME)
+        const BackToMenuPanel: HTMLElement = this.bindElementByClass(BACK_TO_MENU)
+        const StartGameButton: HTMLElement = this.bindElementByClass(START_GAME)
+        const LevelSelect: HTMLElement = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT)  
 
               
         if(isLogged) {

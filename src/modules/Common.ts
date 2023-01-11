@@ -1,10 +1,10 @@
 import { HIDDEN } from "../constants/classNames";
 const REGISTER_FORMS = "RegisterElement"
 export class Common {
-    elementId: HTMLElement | null;
+    elementId: HTMLElement;
     constructor(elementId: string){
         this.elementId = this.bindElementById(elementId)
-        if (typeof elementId === "undefined") return
+        if (typeof elementId === "undefined" || elementId === null) return
     }
     bindElementById(elementToFindById: string): HTMLElement{
 
@@ -22,7 +22,7 @@ export class Common {
         
         return element
     }
-    changeVisbilityOfGivenElement(element: HTMLElement | null, flag: boolean): void{
+    changeVisbilityOfGivenElement(element: HTMLElement, flag: boolean): void{
         flag ? 
         element?.classList.remove(HIDDEN) : 
         element?.classList.add(HIDDEN)

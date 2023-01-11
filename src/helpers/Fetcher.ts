@@ -21,8 +21,8 @@ export class Fetcher extends Common {
 
     async sendDataToBackendAuth(form: FormData, parentName: string): Promise<void>{
       
-        const LoginStatus: HTMLElement | null = this.bindElementByClass(LOGIN_STATUS_MESSAGE)
-        const startGamePanel: HTMLElement | null = this.bindElementByClass(START_THE_GAME)
+        const LoginStatus: HTMLElement = this.bindElementByClass(LOGIN_STATUS_MESSAGE)
+        const startGamePanel: HTMLElement = this.bindElementByClass(START_THE_GAME)
 
         let obj: any = {}
 
@@ -64,7 +64,7 @@ export class Fetcher extends Common {
            
             item.addEventListener("submit", (e: { preventDefault: () => void; })=>{
                 e.preventDefault()
-                let newForm2 = item as HTMLFormElement | undefined
+                let newForm2 = item as HTMLFormElement
                 const newFormData: FormData = new FormData(newForm2)
                 for (const [key, value] of newFormData) {
                     //if the name of the input is not Password then continue with loop
@@ -77,9 +77,9 @@ export class Fetcher extends Common {
 
                     const validator: Validator = new Validator(PASSWORD_INPUT_ELEMENT, value as string)
 
-                    const returnValue: boolean = validator.CheckPass()
+                    const CorrectPassword: boolean = validator.CheckPass()
 
-                    if(returnValue){ 
+                    if(CorrectPassword){ 
                         this.sendDataToBackendAuth(newFormData, item.name)
                     }
                     else throw new Error(MUST_PUT_VALID_PASS)
@@ -94,7 +94,7 @@ export class Fetcher extends Common {
     {
         //const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
         //await delay(1000)
-        const data = await fetch(url, {
+        const data: T = await fetch(url, {
             method: GET
         })
         .then((res: Response) => res.json())

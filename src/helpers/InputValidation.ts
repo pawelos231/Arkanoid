@@ -10,7 +10,7 @@ export class Validator extends Common {
         this.value = value
     }
     DisplayBadPassword(): void{
-        const elements: NodeListOf<Element> | null = this.bindMultipleElements(this.input)
+        const elements: NodeListOf<Element> = this.bindMultipleElements(this.input)
 
         elements.forEach((item: Element)=>{
             item.addEventListener("keyup", (e: any)=>{
