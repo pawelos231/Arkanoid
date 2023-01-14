@@ -1,5 +1,6 @@
 import { Common } from "./Common";
 import {Brick} from './Entities/Brick'
+import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
 const GAME_CANVAS = "game_canvas"
 
@@ -25,22 +26,27 @@ export class Canvas extends Common{
 
     }
     drawBall(){
-
+        const ball = new Ball(this.ctx)
+        ball.drawBall()
     }
     drawPaddle(){
         const width = 200
         const height = 40
         const paddle: Paddle = new Paddle(width, height, this.ctx)
         paddle.drawPaddle()
+        window.addEventListener("keydown", (event: KeyboardEvent)=>{
+            paddle.updatePaddlePostion(event.keyCode)
+        })
     }
     drawBricks(heightOffset: number, widthOffset: number){
         const heightOfBrick: number = window.innerHeight / 16
         const widthOfABrick: number = window.innerWidth / 8
-        const brick = new Brick(widthOfABrick, heightOfBrick, this.ctx)
+        const brick: Brick = new Brick(widthOfABrick, heightOfBrick, this.ctx)
         brick.drawBrick(heightOffset, widthOffset)
     }
     drawGame(){
         this.drawPaddle()
+        this.drawBall()
         for(let i = 0; i<3; i++){
             for(let j = 0; j<8; j++){
                 this.drawBricks(i, j)

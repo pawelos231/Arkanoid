@@ -64,7 +64,7 @@ export class Fetcher extends Common {
            
             item.addEventListener("submit", (e: { preventDefault: () => void; })=>{
                 e.preventDefault()
-                let newForm2 = item as HTMLFormElement
+                const newForm2 = item as HTMLFormElement
                 const newFormData: FormData = new FormData(newForm2)
                 for (const [key, value] of newFormData) {
                     //if the name of the input is not Password then continue with loop

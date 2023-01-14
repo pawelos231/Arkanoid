@@ -53,7 +53,7 @@ export class Fetcher extends Common {
         loginAndRegisterFormNodes.forEach((item) => {
             item.addEventListener("submit", (e) => {
                 e.preventDefault();
-                let newForm2 = item;
+                const newForm2 = item;
                 const newFormData = new FormData(newForm2);
                 for (const [key, value] of newFormData) {
                     //if the name of the input is not Password then continue with loop
