@@ -24,7 +24,7 @@ export class Paddle {
         this.ctx.fillRect(this.positions.widthOffset, this.positions.heightOffset, this.width - 1, this.height - 1);
     }
     clearPaddle(heightOffset) {
-        this.ctx.clearRect(this.positions.widthOffset, heightOffset, this.width + 5, this.height + 5);
+        this.ctx.clearRect(this.positions.widthOffset, heightOffset, this.width + 1, this.height + 1);
     }
     updatePaddlePostion(keyCode) {
         const { heightOffset } = this.positions;

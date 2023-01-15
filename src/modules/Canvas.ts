@@ -2,6 +2,7 @@ import { Common } from "./Common";
 import {Brick} from './Entities/Brick'
 import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
+import {colorRandomizer} from '../helpers/colorRandomizer'
 const GAME_CANVAS = "game_canvas"
 
 export class Canvas extends Common{
@@ -38,18 +39,20 @@ export class Canvas extends Common{
             paddle.updatePaddlePostion(event.keyCode)
         })
     }
-    drawBricks(heightOffset: number, widthOffset: number){
+    drawBricks(heightOffset: number, widthOffset: number, color: string){
         const heightOfBrick: number = window.innerHeight / 16
         const widthOfABrick: number = window.innerWidth / 8
         const brick: Brick = new Brick(widthOfABrick, heightOfBrick, this.ctx)
-        brick.drawBrick(heightOffset, widthOffset)
+        brick.drawBrick(heightOffset, widthOffset, color)
     }
     drawGame(){
         this.drawPaddle()
         this.drawBall()
         for(let i = 0; i<3; i++){
+            const color: string = colorRandomizer()
+            console.log(color)
             for(let j = 0; j<8; j++){
-                this.drawBricks(i, j)
+                this.drawBricks(i, j, color)
             }
         }
        

@@ -8,6 +8,7 @@ enum Direction {
     RigthArrows = 68,
     RigthNormal = 39,
 }
+
 export class Paddle{
     height: number
     width: number
@@ -32,8 +33,8 @@ export class Paddle{
         this.ctx.fillRect(this.positions.widthOffset, this.positions.heightOffset, this.width - 1, this.height - 1)
 
     }
-    clearPaddle(heightOffset: number){
-        this.ctx.clearRect(this.positions.widthOffset, heightOffset, this.width + 5, this.height + 5)
+    clearPaddle(heightOffset: number): void{
+        this.ctx.clearRect(this.positions.widthOffset, heightOffset, this.width + 1, this.height + 1)
     }
     updatePaddlePostion(keyCode: number): void{
         const {heightOffset} = this.positions
