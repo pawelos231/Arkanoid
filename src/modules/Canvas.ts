@@ -3,6 +3,7 @@ import { Brick } from './Entities/Brick'
 import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
 import { colorRandomizer } from '../helpers/colorRandomizer'
+import { loader } from "./Loader";
 const GAME_CANVAS = "game_canvas"
 
 export class Canvas extends Common {
@@ -13,7 +14,15 @@ export class Canvas extends Common {
         this.canvas = null as any
         this.ctx = null as any
     }
+    loadSpecialImages(): HTMLImageElement{
+        const image: HTMLImageElement = loader.loadImage("https://cdn2.thecatapi.com/images/cgq.jpg")
+        console.log(image)
+        image.width = 50
+        image.height = 50
+        return image
+    }
     configureCanvas(): void {
+        
         this.changeVisbilityOfGivenElement(this.elementId, true)
 
         this.canvas = this.elementId as HTMLCanvasElement;
@@ -39,11 +48,11 @@ export class Canvas extends Common {
             paddle.updatePaddlePostion(event.keyCode)
         })
     }
-    drawBricks(heightOffset: number, widthOffset: number, color: string, special: boolean) {
+    drawBricks(heightOffset: number, widthOffset: number, color: string, special: boolean, images:HTMLImageElement = this.loadSpecialImages() ) {
         const heightOfBrick: number = window.innerHeight / 16
         const widthOfABrick: number = window.innerWidth / 8
         const brick: Brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special)
-        brick.drawBrick(heightOffset, widthOffset, color)
+        brick.drawBrick(heightOffset, widthOffset, color, images)
     }
     drawGame() {
         this.drawPaddle()

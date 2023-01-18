@@ -1,5 +1,5 @@
 import { Common } from './Common.js';
-import { Validator } from '../helpers/InputValidation.js';
+import { Validator } from '../helpers/PasswordInputValidation.js';
 import { Fetcher } from '../helpers/Fetcher.js';
 import { Media } from './Media.js';
 import { loader } from "./Loader";

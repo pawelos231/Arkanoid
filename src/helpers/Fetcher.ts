@@ -1,5 +1,5 @@
 import { Common } from "../modules/Common";
-import { Validator } from "./InputValidation";
+import { Validator } from "./PasswordInputValidation";
 import { HIDDEN } from "../constants/classNames";
 import { DEVELEPOMENT_URL, POST, GET } from '../constants/Fetchers'
 import { responseData } from '../interfaces/LoginData'

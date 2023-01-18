@@ -1,3 +1,5 @@
+import { loader } from "../Loader"
+
 interface brickState {
     x: number
     y: number
@@ -22,19 +24,29 @@ export class Brick {
     WriteBrickToConsole() {
         console.log(this.brickState)
     }
-    DrawColor(special: boolean, color: string) {
+    setColor(special: boolean, color: string, images: HTMLImageElement, x: number, y: number) {
         if (special) {
-            this.ctx.fillStyle = "#FFD700"
-        } else {
+            images.onload = () =>{
+                const pattern: CanvasPattern | null = this.ctx.createPattern(images, "repeat");
+                if(!pattern) return
+                this.ctx.fillStyle = pattern;
+                this.ctx.drawImage(images, x,y, this.width - 2, this.height - 2);
+            }    
+        } else{
             this.ctx.fillStyle = color
-        }
+        } 
     }
-    drawBrick(heightOffset: number, widthOffset: number, color: string) {
+    drawBrick(heightOffset: number, widthOffset: number, color: string, images:HTMLImageElement ) {
         this.initBrickState(widthOffset, heightOffset)
-        this.DrawColor(this.brickState.special, color)
+
+        this.setColor(this.brickState.special, color, images, widthOffset * this.width, heightOffset * this.height)
+
         this.ctx.fillRect(widthOffset * this.width, heightOffset * this.height, this.width - 1, this.height - 1)
+
         this.ctx.strokeStyle = "white"
+
         this.ctx.strokeRect(widthOffset * this.width, heightOffset * this.height, this.width, this.height)
+
         this.WriteBrickToConsole()
     }
     testBrick() { }
