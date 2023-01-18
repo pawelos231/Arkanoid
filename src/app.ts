@@ -8,11 +8,11 @@ fetchVars()
 
 */
 
-import {menu} from './modules/mainMenu.js'
+import { menu } from './modules/mainMenu.js'
 
-document.querySelector(".checkIfLoginOrRegister")?.addEventListener("click", 
-function(this: Element): void{
-    const ValueOfEl: string = String(this.attributes[0].nodeValue)
-})
+document.querySelector(".checkIfLoginOrRegister")?.addEventListener("click",
+    function (this: Element): void {
+        const ValueOfEl: string = String(this.attributes[0].nodeValue)
+    })
 
 menu.start()

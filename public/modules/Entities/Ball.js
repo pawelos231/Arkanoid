@@ -12,7 +12,6 @@ export class Ball {
         this.ctx.arc(this.position.x, this.position.y, 25, 0, Math.PI * 2);
         this.ctx.fillStyle = "#0095DD";
         this.ctx.fill();
-        console.log("siema");
     }
     calculatePositionOfPaddle() {
         //to fix

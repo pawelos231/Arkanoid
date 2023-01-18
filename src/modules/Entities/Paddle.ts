@@ -1,5 +1,5 @@
 interface Positions {
-    heightOffset: number, 
+    heightOffset: number,
     widthOffset: number
 }
 enum Direction {
@@ -9,42 +9,42 @@ enum Direction {
     RigthNormal = 39,
 }
 
-export class Paddle{
+export class Paddle {
     height: number
     width: number
     ctx: CanvasRenderingContext2D
     positions: Positions
-    constructor(width: number, height: number, ctx: CanvasRenderingContext2D){
+    constructor(width: number, height: number, ctx: CanvasRenderingContext2D) {
         this.width = width
         this.height = height
         this.ctx = ctx
-        this.positions = {heightOffset: 0, widthOffset: 0}
+        this.positions = { heightOffset: 0, widthOffset: 0 }
     }
-    calculatePositionOfPaddle(): void{
+    calculatePositionOfPaddle(): void {
         //to fix
         const heightOffset: number = window.innerHeight - 70
-        const widthOffset: number = window.innerWidth / 2 - 100 
-        this.positions = {heightOffset, widthOffset}
+        const widthOffset: number = window.innerWidth / 2 - 100
+        this.positions = { heightOffset, widthOffset }
     }
-    drawPaddle(): void{
+    drawPaddle(): void {
         this.ctx.fillStyle = "white"
         this.calculatePositionOfPaddle()
 
         this.ctx.fillRect(this.positions.widthOffset, this.positions.heightOffset, this.width - 1, this.height - 1)
 
     }
-    clearPaddle(heightOffset: number): void{
+    clearPaddle(heightOffset: number): void {
         this.ctx.clearRect(this.positions.widthOffset, heightOffset, this.width + 1, this.height + 1)
     }
-    updatePaddlePostion(keyCode: number): void{
-        const {heightOffset} = this.positions
+    updatePaddlePostion(keyCode: number): void {
+        const { heightOffset } = this.positions
         this.ctx.fillStyle = "white"
         this.ctx.strokeStyle = "red"
-        if(keyCode == Direction.LeftArrows || keyCode == Direction.LeftNormal){
+        if (keyCode == Direction.LeftArrows || keyCode == Direction.LeftNormal) {
             this.clearPaddle(heightOffset)
             this.ctx.fillRect(this.positions.widthOffset -= 20, heightOffset, this.width - 1, this.height - 1)
         }
-        if(keyCode == Direction.RigthArrows || keyCode == Direction.RigthNormal){
+        if (keyCode == Direction.RigthArrows || keyCode == Direction.RigthNormal) {
             this.clearPaddle(heightOffset)
             this.ctx.fillRect(this.positions.widthOffset += 20, heightOffset, this.width - 1, this.height - 1)
         }

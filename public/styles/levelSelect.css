@@ -1,4 +1,4 @@
-.mainLevelSelect{
+.mainLevelSelect {
     position: absolute;
     width: 100vw;
     height: 100%;
@@ -13,7 +13,7 @@
     flex-wrap: wrap;
 }
 
-.mainLevelSelect > .mainLevelSelectMenu{
+.mainLevelSelect>.mainLevelSelectMenu {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,7 +22,8 @@
     flex-wrap: wrap;
     gap: 12px;
 }
-.mainLevelSelect > .mainLevelSelectMenu> div{
+
+.mainLevelSelect>.mainLevelSelectMenu>div {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,14 +32,18 @@
     cursor: pointer;
     transition: .2s;
     height: 15%;
+    border-radius: 3%;
 }
-.hidden{
-    display: none !important; 
+
+.hidden {
+    display: none !important;
 }
-.mainLevelSelectMenu > div:hover{
+
+.mainLevelSelectMenu>div:hover {
     transform: scale(1.05);
 }
-.backToMenu{
+
+.backToMenu {
     position: absolute;
     top: 0;
     left: 0;
@@ -46,6 +51,7 @@
     cursor: pointer;
     transition: .15s;
 }
-.backToMenu:hover{
+
+.backToMenu:hover {
     transform: scale(.95);
 }

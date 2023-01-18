@@ -33,10 +33,10 @@ export class Canvas extends Common {
             paddle.updatePaddlePostion(event.keyCode);
         });
     }
-    drawBricks(heightOffset, widthOffset, color) {
+    drawBricks(heightOffset, widthOffset, color, special) {
         const heightOfBrick = window.innerHeight / 16;
         const widthOfABrick = window.innerWidth / 8;
-        const brick = new Brick(widthOfABrick, heightOfBrick, this.ctx);
+        const brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special);
         brick.drawBrick(heightOffset, widthOffset, color);
     }
     drawGame() {
@@ -44,9 +44,9 @@ export class Canvas extends Common {
         this.drawBall();
         for (let i = 0; i < 3; i++) {
             const color = colorRandomizer();
-            console.log(color);
             for (let j = 0; j < 8; j++) {
-                this.drawBricks(i, j, color);
+                const random = Math.floor(Math.random() * 100);
+                this.drawBricks(i, j, color, random == 69);
             }
         }
     }

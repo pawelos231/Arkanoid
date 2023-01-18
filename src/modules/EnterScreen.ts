@@ -1,5 +1,5 @@
 class EnterGameScreen {
-    constructor(){
-        
+    constructor() {
+
     }
 }
