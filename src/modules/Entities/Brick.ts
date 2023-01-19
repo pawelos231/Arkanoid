@@ -24,22 +24,30 @@ export class Brick {
     WriteBrickToConsole() {
         console.log(this.brickState)
     }
-    setColor(special: boolean, color: string, images: HTMLImageElement, x: number, y: number) {
+    async loadSpecialImages(): Promise<HTMLImageElement>{ 
+        let images: HTMLImageElement = new Image();
+       await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg").then(data => images = data)
+        return images
+    }
+    async setColor(special: boolean, color: string, x: number, y: number) {
         if (special) {
-            images.onload = () =>{
-                const pattern: CanvasPattern | null = this.ctx.createPattern(images, "repeat");
+            let image: HTMLImageElement = new Image();
+            await this.loadSpecialImages().then((data:HTMLImageElement) => image = data)
+            
+            image.onload = () =>{
+                const pattern: CanvasPattern | null = this.ctx.createPattern(image, "repeat");
                 if(!pattern) return
                 this.ctx.fillStyle = pattern;
-                this.ctx.drawImage(images, x,y, this.width - 2, this.height - 2);
+                this.ctx.drawImage(image, x+1,y+1, this.width - 2, this.height - 2);
             }    
         } else{
             this.ctx.fillStyle = color
         } 
     }
-    drawBrick(heightOffset: number, widthOffset: number, color: string, images:HTMLImageElement ) {
+    drawBrick(heightOffset: number, widthOffset: number, color: string ) {
         this.initBrickState(widthOffset, heightOffset)
 
-        this.setColor(this.brickState.special, color, images, widthOffset * this.width, heightOffset * this.height)
+        this.setColor(this.brickState.special, color, widthOffset * this.width, heightOffset * this.height)
 
         this.ctx.fillRect(widthOffset * this.width, heightOffset * this.height, this.width - 1, this.height - 1)
 
@@ -47,7 +55,7 @@ export class Brick {
 
         this.ctx.strokeRect(widthOffset * this.width, heightOffset * this.height, this.width, this.height)
 
-        this.WriteBrickToConsole()
+        //this.WriteBrickToConsole()
     }
     testBrick() { }
 }

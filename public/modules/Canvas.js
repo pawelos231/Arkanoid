@@ -3,20 +3,12 @@ import { Brick } from './Entities/Brick';
 import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
 import { colorRandomizer } from '../helpers/colorRandomizer';
-import { loader } from "./Loader";
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor() {
         super(GAME_CANVAS);
         this.canvas = null;
         this.ctx = null;
-    }
-    loadSpecialImages() {
-        const image = loader.loadImage("https://cdn2.thecatapi.com/images/cgq.jpg");
-        console.log(image);
-        image.width = 50;
-        image.height = 50;
-        return image;
     }
     configureCanvas() {
         this.changeVisbilityOfGivenElement(this.elementId, true);
@@ -41,20 +33,21 @@ export class Canvas extends Common {
             paddle.updatePaddlePostion(event.keyCode);
         });
     }
-    drawBricks(heightOffset, widthOffset, color, special, images = this.loadSpecialImages()) {
+    drawBricks(heightOffset, widthOffset, color, special) {
         const heightOfBrick = window.innerHeight / 16;
         const widthOfABrick = window.innerWidth / 8;
         const brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special);
-        brick.drawBrick(heightOffset, widthOffset, color, images);
+        brick.drawBrick(heightOffset, widthOffset, color);
     }
-    drawGame() {
+    async drawGame() {
+        let images;
         this.drawPaddle();
         this.drawBall();
         for (let i = 0; i < 3; i++) {
             const color = colorRandomizer();
             for (let j = 0; j < 8; j++) {
                 const random = Math.floor(Math.random() * 100);
-                this.drawBricks(i, j, color, random == 69);
+                this.drawBricks(i, j, color, random == 5);
             }
         }
     }

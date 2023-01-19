@@ -15,10 +15,23 @@ class Loader {
         event.target.removeEventListener(event.type, this.itemLoaded, false);
     }
     loadImage(imageUrl) {
-        const image = new Image();
-        image.src = imageUrl;
-        image.addEventListener("load", (event) => this.itemLoaded(event), false);
-        return image;
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            image.src = imageUrl;
+            image.addEventListener("load", (event) => this.itemLoaded(event), false);
+            resolve(image);
+        });
+    }
+    loadMultipleImages(imagesUrl) {
+        return new Promise((resolve, reject) => {
+            const multiple = imagesUrl.map(item => {
+                const image = new Image();
+                image.src = item;
+                image.addEventListener("load", (event) => this.itemLoaded(event), false);
+                return image;
+            });
+            resolve(multiple);
+        });
     }
 }
 export const loader = new Loader();

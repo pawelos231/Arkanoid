@@ -14,13 +14,6 @@ export class Canvas extends Common {
         this.canvas = null as any
         this.ctx = null as any
     }
-    loadSpecialImages(): HTMLImageElement{
-        const image: HTMLImageElement = loader.loadImage("https://cdn2.thecatapi.com/images/cgq.jpg")
-        console.log(image)
-        image.width = 50
-        image.height = 50
-        return image
-    }
     configureCanvas(): void {
         
         this.changeVisbilityOfGivenElement(this.elementId, true)
@@ -48,25 +41,27 @@ export class Canvas extends Common {
             paddle.updatePaddlePostion(event.keyCode)
         })
     }
-    drawBricks(heightOffset: number, widthOffset: number, color: string, special: boolean, images:HTMLImageElement = this.loadSpecialImages() ) {
+    drawBricks(heightOffset: number, widthOffset: number, color: string, special: boolean ) {
         const heightOfBrick: number = window.innerHeight / 16
         const widthOfABrick: number = window.innerWidth / 8
         const brick: Brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special)
-        brick.drawBrick(heightOffset, widthOffset, color, images)
+        brick.drawBrick(heightOffset, widthOffset, color)
     }
-    drawGame() {
+    async drawGame() {
+        let images: any;
+        
         this.drawPaddle()
         this.drawBall()
         for (let i = 0; i < 3; i++) {
             const color: string = colorRandomizer()
             for (let j = 0; j < 8; j++) {
                 const random = Math.floor(Math.random() * 100)
-                this.drawBricks(i, j, color, random == 69)
+                this.drawBricks(i, j, color, random == 5)
             }
         }
 
     }
-    draw(): void {
+    draw() {
         window.addEventListener("resize", () => {
             let values: number[] = [window.innerHeight, window.innerWidth]
             this.canvas.height = values[0]
@@ -75,6 +70,5 @@ export class Canvas extends Common {
         })
         this.configureCanvas()
         this.drawGame()
-
     }
 }
