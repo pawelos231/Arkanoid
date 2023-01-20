@@ -14,6 +14,7 @@ class LevelSelect extends Common {
         ArrayOfLevels.forEach((item) => {
             item.addEventListener("click", () => {
                 const canvas = new Canvas();
+                //setInterval(() => {canvas.draw()}, 50)
                 canvas.draw();
             });
         });

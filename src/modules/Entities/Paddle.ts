@@ -42,11 +42,19 @@ export class Paddle {
         this.ctx.strokeStyle = "red"
         if (keyCode == Direction.LeftArrows || keyCode == Direction.LeftNormal) {
             this.clearPaddle(heightOffset)
-            this.ctx.fillRect(this.positions.widthOffset -= 20, heightOffset, this.width - 1, this.height - 1)
+            if(this.positions.widthOffset >= 0){
+                this.ctx.fillRect(this.positions.widthOffset -= 20, heightOffset, this.width - 1, this.height - 1)
+            } else {
+                this.ctx.fillRect(this.positions.widthOffset , heightOffset, this.width - 1, this.height - 1)
+            } 
         }
         if (keyCode == Direction.RigthArrows || keyCode == Direction.RigthNormal) {
             this.clearPaddle(heightOffset)
-            this.ctx.fillRect(this.positions.widthOffset += 20, heightOffset, this.width - 1, this.height - 1)
+            if(this.positions.widthOffset + this.width <= window.innerWidth){
+                this.ctx.fillRect(this.positions.widthOffset += 20, heightOffset, this.width - 1, this.height - 1)
+            } else {
+                this.ctx.fillRect(this.positions.widthOffset , heightOffset, this.width - 1, this.height - 1)
+            } 
         }
     }
 }

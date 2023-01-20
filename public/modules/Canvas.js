@@ -40,25 +40,25 @@ export class Canvas extends Common {
         brick.drawBrick(heightOffset, widthOffset, color);
     }
     async drawGame() {
-        let images;
         this.drawPaddle();
         this.drawBall();
         for (let i = 0; i < 3; i++) {
             const color = colorRandomizer();
             for (let j = 0; j < 8; j++) {
                 const random = Math.floor(Math.random() * 100);
-                this.drawBricks(i, j, color, random == 5);
+                this.drawBricks(i, j, color, random == 69);
             }
         }
     }
     draw() {
+        this.configureCanvas();
+        this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
         window.addEventListener("resize", () => {
             let values = [window.innerHeight, window.innerWidth];
             this.canvas.height = values[0];
             this.canvas.width = values[1];
             this.drawGame();
         });
-        this.configureCanvas();
         this.drawGame();
     }
 }
