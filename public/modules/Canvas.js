@@ -3,12 +3,23 @@ import { Brick } from './Entities/Brick';
 import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
 import { colorRandomizer } from '../helpers/colorRandomizer';
+var Direction;
+(function (Direction) {
+    Direction[Direction["LeftArrows"] = 65] = "LeftArrows";
+    Direction[Direction["LeftNormal"] = 37] = "LeftNormal";
+    Direction[Direction["RigthArrows"] = 68] = "RigthArrows";
+    Direction[Direction["RigthNormal"] = 39] = "RigthNormal";
+})(Direction || (Direction = {}));
+const PADDLE_WIDTH = 200;
+const PADDLE_HEIGHT = 40;
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor() {
         super(GAME_CANVAS);
         this.canvas = null;
         this.ctx = null;
+        this.positions = { heightOffset: window.innerHeight - 70, widthOffset: window.innerWidth / 2 - 100 };
+        this.paddle = null;
     }
     configureCanvas() {
         this.changeVisbilityOfGivenElement(this.elementId, true);
@@ -24,14 +35,21 @@ export class Canvas extends Common {
         const ball = new Ball(this.ctx);
         ball.drawBall();
     }
-    drawPaddle() {
-        const width = 200;
-        const height = 40;
-        const paddle = new Paddle(width, height, this.ctx);
-        paddle.drawPaddle();
+    setListenerMovePaddle() {
         window.addEventListener("keydown", (event) => {
-            paddle.updatePaddlePostion(event.keyCode);
+            let keyCode = event.keyCode;
+            const temp = this.positions.widthOffset;
+            if (keyCode == Direction.LeftArrows || keyCode == Direction.LeftNormal) {
+                temp >= 0 ? this.positions.widthOffset -= 20 : null;
+            }
+            if (keyCode == Direction.RigthArrows || keyCode == Direction.RigthNormal) {
+                temp + PADDLE_WIDTH <= window.innerWidth ? this.positions.widthOffset += 20 : null;
+            }
         });
+    }
+    drawPaddle() {
+        const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
+        paddle.drawPaddle(this.positions);
     }
     drawBricks(heightOffset, widthOffset, color, special) {
         const heightOfBrick = window.innerHeight / 16;

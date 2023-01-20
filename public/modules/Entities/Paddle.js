@@ -12,41 +12,12 @@ export class Paddle {
         this.ctx = ctx;
         this.positions = { heightOffset: 0, widthOffset: 0 };
     }
-    calculatePositionOfPaddle() {
-        //to fix
-        const heightOffset = window.innerHeight - 70;
-        const widthOffset = window.innerWidth / 2 - 100;
-        this.positions = { heightOffset, widthOffset };
-    }
-    drawPaddle() {
+    drawPaddle(positions = { widthOffset: window.innerWidth / 2 - 100, heightOffset: window.innerHeight - 70 }) {
+        this.positions = positions;
         this.ctx.fillStyle = "white";
-        this.calculatePositionOfPaddle();
-        this.ctx.fillRect(this.positions.widthOffset, this.positions.heightOffset, this.width - 1, this.height - 1);
+        this.ctx.fillRect(positions.widthOffset, positions.heightOffset, this.width - 1, this.height - 1);
     }
     clearPaddle(heightOffset) {
         this.ctx.clearRect(this.positions.widthOffset, heightOffset, this.width + 1, this.height + 1);
-    }
-    updatePaddlePostion(keyCode) {
-        const { heightOffset } = this.positions;
-        this.ctx.fillStyle = "white";
-        this.ctx.strokeStyle = "red";
-        if (keyCode == Direction.LeftArrows || keyCode == Direction.LeftNormal) {
-            this.clearPaddle(heightOffset);
-            if (this.positions.widthOffset >= 0) {
-                this.ctx.fillRect(this.positions.widthOffset -= 20, heightOffset, this.width - 1, this.height - 1);
-            }
-            else {
-                this.ctx.fillRect(this.positions.widthOffset, heightOffset, this.width - 1, this.height - 1);
-            }
-        }
-        if (keyCode == Direction.RigthArrows || keyCode == Direction.RigthNormal) {
-            this.clearPaddle(heightOffset);
-            if (this.positions.widthOffset + this.width <= window.innerWidth) {
-                this.ctx.fillRect(this.positions.widthOffset += 20, heightOffset, this.width - 1, this.height - 1);
-            }
-            else {
-                this.ctx.fillRect(this.positions.widthOffset, heightOffset, this.width - 1, this.height - 1);
-            }
-        }
     }
 }
