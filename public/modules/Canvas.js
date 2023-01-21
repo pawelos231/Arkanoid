@@ -3,22 +3,22 @@ import { Brick } from './Entities/Brick';
 import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
 import { colorRandomizer } from '../helpers/colorRandomizer';
-var Direction;
-(function (Direction) {
-    Direction[Direction["LeftArrows"] = 65] = "LeftArrows";
-    Direction[Direction["LeftNormal"] = 37] = "LeftNormal";
-    Direction[Direction["RigthArrows"] = 68] = "RigthArrows";
-    Direction[Direction["RigthNormal"] = 39] = "RigthNormal";
-})(Direction || (Direction = {}));
-const PADDLE_WIDTH = 200;
-const PADDLE_HEIGHT = 40;
+import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDLE_HEIGHT } from "../constants/gameState";
+import { GameState } from "./gameState";
+var Directions;
+(function (Directions) {
+    Directions[Directions["LeftArrows"] = LEFT_ARROW] = "LeftArrows";
+    Directions[Directions["LeftNormal"] = LEFT_NORMAL] = "LeftNormal";
+    Directions[Directions["RigthArrows"] = RIGHT_ARROW] = "RigthArrows";
+    Directions[Directions["RigthNormal"] = RIGHT_NORMAL] = "RigthNormal";
+})(Directions || (Directions = {}));
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
-    constructor() {
+    constructor(level, pointsToWin) {
         super(GAME_CANVAS);
         this.canvas = null;
         this.ctx = null;
-        this.positions = { heightOffset: window.innerHeight - 70, widthOffset: window.innerWidth / 2 - 100 };
+        this.gameState = new GameState(level, pointsToWin, { heightOffset: window.innerHeight - 70, widthOffset: window.innerWidth / 2 - 100 });
         this.paddle = null;
     }
     configureCanvas() {
@@ -38,18 +38,18 @@ export class Canvas extends Common {
     setListenerMovePaddle() {
         window.addEventListener("keydown", (event) => {
             let keyCode = event.keyCode;
-            const temp = this.positions.widthOffset;
-            if (keyCode == Direction.LeftArrows || keyCode == Direction.LeftNormal) {
-                temp >= 0 ? this.positions.widthOffset -= 20 : null;
+            const temp = this.gameState.paddle_positions.widthOffset;
+            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
+                temp >= 0 ? this.gameState.paddle_positions.widthOffset -= 20 : null;
             }
-            if (keyCode == Direction.RigthArrows || keyCode == Direction.RigthNormal) {
-                temp + PADDLE_WIDTH <= window.innerWidth ? this.positions.widthOffset += 20 : null;
+            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
+                (temp + PADDLE_WIDTH) <= window.innerWidth ? this.gameState.paddle_positions.widthOffset += 20 : null;
             }
         });
     }
     drawPaddle() {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
-        paddle.drawPaddle(this.positions);
+        paddle.drawPaddle(this.gameState.paddle_positions);
     }
     drawBricks(heightOffset, widthOffset, color, special) {
         const heightOfBrick = window.innerHeight / 16;
@@ -68,9 +68,12 @@ export class Canvas extends Common {
             }
         }
     }
+    clearCnvas() {
+        this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    }
     draw() {
         this.configureCanvas();
-        this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        this.clearCnvas();
         window.addEventListener("resize", () => {
             let values = [window.innerHeight, window.innerWidth];
             this.canvas.height = values[0];

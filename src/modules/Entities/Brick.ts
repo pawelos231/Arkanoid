@@ -1,35 +1,29 @@
 import { loader } from "../Loader"
-
-interface brickState {
-    x: number
-    y: number
-    status: number
-    special: boolean
-}
+import { brickState } from "../../interfaces/gameStateInterface"
 export class Brick {
-    width: number
-    height: number
-    ctx: CanvasRenderingContext2D
-    brickState: brickState
-    constructor(width: number, height: number, ctx: CanvasRenderingContext2D, isSpecial: boolean) {
+    private width: number
+    private height: number
+    private ctx: CanvasRenderingContext2D
+    private brickState: brickState
+    public constructor(width: number, height: number, ctx: CanvasRenderingContext2D, isSpecial: boolean) {
         this.width = width
         this.height = height
         this.ctx = ctx
         this.brickState = { x: 0, y: 0, status: 1, special: isSpecial }
     }
-    initBrickState(x: number, y: number) {
+    private initBrickState(x: number, y: number): void {
         this.brickState.x = x
         this.brickState.y = y
     }
-    WriteBrickToConsole() {
+    WriteBrickToConsole(): void {
         console.log(this.brickState)
     }
-    async loadSpecialImages(): Promise<HTMLImageElement>{ 
+    private async loadSpecialImages(): Promise<HTMLImageElement>{ 
         let images: HTMLImageElement = new Image();
        await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg").then(data => images = data)
         return images
     }
-    async setColor(special: boolean, color: string, x: number, y: number) {
+    private async setColor(special: boolean, color: string, x: number, y: number): Promise<void> {
         if (special) {
             let image: HTMLImageElement = new Image();
             await this.loadSpecialImages().then((data:HTMLImageElement) => image = data)
@@ -44,7 +38,7 @@ export class Brick {
             this.ctx.fillStyle = color
         } 
     }
-    drawBrick(heightOffset: number, widthOffset: number, color: string ) {
+    public drawBrick(heightOffset: number, widthOffset: number, color: string ): void {
         this.initBrickState(widthOffset, heightOffset)
 
         this.setColor(this.brickState.special, color, widthOffset * this.width, heightOffset * this.height)
@@ -57,5 +51,5 @@ export class Brick {
 
         //this.WriteBrickToConsole()
     }
-    testBrick() { }
+    private testBrick() { }
 }

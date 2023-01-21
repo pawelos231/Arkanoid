@@ -13,13 +13,13 @@ const LOGIN_STATUS_MESSAGE = "LoginStatus"
 const START_THE_GAME = "startTheGame"
 
 export class Fetcher extends Common {
-    formElement: HTMLElement
-    constructor(formElement: HTMLElement) {
+    private formElement: HTMLElement
+    public constructor(formElement: HTMLElement) {
         super("form")
         this.formElement = formElement
     }
 
-    async sendDataToBackendAuth(form: FormData, parentName: string): Promise<void> {
+    public async sendDataToBackendAuth(form: FormData, parentName: string): Promise<void> {
 
         const LoginStatus: HTMLElement = this.bindElementByClass(LOGIN_STATUS_MESSAGE)
         const startGamePanel: HTMLElement = this.bindElementByClass(START_THE_GAME)
@@ -53,7 +53,7 @@ export class Fetcher extends Common {
 
     }
 
-    SendData(): void {
+    public SendData(): void {
         if (this.formElement == null) throw new Error(ELEMENT_DOES_NOT_EXIST)
 
         const allRegisterElementItems: HTMLCollection = this?.formElement?.children
@@ -90,7 +90,7 @@ export class Fetcher extends Common {
         })
     }
 
-    async FetchData<T>(url: string): Promise<T> {
+    public async FetchData<T>(url: string): Promise<T> {
         //const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
         //await delay(1000)
         const data: T = await fetch(url, {
@@ -102,7 +102,7 @@ export class Fetcher extends Common {
         return data
     }
 
-    async sendDataToBackend<T>(url: string, data: T): Promise<void> {
+    public async sendDataToBackend<T>(url: string, data: T): Promise<void> {
 
     }
 

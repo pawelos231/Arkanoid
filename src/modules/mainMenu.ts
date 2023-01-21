@@ -30,14 +30,14 @@ const RESET_INPUT_SETTINGS = "resetInputsSettings"
 
 class Menu extends Common {
 
-    constructor() {
+    public constructor() {
         super(REGISTER_FORMS)
     }
-    fetcher: Fetcher = new Fetcher(this.elementId)
-    formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
+    private fetcher: Fetcher = new Fetcher(this.elementId)
+    private formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
 
 
-    switchBetweenRegisterAndLogin(): void {
+    private switchBetweenRegisterAndLogin(): void {
 
         const changeValueOfMenuToLogin: HTMLElement = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER)
 
@@ -54,7 +54,7 @@ class Menu extends Common {
 
     }
 
-    async switchStatsModalState(): Promise<void> {
+    private async switchStatsModalState(): Promise<void> {
         const StatsElement: HTMLElement = this.bindElementByClass(STATS_ELELEMENT)
         const ModalElementStats: HTMLElement = this.bindElementByClass(MODAL_STATS_ELEMENT)
         const ResultsCheckBoard: HTMLElement = this.bindElementByClass(INNER_MODAL_STATS_ELEMENT)
@@ -80,13 +80,13 @@ class Menu extends Common {
 
         })
     }
-    SendUserDataToBackend(): void {
+    private SendUserDataToBackend(): void {
         const validator: Validator = new Validator(PASSWORD_INPUT_ELEMENT)
         validator.DisplayBadPassword()
         this.fetcher.SendData();
     }
 
-    StartGame(): void {
+    private StartGame(): void {
         const isLogged: null | string = localStorage.getItem("game")
         const startGamePanel: HTMLElement = this.bindElementByClass(START_THE_GAME)
         const BackToMenuPanel: HTMLElement = this.bindElementByClass(BACK_TO_MENU)
@@ -110,7 +110,7 @@ class Menu extends Common {
         })
     }
 
-    openSettings(): void {
+    private openSettings(): void {
         const OpenSettings: HTMLElement | null = this.bindElementByClass(OPEN_SETTINGS)
         const OpenedSettingsPage: HTMLElement | null = this.bindElementByClass(OPENED_SETTINGS_PAGE)
         const CloseSettings: HTMLElement | null = this.bindElementByClass(CLOSE_SETTINGS)
@@ -138,7 +138,7 @@ class Menu extends Common {
 
     }
 
-    start(): void {
+    public start(): void {
         this.switchBetweenRegisterAndLogin()
         this.switchStatsModalState();
         this.SendUserDataToBackend();

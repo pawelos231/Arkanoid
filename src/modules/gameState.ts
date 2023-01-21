@@ -1,19 +1,14 @@
-
+import { Positions } from "../interfaces/gameStateInterface"
 export class GameState {
     level: number
     pointsToWin: number
-    numberOfBricks: number
-    constructor(level: number, pointsToWin: number, numberOfBricks: number) {
+    paddle_positions: Positions
+    public constructor(level: number, pointsToWin: number, paddle_positions: Positions) {
         this.level = level
         this.pointsToWin = pointsToWin
-        this.numberOfBricks = numberOfBricks
+        this.paddle_positions = paddle_positions
     }
     displayGameState() {
-        enum Direction {
-            Up = 1,
-            Down,
-            Left,
-            Right
-        }
+       
     }
 }

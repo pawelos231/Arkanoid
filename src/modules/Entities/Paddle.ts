@@ -1,13 +1,4 @@
-interface Positions {
-    heightOffset: number,
-    widthOffset: number
-}
-enum Direction {
-    LeftArrows = 65,
-    LeftNormal = 37,
-    RigthArrows = 68,
-    RigthNormal = 39,
-}
+import { Positions } from "../../interfaces/gameStateInterface"
 
 export class Paddle {
     height: number

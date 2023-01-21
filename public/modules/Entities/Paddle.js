@@ -1,10 +1,3 @@
-var Direction;
-(function (Direction) {
-    Direction[Direction["LeftArrows"] = 65] = "LeftArrows";
-    Direction[Direction["LeftNormal"] = 37] = "LeftNormal";
-    Direction[Direction["RigthArrows"] = 68] = "RigthArrows";
-    Direction[Direction["RigthNormal"] = 39] = "RigthNormal";
-})(Direction || (Direction = {}));
 export class Paddle {
     constructor(width, height, ctx) {
         this.width = width;
