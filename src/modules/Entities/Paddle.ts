@@ -1,10 +1,10 @@
 import { Positions } from "../../interfaces/gameStateInterface"
 
 export class Paddle {
-    height: number
-    width: number
-    ctx: CanvasRenderingContext2D
-    positions: Positions
+    private height: number
+    private width: number
+    private ctx: CanvasRenderingContext2D
+    private positions: Positions
     constructor(width: number, height: number, ctx: CanvasRenderingContext2D) {
         this.width = width
         this.height = height

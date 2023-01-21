@@ -2,7 +2,6 @@ import { Common } from "./Common";
 import { Brick } from './Entities/Brick';
 import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
-import { colorRandomizer } from '../helpers/colorRandomizer';
 import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDLE_HEIGHT } from "../constants/gameState";
 import { GameState } from "./gameState";
 var Directions;
@@ -57,29 +56,28 @@ export class Canvas extends Common {
         const brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special);
         brick.drawBrick(heightOffset, widthOffset, color);
     }
-    async drawGame() {
+    async drawGame(tabOfColors) {
         this.drawPaddle();
         this.drawBall();
         for (let i = 0; i < 3; i++) {
-            const color = colorRandomizer();
             for (let j = 0; j < 8; j++) {
-                const random = Math.floor(Math.random() * 100);
-                this.drawBricks(i, j, color, random == 69);
+                const random = Math.floor(Math.random() * 10);
+                this.drawBricks(i, j, tabOfColors[i], random == 6);
             }
         }
     }
     clearCnvas() {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     }
-    draw() {
+    draw(tabOfColors) {
         this.configureCanvas();
         this.clearCnvas();
         window.addEventListener("resize", () => {
             let values = [window.innerHeight, window.innerWidth];
             this.canvas.height = values[0];
             this.canvas.width = values[1];
-            this.drawGame();
+            this.drawGame(tabOfColors);
         });
-        this.drawGame();
+        this.drawGame(tabOfColors);
     }
 }

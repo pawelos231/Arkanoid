@@ -1,11 +1,8 @@
-interface Position {
-    x: number
-    y: number
-}
+import { BallPosition } from "../../interfaces/gameStateInterface"
 export class Ball {
-    position: Position
-    ctx: CanvasRenderingContext2D
-    constructor(ctx: CanvasRenderingContext2D) {
+    position: BallPosition
+    private ctx: CanvasRenderingContext2D
+    public constructor(ctx: CanvasRenderingContext2D) {
         this.position = { x: 0, y: 0 }
         this.ctx = ctx
     }

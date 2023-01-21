@@ -69,14 +69,13 @@ export class Canvas extends Common {
         const brick: Brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special)
         brick.drawBrick(heightOffset, widthOffset, color)
     }
-    private async drawGame(): Promise<void> {
+    private async drawGame(tabOfColors: string[]): Promise<void> {
         this.drawPaddle()
         this.drawBall()
         for (let i = 0; i < 3; i++) {
-            const color: string = colorRandomizer()
             for (let j = 0; j < 8; j++) {
-                const random = Math.floor(Math.random() * 100)
-                this.drawBricks(i, j, color, random == 69)
+                const random = Math.floor(Math.random() * 10)
+                this.drawBricks(i, j, tabOfColors[i], random == 6)
             }
         }
 
@@ -84,15 +83,15 @@ export class Canvas extends Common {
     private clearCnvas(): void {
         this.ctx.clearRect(0,0, window.innerWidth, window.innerHeight)
     }
-    public draw(): void {
+    public draw(tabOfColors: string[]): void {
         this.configureCanvas()
         this.clearCnvas()
         window.addEventListener("resize", () => {
             let values: number[] = [window.innerHeight, window.innerWidth]
             this.canvas.height = values[0]
             this.canvas.width = values[1]
-            this.drawGame()
+            this.drawGame( tabOfColors)
         })
-        this.drawGame()
+        this.drawGame( tabOfColors)
     }
 }

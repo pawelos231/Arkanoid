@@ -1,6 +1,7 @@
 import { Common } from "./Common";
 import { Canvas } from "./Canvas";
 const LEVEL_SELECT = "levelSelect"
+import { colorRandomizer } from "../helpers/colorRandomizer";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu"
 class LevelSelect extends Common {
   constructor() {
@@ -15,7 +16,11 @@ class LevelSelect extends Common {
     ArrayOfLevels.forEach((item: Element) => {
       item.addEventListener("click", () => {
         const canvas: Canvas = new Canvas(1, 24)
-        setInterval(() => {canvas.draw()}, 50)
+        const tabOfColors: Array<string> = []
+        for(let i = 0; i< 3; i++){
+          tabOfColors.push(colorRandomizer())
+        }
+        setInterval(() => {canvas.draw( tabOfColors)}, 50)
         canvas.setListenerMovePaddle()
       })
     })

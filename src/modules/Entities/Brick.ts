@@ -27,14 +27,14 @@ export class Brick {
         if (special) {
             let image: HTMLImageElement = new Image();
             await this.loadSpecialImages().then((data:HTMLImageElement) => image = data)
-            
             image.onload = () =>{
                 const pattern: CanvasPattern | null = this.ctx.createPattern(image, "repeat");
                 if(!pattern) return
                 this.ctx.fillStyle = pattern;
                 this.ctx.drawImage(image, x+1,y+1, this.width - 2, this.height - 2);
             }    
-        } else{
+        } 
+        else{
             this.ctx.fillStyle = color
         } 
     }

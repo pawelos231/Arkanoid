@@ -8,3 +8,7 @@ export interface brickState {
     status: number
     special: boolean
 }
+export interface BallPosition {
+    x: number
+    y: number
+}
