@@ -61,8 +61,8 @@ export class Canvas extends Common {
         this.drawBall();
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 8; j++) {
-                const random = Math.floor(Math.random() * 10);
-                this.drawBricks(i, j, tabOfColors[i], random == 6);
+                const random = Math.floor(Math.random() * 100);
+                this.drawBricks(i, j, tabOfColors[i], random == 69);
             }
         }
     }
