@@ -17,10 +17,10 @@ class LevelSelect extends Common {
       item.addEventListener("click", () => {
         const canvas: Canvas = new Canvas(1, 24)
         const tabOfColors: Array<string> = []
-        for(let i = 0; i< 3; i++){
+        for (let i = 0; i < 3; i++) {
           tabOfColors.push(colorRandomizer())
         }
-        setInterval(() => {canvas.draw( tabOfColors)}, 50)
+        setInterval(() => { canvas.draw(tabOfColors) }, 20)
         canvas.setListenerMovePaddle()
       })
     })

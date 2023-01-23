@@ -3,7 +3,7 @@ import { sealed } from "../decorators/seal";
 const REGISTER_FORMS = "RegisterElement"
 @sealed
 export class Common {
-    elementId: HTMLElement;
+    protected elementId: HTMLElement;
     protected constructor(elementId: string) {
         this.elementId = this.bindElementById(elementId)
         if (typeof elementId === "undefined" || elementId === null) return
@@ -16,7 +16,7 @@ export class Common {
 
         return element
     }
-    protected  bindElementByClass(elementToFindByClass: string): HTMLElement {
+    protected bindElementByClass(elementToFindByClass: string): HTMLElement {
 
         const element: HTMLElement | null = document.documentElement.querySelector("." + elementToFindByClass);
 

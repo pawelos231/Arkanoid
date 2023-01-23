@@ -1,24 +1,24 @@
-import { Positions } from "../../interfaces/gameStateInterface"
+import { Paddle_Pos } from "../../interfaces/gameStateInterface"
 
 export class Paddle {
     private height: number
     private width: number
     private ctx: CanvasRenderingContext2D
-    private positions: Positions
+    private positions: Paddle_Pos
     constructor(width: number, height: number, ctx: CanvasRenderingContext2D) {
         this.width = width
         this.height = height
         this.ctx = ctx
-        this.positions = { heightOffset: 0, widthOffset: 0 }
+        this.positions = { paddle_y: 0, paddle_x: 0 }
     }
-    drawPaddle(positions: Positions = {widthOffset: window.innerWidth/2 - 100, heightOffset: window.innerHeight - 70}): void {
+    drawPaddle(positions: Paddle_Pos = { paddle_x: window.innerWidth / 2 - 100, paddle_y: window.innerHeight - 70 }): void {
         this.positions = positions
         this.ctx.fillStyle = "white"
 
-        this.ctx.fillRect(positions.widthOffset, positions.heightOffset, this.width - 1, this.height - 1)
+        this.ctx.fillRect(positions.paddle_x, positions.paddle_y, this.width - 1, this.height - 1)
 
     }
     clearPaddle(heightOffset: number): void {
-        this.ctx.clearRect(this.positions.widthOffset, heightOffset, this.width + 1, this.height + 1)
+        this.ctx.clearRect(this.positions.paddle_x, heightOffset, this.width + 1, this.height + 1)
     }
 }

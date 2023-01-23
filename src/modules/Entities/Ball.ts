@@ -1,27 +1,27 @@
-import { BallPosition } from "../../interfaces/gameStateInterface"
+import { Ball_Pos } from "../../interfaces/gameStateInterface"
 export class Ball {
-    position: BallPosition
+    ballPosition: Ball_Pos
     private ctx: CanvasRenderingContext2D
-    public constructor(ctx: CanvasRenderingContext2D) {
-        this.position = { x: 0, y: 0 }
+    radius: number
+    public constructor(ctx: CanvasRenderingContext2D, radius: number) {
+        this.ballPosition = { ball_x: 0, ball_y: 0 }
         this.ctx = ctx
+        this.radius = radius
     }
-    updatePostion() {
+    get radiusOfBallGetter() {
+        return this.radius
+    }
+    public drawBall(positions: Ball_Pos = { ... this.initBallPos() }): void {
 
-    }
-    DetectCollision() {
-
-    }
-    drawBall() {
-        this.calculatePositionOfPaddle()
-        this.ctx.arc(this.position.x, this.position.y, 25, 0, Math.PI * 2);
+        this.ballPosition = positions
+        this.ctx.arc(this.ballPosition.ball_x, this.ballPosition.ball_y, this.radius, 0, Math.PI * 2);
         this.ctx.fillStyle = "#0095DD";
         this.ctx.fill();
     }
-    calculatePositionOfPaddle(): void {
+    private initBallPos(): Ball_Pos {
         //to fix
-        const heightOffset: number = window.innerHeight - 100
-        const widthOffset: number = window.innerWidth / 2
-        this.position = { y: heightOffset, x: widthOffset }
+        const ball_y: number = window.innerHeight - 100
+        const ball_x: number = window.innerWidth / 2
+        return { ball_y, ball_x }
     }
 }

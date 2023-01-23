@@ -1,22 +1,22 @@
 export class Ball {
-    constructor(ctx) {
-        this.position = { x: 0, y: 0 };
+    constructor(ctx, radius) {
+        this.ballPosition = { ball_x: 0, ball_y: 0 };
         this.ctx = ctx;
+        this.radius = radius;
     }
-    updatePostion() {
+    get radiusOfBallGetter() {
+        return this.radius;
     }
-    DetectCollision() {
-    }
-    drawBall() {
-        this.calculatePositionOfPaddle();
-        this.ctx.arc(this.position.x, this.position.y, 25, 0, Math.PI * 2);
+    drawBall(positions = Object.assign({}, this.initBallPos())) {
+        this.ballPosition = positions;
+        this.ctx.arc(this.ballPosition.ball_x, this.ballPosition.ball_y, this.radius, 0, Math.PI * 2);
         this.ctx.fillStyle = "#0095DD";
         this.ctx.fill();
     }
-    calculatePositionOfPaddle() {
+    initBallPos() {
         //to fix
-        const heightOffset = window.innerHeight - 100;
-        const widthOffset = window.innerWidth / 2;
-        this.position = { y: heightOffset, x: widthOffset };
+        const ball_y = window.innerHeight - 100;
+        const ball_x = window.innerWidth / 2;
+        return { ball_y, ball_x };
     }
 }

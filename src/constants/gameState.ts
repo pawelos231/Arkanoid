@@ -1,4 +1,3 @@
-
 export const LEFT_ARROW = 65
 export const LEFT_NORMAL = 37
 export const RIGHT_ARROW = 68

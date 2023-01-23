@@ -1,6 +1,6 @@
-export interface Positions {
-    heightOffset: number,
-    widthOffset: number
+export interface Paddle_Pos {
+    paddle_y: number,
+    paddle_x: number
 }
 export interface brickState {
     x: number
@@ -8,7 +8,7 @@ export interface brickState {
     status: number
     special: boolean
 }
-export interface BallPosition {
-    x: number
-    y: number
+export interface Ball_Pos {
+    ball_x: number
+    ball_y: number
 }

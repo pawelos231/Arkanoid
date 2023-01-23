@@ -15,9 +15,14 @@ const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor(level, pointsToWin) {
         super(GAME_CANVAS);
+        this.dx = -16;
+        this.dy = -10;
         this.canvas = null;
         this.ctx = null;
-        this.gameState = new GameState(level, pointsToWin, { heightOffset: window.innerHeight - 70, widthOffset: window.innerWidth / 2 - 100 });
+        this.bricksArray = [];
+        this.gameState = new GameState(level, pointsToWin, { paddle_y: window.innerHeight - 70, paddle_x: window.innerWidth / 2 - 100 }, 3, {
+            ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
+        });
         this.paddle = null;
     }
     configureCanvas() {
@@ -31,18 +36,40 @@ export class Canvas extends Common {
     drawBuffs() {
     }
     drawBall() {
-        const ball = new Ball(this.ctx);
-        ball.drawBall();
+        const ball = new Ball(this.ctx, 25);
+        let radius = ball.radiusOfBallGetter;
+        if (this.gameState.ball_positions.ball_x - radius < 0) {
+            this.dx = 10;
+        }
+        if (this.gameState.ball_positions.ball_y - radius < 0) {
+            this.dy = 10;
+        }
+        if (this.gameState.ball_positions.ball_x + radius > window.innerWidth) {
+            this.dx = -10;
+        }
+        if (this.gameState.ball_positions.ball_y + radius > window.innerHeight) {
+            this.dy = -10;
+        }
+        let paddle_y = this.gameState.paddle_positions.paddle_y;
+        let ball_y = this.gameState.ball_positions.ball_y;
+        let ball_x = this.gameState.ball_positions.ball_x;
+        let paddle_x = this.gameState.paddle_positions.paddle_x;
+        console.log(ball_y, paddle_y - PADDLE_HEIGHT);
+        if (ball_y > paddle_y - PADDLE_HEIGHT && ball_x + radius < paddle_x + PADDLE_WIDTH && ball_x > paddle_x) {
+            console.log("zderzenie!");
+            this.dy = -this.dy;
+        }
+        ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.dx, ball_y: this.gameState.ball_positions.ball_y += this.dy });
     }
     setListenerMovePaddle() {
         window.addEventListener("keydown", (event) => {
             let keyCode = event.keyCode;
-            const temp = this.gameState.paddle_positions.widthOffset;
+            const temp = this.gameState.paddle_positions.paddle_x;
             if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
-                temp >= 0 ? this.gameState.paddle_positions.widthOffset -= 20 : null;
+                temp >= 0 ? this.gameState.paddle_positions.paddle_x -= 20 : null;
             }
             if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
-                (temp + PADDLE_WIDTH) <= window.innerWidth ? this.gameState.paddle_positions.widthOffset += 20 : null;
+                (temp + PADDLE_WIDTH) <= window.innerWidth ? this.gameState.paddle_positions.paddle_x += 20 : null;
             }
         });
     }
@@ -50,11 +77,11 @@ export class Canvas extends Common {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
         paddle.drawPaddle(this.gameState.paddle_positions);
     }
-    drawBricks(heightOffset, widthOffset, color, special) {
+    drawBricks(x, y, color, special) {
         const heightOfBrick = window.innerHeight / 16;
         const widthOfABrick = window.innerWidth / 8;
-        const brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special);
-        brick.drawBrick(heightOffset, widthOffset, color);
+        const brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special, 1, x, y);
+        brick.drawBrick(x, y, color);
     }
     async drawGame(tabOfColors) {
         this.drawPaddle();
@@ -66,12 +93,12 @@ export class Canvas extends Common {
             }
         }
     }
-    clearCnvas() {
+    clearCanvas() {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     }
     draw(tabOfColors) {
         this.configureCanvas();
-        this.clearCnvas();
+        this.clearCanvas();
         window.addEventListener("resize", () => {
             let values = [window.innerHeight, window.innerWidth];
             this.canvas.height = values[0];

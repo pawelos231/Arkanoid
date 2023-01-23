@@ -1,10 +1,10 @@
 import { loader } from "../Loader";
 export class Brick {
-    constructor(width, height, ctx, isSpecial) {
+    constructor(width, height, ctx, special, status, x, y) {
         this.width = width;
         this.height = height;
         this.ctx = ctx;
-        this.brickState = { x: 0, y: 0, status: 1, special: isSpecial };
+        this.brickState = { x, y, status, special };
     }
     initBrickState(x, y) {
         this.brickState.x = x;
@@ -12,6 +12,9 @@ export class Brick {
     }
     WriteBrickToConsole() {
         console.log(this.brickState);
+    }
+    get brickStateGet() {
+        return this.brickState;
     }
     async loadSpecialImages() {
         let images = new Image();
