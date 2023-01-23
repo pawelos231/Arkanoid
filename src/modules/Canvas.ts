@@ -12,6 +12,10 @@ enum Directions {
     RigthNormal = RIGHT_NORMAL,
 }
 const GAME_CANVAS = "game_canvas"
+const INIT_PADDLE_POS = { paddle_y: window.innerHeight - 70, paddle_x: window.innerWidth / 2 - 100 }
+const INIT_BALL_POS = {
+    ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
+}
 
 export class Canvas extends Common {
     private ctx: CanvasRenderingContext2D;
@@ -19,14 +23,12 @@ export class Canvas extends Common {
     paddle: Paddle | any
     gameState: GameState
     bricksArray: Array<any>
-    constructor(level: number, pointsToWin: number) {
+    constructor(level: number, pointsToWin: number, lives: number) {
         super(GAME_CANVAS)
         this.canvas = null as any
         this.ctx = null as any
         this.bricksArray = []
-        this.gameState = new GameState(level, pointsToWin, { paddle_y: window.innerHeight - 70, paddle_x: window.innerWidth / 2 - 100 }, 3, {
-            ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
-        })
+        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS)
         this.paddle = null
     }
     private configureCanvas(): void {
@@ -48,17 +50,17 @@ export class Canvas extends Common {
     dy = -12
     drawBall() {
         const ball: Ball = new Ball(this.ctx, 25)
-        let radius = ball.radiusOfBallGetter
-        if (this.gameState.ball_positions.ball_x - radius < 0) {
+        const RADIUS: number = ball.radiusOfBallGetter
+        if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
             this.dx = 12
         }
-        if (this.gameState.ball_positions.ball_y - radius < 0) {
+        if (this.gameState.ball_positions.ball_y - RADIUS < 0) {
             this.dy = 12
         }
-        if (this.gameState.ball_positions.ball_x + radius > window.innerWidth) {
+        if (this.gameState.ball_positions.ball_x + RADIUS > window.innerWidth) {
             this.dx = -12
         }
-        if (this.gameState.ball_positions.ball_y + radius > window.innerHeight) {
+        if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
             this.dy = -12
             this.gameState.ball_positions = {
                 ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
@@ -69,9 +71,9 @@ export class Canvas extends Common {
         let ball_y = this.gameState.ball_positions.ball_y
         let ball_x = this.gameState.ball_positions.ball_x
         let paddle_x = this.gameState.paddle_positions.paddle_x
-        console.log(ball_x + radius, paddle_x)
-        if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - radius <= paddle_x + PADDLE_WIDTH && ball_x + radius >= paddle_x) {
-            console.log("zderzenie!", ball_y, ball_x + radius, paddle_x + PADDLE_WIDTH, paddle_y - PADDLE_HEIGHT)
+        console.log(ball_x + RADIUS, paddle_x)
+        if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
+            console.log("zderzenie!", ball_y, ball_x + RADIUS, paddle_x + PADDLE_WIDTH, paddle_y - PADDLE_HEIGHT)
             this.dy = -this.dy
         }
 
@@ -95,15 +97,15 @@ export class Canvas extends Common {
             }
         })
     }
-    private drawPaddle() {
+    private drawPaddle(): void {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx)
         paddle.drawPaddle(this.gameState.paddle_positions)
     }
-    drawBricks(x: number, y: number, color: string, special: boolean) {
+    private drawBricks(brick_x: number, brick_y: number, color: string, special: boolean): void {
         const heightOfBrick: number = window.innerHeight / 16
         const widthOfABrick: number = window.innerWidth / 8
-        const brick: Brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special, 1, x, y)
-        brick.drawBrick(x, y, color)
+        const brick: Brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special, 1, brick_x, brick_y)
+        brick.drawBrick(brick_x, brick_y, color)
     }
     private async drawGame(tabOfColors: string[]): Promise<void> {
         this.drawPaddle()

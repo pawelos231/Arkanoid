@@ -11,7 +11,10 @@ export class Paddle {
         this.ctx = ctx
         this.positions = { paddle_y: 0, paddle_x: 0 }
     }
-    drawPaddle(positions: Paddle_Pos = { paddle_x: window.innerWidth / 2 - 100, paddle_y: window.innerHeight - 70 }): void {
+    initPaddlePos(): Paddle_Pos {
+        return { paddle_x: window.innerWidth / 2 - 100, paddle_y: window.innerHeight - 70 }
+    }
+    drawPaddle(positions: Paddle_Pos = { ...this.initPaddlePos() }): void {
         this.positions = positions
         this.ctx.fillStyle = "white"
 

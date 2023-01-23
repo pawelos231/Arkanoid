@@ -1,14 +1,14 @@
 import { Ball_Pos } from "../../interfaces/gameStateInterface"
 export class Ball {
-    ballPosition: Ball_Pos
+    private ballPosition: Ball_Pos
     private ctx: CanvasRenderingContext2D
-    radius: number
+    private radius: number
     public constructor(ctx: CanvasRenderingContext2D, radius: number) {
         this.ballPosition = { ball_x: 0, ball_y: 0 }
         this.ctx = ctx
         this.radius = radius
     }
-    get radiusOfBallGetter() {
+    get radiusOfBallGetter(): number {
         return this.radius
     }
     public drawBall(positions: Ball_Pos = { ... this.initBallPos() }): void {
