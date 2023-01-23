@@ -16,15 +16,11 @@ export class Brick {
     get brickStateGet() {
         return this.brickState;
     }
-    async loadSpecialImages() {
-        let images = new Image();
-        await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg").then(data => images = data);
-        return images;
-    }
     async setColor(special, color, x, y) {
-        if (special) {
+        if (special.isSpecial && special.randomBrick == this.brickState.x * this.brickState.y) {
             let image = new Image();
-            await this.loadSpecialImages().then((data) => image = data);
+            await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg").then((data) => image = data);
+            this.ctx.clearRect(x + 1, y + 1, this.width - 2, this.height - 2);
             image.onload = () => {
                 const pattern = this.ctx.createPattern(image, "repeat");
                 if (!pattern)
@@ -35,12 +31,12 @@ export class Brick {
         }
         else {
             this.ctx.fillStyle = color;
+            this.ctx.fillRect(this.brickState.x * this.width, this.brickState.y * this.height, this.width - 1, this.height - 1);
         }
     }
-    drawBrick(heightOffset, widthOffset, color) {
+    async drawBrick(heightOffset, widthOffset, color) {
         this.initBrickState(widthOffset, heightOffset);
-        this.setColor(this.brickState.special, color, widthOffset * this.width, heightOffset * this.height);
-        this.ctx.fillRect(widthOffset * this.width, heightOffset * this.height, this.width - 1, this.height - 1);
+        await this.setColor(this.brickState.special, color, widthOffset * this.width, heightOffset * this.height);
         this.ctx.strokeStyle = "white";
         this.ctx.strokeRect(widthOffset * this.width, heightOffset * this.height, this.width, this.height);
         //this.WriteBrickToConsole()

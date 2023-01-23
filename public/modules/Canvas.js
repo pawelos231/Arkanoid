@@ -12,17 +12,19 @@ var Directions;
     Directions[Directions["RigthNormal"] = RIGHT_NORMAL] = "RigthNormal";
 })(Directions || (Directions = {}));
 const GAME_CANVAS = "game_canvas";
+const INIT_PADDLE_POS = { paddle_y: window.innerHeight - 70, paddle_x: window.innerWidth / 2 - 100 };
+const INIT_BALL_POS = {
+    ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
+};
 export class Canvas extends Common {
-    constructor(level, pointsToWin) {
+    constructor(level, pointsToWin, lives) {
         super(GAME_CANVAS);
         this.dx = -12;
         this.dy = -12;
         this.canvas = null;
         this.ctx = null;
         this.bricksArray = [];
-        this.gameState = new GameState(level, pointsToWin, { paddle_y: window.innerHeight - 70, paddle_x: window.innerWidth / 2 - 100 }, 3, {
-            ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
-        });
+        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS);
         this.paddle = null;
     }
     configureCanvas() {
@@ -37,17 +39,17 @@ export class Canvas extends Common {
     }
     drawBall() {
         const ball = new Ball(this.ctx, 25);
-        let radius = ball.radiusOfBallGetter;
-        if (this.gameState.ball_positions.ball_x - radius < 0) {
+        const RADIUS = ball.radiusOfBallGetter;
+        if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
             this.dx = 12;
         }
-        if (this.gameState.ball_positions.ball_y - radius < 0) {
+        if (this.gameState.ball_positions.ball_y - RADIUS < 0) {
             this.dy = 12;
         }
-        if (this.gameState.ball_positions.ball_x + radius > window.innerWidth) {
+        if (this.gameState.ball_positions.ball_x + RADIUS > window.innerWidth) {
             this.dx = -12;
         }
-        if (this.gameState.ball_positions.ball_y + radius > window.innerHeight) {
+        if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
             this.dy = -12;
             this.gameState.ball_positions = {
                 ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
@@ -58,9 +60,8 @@ export class Canvas extends Common {
         let ball_y = this.gameState.ball_positions.ball_y;
         let ball_x = this.gameState.ball_positions.ball_x;
         let paddle_x = this.gameState.paddle_positions.paddle_x;
-        console.log(ball_x + radius, paddle_x);
-        if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - radius <= paddle_x + PADDLE_WIDTH && ball_x + radius >= paddle_x) {
-            console.log("zderzenie!", ball_y, ball_x + radius, paddle_x + PADDLE_WIDTH, paddle_y - PADDLE_HEIGHT);
+        console.log(ball_x + RADIUS, paddle_x);
+        if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
             this.dy = -this.dy;
         }
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.dx, ball_y: this.gameState.ball_positions.ball_y += this.dy });
@@ -81,34 +82,34 @@ export class Canvas extends Common {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
         paddle.drawPaddle(this.gameState.paddle_positions);
     }
-    drawBricks(x, y, color, special) {
+    drawBricks(brick_x, brick_y, color, special) {
         const heightOfBrick = window.innerHeight / 16;
         const widthOfABrick = window.innerWidth / 8;
-        const brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special, 1, x, y);
-        brick.drawBrick(x, y, color);
+        const brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special, 1, brick_x, brick_y);
+        brick.drawBrick(brick_x, brick_y, color);
     }
-    async drawGame(tabOfColors) {
+    async drawGame(tabOfColors, special) {
         this.drawPaddle();
         this.drawBall();
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 8; j++) {
                 const random = Math.floor(Math.random() * 100);
-                this.drawBricks(i, j, tabOfColors[i], random == 69);
+                this.drawBricks(i, j, tabOfColors[i], special);
             }
         }
     }
     clearCanvas() {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     }
-    draw(tabOfColors) {
+    draw(tabOfColors, special) {
         this.configureCanvas();
         this.clearCanvas();
         window.addEventListener("resize", () => {
             let values = [window.innerHeight, window.innerWidth];
             this.canvas.height = values[0];
             this.canvas.width = values[1];
-            this.drawGame(tabOfColors);
+            this.drawGame(tabOfColors, special);
         });
-        this.drawGame(tabOfColors);
+        this.drawGame(tabOfColors, special);
     }
 }

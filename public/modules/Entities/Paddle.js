@@ -5,7 +5,10 @@ export class Paddle {
         this.ctx = ctx;
         this.positions = { paddle_y: 0, paddle_x: 0 };
     }
-    drawPaddle(positions = { paddle_x: window.innerWidth / 2 - 100, paddle_y: window.innerHeight - 70 }) {
+    initPaddlePos() {
+        return { paddle_x: window.innerWidth / 2 - 100, paddle_y: window.innerHeight - 70 };
+    }
+    drawPaddle(positions = Object.assign({}, this.initPaddlePos())) {
         this.positions = positions;
         this.ctx.fillStyle = "white";
         this.ctx.fillRect(positions.paddle_x, positions.paddle_y, this.width - 1, this.height - 1);

@@ -4,6 +4,7 @@ import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
 import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDLE_HEIGHT } from "../constants/gameState";
 import { GameState } from "./gameState";
+import { Specialbrick } from "../interfaces/gameStateInterface";
 
 enum Directions {
     LeftArrows = LEFT_ARROW,
@@ -73,7 +74,6 @@ export class Canvas extends Common {
         let paddle_x = this.gameState.paddle_positions.paddle_x
         console.log(ball_x + RADIUS, paddle_x)
         if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
-            console.log("zderzenie!", ball_y, ball_x + RADIUS, paddle_x + PADDLE_WIDTH, paddle_y - PADDLE_HEIGHT)
             this.dy = -this.dy
         }
 
@@ -101,19 +101,19 @@ export class Canvas extends Common {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx)
         paddle.drawPaddle(this.gameState.paddle_positions)
     }
-    private drawBricks(brick_x: number, brick_y: number, color: string, special: boolean): void {
+    private drawBricks(brick_x: number, brick_y: number, color: string, special: Specialbrick): void {
         const heightOfBrick: number = window.innerHeight / 16
         const widthOfABrick: number = window.innerWidth / 8
         const brick: Brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special, 1, brick_x, brick_y)
         brick.drawBrick(brick_x, brick_y, color)
     }
-    private async drawGame(tabOfColors: string[]): Promise<void> {
+    private async drawGame(tabOfColors: string[], special: Specialbrick): Promise<void> {
         this.drawPaddle()
         this.drawBall()
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 8; j++) {
                 const random = Math.floor(Math.random() * 100)
-                this.drawBricks(i, j, tabOfColors[i], random == 69)
+                this.drawBricks(i, j, tabOfColors[i], special)
             }
         }
 
@@ -121,15 +121,15 @@ export class Canvas extends Common {
     private clearCanvas(): void {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
     }
-    public draw(tabOfColors: string[]): void {
+    public draw(tabOfColors: string[], special: Specialbrick): void {
         this.configureCanvas()
         this.clearCanvas()
         window.addEventListener("resize", () => {
             let values: number[] = [window.innerHeight, window.innerWidth]
             this.canvas.height = values[0]
             this.canvas.width = values[1]
-            this.drawGame(tabOfColors)
+            this.drawGame(tabOfColors, special)
         })
-        this.drawGame(tabOfColors)
+        this.drawGame(tabOfColors, special)
     }
 }

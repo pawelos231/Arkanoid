@@ -1,8 +1,9 @@
 import { Common } from "./Common";
 import { Canvas } from "./Canvas";
-const LEVEL_SELECT = "levelSelect";
 import { colorRandomizer } from "../helpers/colorRandomizer";
+import { loader } from "./Loader";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
+const LEVEL_SELECT = "levelSelect";
 class LevelSelect extends Common {
     constructor() {
         super(LEVEL_SELECT);
@@ -11,15 +12,19 @@ class LevelSelect extends Common {
     }
     handleOnClickLevel() {
         const levelSelect = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU);
-        const ArrayOfLevels = Array.from(levelSelect.children);
-        ArrayOfLevels.forEach((item) => {
-            item.addEventListener("click", () => {
-                const canvas = new Canvas(1, 24);
+        Array.from(levelSelect.children).forEach((item) => {
+            item.addEventListener("click", async () => {
+                const canvas = new Canvas(1, 24, 3);
                 const tabOfColors = [];
                 for (let i = 0; i < 3; i++) {
                     tabOfColors.push(colorRandomizer());
                 }
-                setInterval(() => { canvas.draw(tabOfColors); }, 20);
+                const images = await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg");
+                const isSpecial = Math.floor(Math.random() * 1);
+                const randomBrick = Math.floor(Math.random() * 24);
+                setInterval(() => {
+                    canvas.draw(tabOfColors, { isSpecial: isSpecial == 0, randomBrick });
+                }, 20);
                 canvas.setListenerMovePaddle();
             });
         });
