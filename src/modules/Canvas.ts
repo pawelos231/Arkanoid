@@ -44,30 +44,34 @@ export class Canvas extends Common {
     drawBuffs() {
 
     }
-    dx = -16
-    dy = -10
+    dx = -12
+    dy = -12
     drawBall() {
         const ball: Ball = new Ball(this.ctx, 25)
         let radius = ball.radiusOfBallGetter
         if (this.gameState.ball_positions.ball_x - radius < 0) {
-            this.dx = 10
+            this.dx = 12
         }
         if (this.gameState.ball_positions.ball_y - radius < 0) {
-            this.dy = 10
+            this.dy = 12
         }
         if (this.gameState.ball_positions.ball_x + radius > window.innerWidth) {
-            this.dx = -10
+            this.dx = -12
         }
         if (this.gameState.ball_positions.ball_y + radius > window.innerHeight) {
-            this.dy = -10
+            this.dy = -12
+            this.gameState.ball_positions = {
+                ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
+            }
+            this.gameState.paddle_positions = { paddle_y: window.innerHeight - 70, paddle_x: window.innerWidth / 2 - 100 }
         }
         let paddle_y = this.gameState.paddle_positions.paddle_y
         let ball_y = this.gameState.ball_positions.ball_y
         let ball_x = this.gameState.ball_positions.ball_x
         let paddle_x = this.gameState.paddle_positions.paddle_x
-        console.log(ball_y, paddle_y - PADDLE_HEIGHT)
-        if (ball_y > paddle_y - PADDLE_HEIGHT && ball_x + radius < paddle_x + PADDLE_WIDTH && ball_x > paddle_x) {
-            console.log("zderzenie!")
+        console.log(ball_x + radius, paddle_x)
+        if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - radius <= paddle_x + PADDLE_WIDTH && ball_x + radius >= paddle_x) {
+            console.log("zderzenie!", ball_y, ball_x + radius, paddle_x + PADDLE_WIDTH, paddle_y - PADDLE_HEIGHT)
             this.dy = -this.dy
         }
 
