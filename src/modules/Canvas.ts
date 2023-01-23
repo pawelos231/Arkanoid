@@ -17,7 +17,6 @@ const GAME_CANVAS = "game_canvas"
 export class Canvas extends Common {
     private ctx: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
-    paddle: Paddle | any
     gameState: GameState
     bricksArray: Array<any>
     constructor(level: number, pointsToWin: number, lives: number) {
@@ -26,7 +25,6 @@ export class Canvas extends Common {
         this.ctx = null as any
         this.bricksArray = []
         this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS)
-        this.paddle = null
     }
     private configureCanvas(): void {
 
@@ -64,21 +62,20 @@ export class Canvas extends Common {
             }
             this.gameState.paddle_positions = { paddle_y: window.innerHeight - 70, paddle_x: window.innerWidth / 2 - 100 }
         }
-        let paddle_y = this.gameState.paddle_positions.paddle_y
-        let ball_y = this.gameState.ball_positions.ball_y
-        let ball_x = this.gameState.ball_positions.ball_x
-        let paddle_x = this.gameState.paddle_positions.paddle_x
-        console.log(ball_x + RADIUS, paddle_x)
+        const paddle_y: number = this.gameState.paddle_positions.paddle_y
+        const ball_y: number = this.gameState.ball_positions.ball_y
+        const ball_x: number = this.gameState.ball_positions.ball_x
+        const paddle_x: number = this.gameState.paddle_positions.paddle_x
+
         if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
             this.dy = -this.dy
         }
 
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.dx, ball_y: this.gameState.ball_positions.ball_y += this.dy })
-
-
-
     }
+
     interval: any
+
     public setListenerMovePaddle(): void {
         window.addEventListener("keydown", (event: KeyboardEvent) => {
             let keyCode = event.keyCode
@@ -108,7 +105,6 @@ export class Canvas extends Common {
         this.drawBall()
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 8; j++) {
-                const random = Math.floor(Math.random() * 100)
                 this.drawBricks(i, j, tabOfColors[i], special)
             }
         }
