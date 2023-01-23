@@ -2,7 +2,7 @@ import { Common } from "./Common";
 import { Brick } from './Entities/Brick'
 import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
-import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDLE_HEIGHT } from "../constants/gameState";
+import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS } from "../constants/gameState";
 import { GameState } from "./gameState";
 import { Specialbrick } from "../interfaces/gameStateInterface";
 
@@ -13,10 +13,6 @@ enum Directions {
     RigthNormal = RIGHT_NORMAL,
 }
 const GAME_CANVAS = "game_canvas"
-const INIT_PADDLE_POS = { paddle_y: window.innerHeight - 70, paddle_x: window.innerWidth / 2 - 100 }
-const INIT_BALL_POS = {
-    ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
-}
 
 export class Canvas extends Common {
     private ctx: CanvasRenderingContext2D;
