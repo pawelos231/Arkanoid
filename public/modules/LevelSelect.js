@@ -4,6 +4,9 @@ import { colorRandomizer } from "../helpers/colorRandomizer";
 import { loader } from "./Loader";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
 const LEVEL_SELECT = "levelSelect";
+const LEVEL = 1;
+const POINTS_TO_GET = 24;
+const LIVES = 3;
 class LevelSelect extends Common {
     constructor() {
         super(LEVEL_SELECT);
@@ -14,7 +17,7 @@ class LevelSelect extends Common {
         const levelSelect = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU);
         Array.from(levelSelect.children).forEach((item) => {
             item.addEventListener("click", async () => {
-                const canvas = new Canvas(1, 24, 3);
+                const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES);
                 const tabOfColors = [];
                 for (let i = 0; i < 3; i++) {
                     tabOfColors.push(colorRandomizer());
