@@ -14,16 +14,18 @@ enum Directions {
 }
 const GAME_CANVAS = "game_canvas"
 
-export class Canvas extends Common {
+export class Canvas<T> extends Common {
     private ctx: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
     gameState: GameState
     bricksArray: Array<any>
-    constructor(level: number, pointsToWin: number, lives: number) {
+    image: T
+    constructor(level: number, pointsToWin: number, lives: number, image: T) {
         super(GAME_CANVAS)
         this.canvas = null as any
         this.ctx = null as any
         this.bricksArray = []
+        this.image = image
         this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS)
     }
     private configureCanvas(): void {
@@ -91,21 +93,22 @@ export class Canvas extends Common {
         })
     }
     private drawPaddle(): void {
-        const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx)
+        const paddle: Paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx)
         paddle.drawPaddle(this.gameState.paddle_positions)
     }
-    private drawBricks(brick_x: number, brick_y: number, color: string, special: Specialbrick): void {
+    private drawBrick(brick_x: number, brick_y: number, color: string, special: Specialbrick, counter: number): void {
         const heightOfBrick: number = window.innerHeight / 16
         const widthOfABrick: number = window.innerWidth / 8
         const brick: Brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special, 1, brick_x, brick_y)
-        brick.drawBrick(brick_x, brick_y, color)
+        brick.drawBrick<T>(brick_x, brick_y, color, this.image, counter)
     }
     private async drawGame(tabOfColors: string[], special: Specialbrick): Promise<void> {
         this.drawPaddle()
         this.drawBall()
+        let counter = 0
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 8; j++) {
-                this.drawBricks(i, j, tabOfColors[i], special)
+                this.drawBrick(i, j, tabOfColors[i], special, counter++)
             }
         }
 

@@ -24,27 +24,20 @@ export class Brick {
         return this.brickState
     }
 
-    private async setColor(special: Specialbrick, color: string, x: number, y: number): Promise<void> {
-        if (special.isSpecial && special.randomBrick == this.brickState.x * this.brickState.y) {
-            let image: HTMLImageElement = new Image();
-            await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg").then((data: HTMLImageElement) => image = data)
-            this.ctx.clearRect(x + 1, y + 1, this.width - 2, this.height - 2)
-            image.onload = () => {
-                const pattern: CanvasPattern | null = this.ctx.createPattern(image, "repeat");
-                if (!pattern) return
-                this.ctx.fillStyle = pattern;
-                this.ctx.drawImage(image, x + 1, y + 1, this.width - 2, this.height - 2);
-            }
+    private setColor(special: Specialbrick, color: string, x: number, y: number, image: any, counter: number): void {
+        if (special.isSpecial && special.randomBrick == counter) {
+            this.ctx.drawImage(image, x + 1, y + 1, this.width - 2, this.height - 2);
         }
         else {
             this.ctx.fillStyle = color
             this.ctx.fillRect(this.brickState.x * this.width, this.brickState.y * this.height, this.width - 1, this.height - 1)
         }
     }
-    public async drawBrick(heightOffset: number, widthOffset: number, color: string) {
+    public async drawBrick<T>(heightOffset: number, widthOffset: number, color: string, image: T | null = null, counter: number) {
+
         this.initBrickState(widthOffset, heightOffset)
 
-        await this.setColor(this.brickState.special, color, widthOffset * this.width, heightOffset * this.height)
+        this.setColor(this.brickState.special, color, widthOffset * this.width, heightOffset * this.height, image, counter)
 
         this.ctx.strokeStyle = "white"
 

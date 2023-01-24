@@ -17,18 +17,29 @@ class LevelSelect extends Common {
         const levelSelect = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU);
         Array.from(levelSelect.children).forEach((item) => {
             item.addEventListener("click", async () => {
-                const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES);
                 const tabOfColors = [];
                 for (let i = 0; i < 3; i++) {
                     tabOfColors.push(colorRandomizer());
                 }
-                const images = await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg");
+                //fix
                 const isSpecial = Math.floor(Math.random() * 1);
-                const randomBrick = Math.floor(Math.random() * 24);
-                setInterval(() => {
-                    canvas.draw(tabOfColors, { isSpecial: isSpecial == 0, randomBrick });
-                }, 20);
-                canvas.setListenerMovePaddle();
+                if (isSpecial == 0) {
+                    const randomBrick = Math.floor(Math.random() * 24);
+                    const image = await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg");
+                    console.log(image);
+                    const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, image);
+                    setInterval(() => {
+                        canvas.draw(tabOfColors, { isSpecial: isSpecial == 0, randomBrick });
+                    }, 20);
+                    canvas.setListenerMovePaddle();
+                }
+                else {
+                    const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, null);
+                    setInterval(() => {
+                        canvas.draw(tabOfColors, { isSpecial: isSpecial == 0, randomBrick: 0 });
+                    }, 20);
+                    canvas.setListenerMovePaddle();
+                }
             });
         });
     }
