@@ -24,9 +24,9 @@ export class Brick {
         return this.brickState
     }
 
-    private setColor(special: Specialbrick, color: string, x: number, y: number, image: any, counter: number): void {
+    private setColor<T>(special: Specialbrick, color: string, x: number, y: number, image: T, counter: number): void {
         if (special.isSpecial && special.randomBrick == counter) {
-            this.ctx.drawImage(image, x + 1, y + 1, this.width - 2, this.height - 2);
+            this.ctx.drawImage(image as HTMLImageElement, x + 1, y + 1, this.width - 2, this.height - 2);
         }
         else {
             this.ctx.fillStyle = color
@@ -37,7 +37,7 @@ export class Brick {
 
         this.initBrickState(widthOffset, heightOffset)
 
-        this.setColor(this.brickState.special, color, widthOffset * this.width, heightOffset * this.height, image, counter)
+        this.setColor<T | null>(this.brickState.special, color, widthOffset * this.width, heightOffset * this.height, image, counter)
 
         this.ctx.strokeStyle = "white"
 
