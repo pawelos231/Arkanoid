@@ -13,16 +13,18 @@ var Directions;
 })(Directions || (Directions = {}));
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
-    constructor(level, pointsToWin, lives, image) {
+    constructor(level, pointsToWin, lives, image, rowsCount, columnsCount) {
         super(GAME_CANVAS);
-        this.BRICK_HEIGHT = window.innerHeight / 18;
-        this.BRICK_WIDTH = window.innerWidth / 8;
+        this.BRICK_HEIGHT = 0;
+        this.BRICK_WIDTH = 0;
         this.ballMoveRateX = -12;
         this.ballMoveRateY = -12;
         this.canvas = null;
         this.ctx = null;
         this.bricksArray = [];
         this.image = image;
+        this.rowsCount = rowsCount;
+        this.columnsCount = columnsCount;
         this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS);
     }
     addEventOnResize() {
@@ -39,6 +41,8 @@ export class Canvas extends Common {
         this.canvas = this.elementId;
         this.canvas.style.backgroundColor = "black";
         this.ctx = this.canvas.getContext("2d");
+        this.BRICK_HEIGHT = window.innerHeight / 18;
+        this.BRICK_WIDTH = window.innerWidth / this.columnsCount;
     }
     drawBuffs() {
     }
@@ -91,23 +95,17 @@ export class Canvas extends Common {
         const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y);
         brick.drawBrick(brick_x, brick_y, color, this.image);
     }
+    drawGameBricks(tabOfColors, special) {
+        for (let i = 0; i < this.rowsCount; i++) {
+            for (let j = 0; j < this.columnsCount; j++) {
+                this.drawBrick(i, j, tabOfColors[i], special);
+            }
+        }
+    }
     drawGame(tabOfColors, special) {
         this.drawPaddle();
         this.drawBall();
-        if (special) {
-            for (let i = 0; i < 3; i++) {
-                for (let j = 0; j < 8; j++) {
-                    this.drawBrick(i, j, tabOfColors[i], special);
-                }
-            }
-        }
-        else {
-            for (let i = 0; i < 3; i++) {
-                for (let j = 0; j < 8; j++) {
-                    this.drawBrick(i, j, tabOfColors[i], null);
-                }
-            }
-        }
+        special ? this.drawGameBricks(tabOfColors, special) : this.drawGameBricks(tabOfColors, null);
     }
     clearCanvas() {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -116,12 +114,6 @@ export class Canvas extends Common {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.clearCanvas();
-        window.addEventListener("resize", () => {
-            let values = [window.innerHeight, window.innerWidth];
-            this.canvas.height = values[0];
-            this.canvas.width = values[1];
-            this.drawGame(tabOfColors, special);
-        });
         isSpecialLevel ? this.drawGame(tabOfColors, special) : this.drawGame(tabOfColors, null);
     }
 }

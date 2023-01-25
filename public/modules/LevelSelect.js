@@ -7,6 +7,8 @@ const LEVEL_SELECT = "levelSelect";
 const LEVEL = 1;
 const POINTS_TO_GET = 24;
 const LIVES = 3;
+const BRICK_ROWS_COUNT = 3;
+const BRICK_COLUMN_COUNT = 12;
 class LevelSelect extends Common {
     constructor() {
         super(LEVEL_SELECT);
@@ -25,7 +27,7 @@ class LevelSelect extends Common {
                 if (isSpecialLevel == 0) {
                     const randomBrick = Math.floor(Math.random() * 24);
                     const image = await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg");
-                    const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, image);
+                    const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, image, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT);
                     canvas.configureCanvas();
                     canvas.addEventOnResize();
                     setInterval(() => {
@@ -34,7 +36,7 @@ class LevelSelect extends Common {
                     canvas.setListenerMovePaddle();
                 }
                 else {
-                    const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, null);
+                    const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, null, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT);
                     canvas.configureCanvas();
                     canvas.addEventOnResize();
                     setInterval(() => {

@@ -7,6 +7,8 @@ const LEVEL_SELECT = "levelSelect"
 const LEVEL = 1;
 const POINTS_TO_GET = 24
 const LIVES = 3
+const BRICK_ROWS_COUNT = 3
+const BRICK_COLUMN_COUNT = 12
 class LevelSelect extends Common {
   constructor() {
     super(LEVEL_SELECT)
@@ -24,14 +26,13 @@ class LevelSelect extends Common {
         for (let i = 0; i < 3; i++) {
           tabOfColors.push(colorRandomizer())
         }
+        const isSpecialLevel: number = Math.floor(Math.random() * 1)
 
-
-        const isSpecialLevel = Math.floor(Math.random() * 1)
         if (isSpecialLevel == 0) {
           const randomBrick: number = Math.floor(Math.random() * 24)
           const image: HTMLImageElement = await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg")
 
-          const canvas: Canvas<HTMLImageElement> = new Canvas<HTMLImageElement>(LEVEL, POINTS_TO_GET, LIVES, image)
+          const canvas: Canvas<HTMLImageElement> = new Canvas<HTMLImageElement>(LEVEL, POINTS_TO_GET, LIVES, image, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT)
           canvas.configureCanvas()
           canvas.addEventOnResize()
           setInterval(() => {
@@ -42,7 +43,7 @@ class LevelSelect extends Common {
         }
 
         else {
-          const canvas: Canvas<null> = new Canvas<null>(LEVEL, POINTS_TO_GET, LIVES, null)
+          const canvas: Canvas<null> = new Canvas<null>(LEVEL, POINTS_TO_GET, LIVES, null, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT)
           canvas.configureCanvas()
           canvas.addEventOnResize()
           setInterval(() => {
