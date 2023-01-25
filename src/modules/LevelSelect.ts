@@ -15,6 +15,7 @@ class LevelSelect extends Common {
 
   }
 
+
   public handleOnClickLevel(): void {
     const levelSelect: HTMLElement = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU)
     Array.from(levelSelect.children).forEach((item: Element) => {
@@ -24,16 +25,17 @@ class LevelSelect extends Common {
           tabOfColors.push(colorRandomizer())
         }
 
-        //fix
-        const isSpecial = Math.floor(Math.random() * 1)
-        if (isSpecial == 0) {
-          const randomBrick: number = Math.floor(Math.random() * 24)
 
+        const isSpecialLevel = Math.floor(Math.random() * 1)
+        if (isSpecialLevel == 0) {
+          const randomBrick: number = Math.floor(Math.random() * 24)
           const image: HTMLImageElement = await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg")
-          console.log(image)
+
           const canvas: Canvas<HTMLImageElement> = new Canvas<HTMLImageElement>(LEVEL, POINTS_TO_GET, LIVES, image)
+          canvas.configureCanvas()
+          canvas.addEventOnResize()
           setInterval(() => {
-            canvas.draw(tabOfColors, { isSpecial: isSpecial == 0, randomBrick })
+            canvas.draw(tabOfColors, isSpecialLevel == 0, { randomBrick, Position: { brick_x: -10, brick_y: -10 } })
           }, 20)
           canvas.setListenerMovePaddle()
 
@@ -41,8 +43,10 @@ class LevelSelect extends Common {
 
         else {
           const canvas: Canvas<null> = new Canvas<null>(LEVEL, POINTS_TO_GET, LIVES, null)
+          canvas.configureCanvas()
+          canvas.addEventOnResize()
           setInterval(() => {
-            canvas.draw(tabOfColors, { isSpecial: isSpecial == 0, randomBrick: 0 })
+            canvas.draw(tabOfColors, false, { randomBrick: null, Position: null })
           }, 20)
 
           canvas.setListenerMovePaddle()

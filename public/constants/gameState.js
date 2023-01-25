@@ -8,3 +8,5 @@ export const INIT_PADDLE_POS = { paddle_y: window.innerHeight - 70, paddle_x: wi
 export const INIT_BALL_POS = {
     ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
 };
+export let BRICK_HEIGHT = window.innerHeight / 18;
+export let BRICK_WIDTH = window.innerWidth / 8;

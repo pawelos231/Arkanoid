@@ -21,22 +21,24 @@ class LevelSelect extends Common {
                 for (let i = 0; i < 3; i++) {
                     tabOfColors.push(colorRandomizer());
                 }
-                //fix
-                const isSpecial = Math.floor(Math.random() * 1);
-                if (isSpecial == 0) {
+                const isSpecialLevel = Math.floor(Math.random() * 1);
+                if (isSpecialLevel == 0) {
                     const randomBrick = Math.floor(Math.random() * 24);
                     const image = await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg");
-                    console.log(image);
                     const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, image);
+                    canvas.configureCanvas();
+                    canvas.addEventOnResize();
                     setInterval(() => {
-                        canvas.draw(tabOfColors, { isSpecial: isSpecial == 0, randomBrick });
+                        canvas.draw(tabOfColors, isSpecialLevel == 0, { randomBrick, Position: { brick_x: -10, brick_y: -10 } });
                     }, 20);
                     canvas.setListenerMovePaddle();
                 }
                 else {
                     const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, null);
+                    canvas.configureCanvas();
+                    canvas.addEventOnResize();
                     setInterval(() => {
-                        canvas.draw(tabOfColors, { isSpecial: isSpecial == 0, randomBrick: 0 });
+                        canvas.draw(tabOfColors, false, { randomBrick: null, Position: null });
                     }, 20);
                     canvas.setListenerMovePaddle();
                 }

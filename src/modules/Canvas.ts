@@ -6,6 +6,7 @@ import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDL
 import { GameState } from "./gameState";
 import { Specialbrick } from "../interfaces/gameStateInterface";
 
+
 enum Directions {
     LeftArrows = LEFT_ARROW,
     LeftNormal = LEFT_NORMAL,
@@ -15,6 +16,10 @@ enum Directions {
 const GAME_CANVAS = "game_canvas"
 
 export class Canvas<T> extends Common {
+    private BRICK_HEIGHT = window.innerHeight / 18
+    private BRICK_WIDTH: number = window.innerWidth / 8
+    private ballMoveRateX = -12
+    private ballMoveRateY = -12
     private ctx: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
     gameState: GameState
@@ -28,37 +33,44 @@ export class Canvas<T> extends Common {
         this.image = image
         this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS)
     }
-    private configureCanvas(): void {
+
+    public addEventOnResize(): void {
+        window.addEventListener("resize", () => {
+            let values: number[] = [window.innerHeight, window.innerWidth]
+            this.canvas.height = values[0]
+            this.canvas.width = values[1]
+            this.BRICK_HEIGHT = window.innerHeight / 18
+            this.BRICK_WIDTH = window.innerWidth / 8
+        })
+
+    }
+    public configureCanvas(): void {
 
         this.changeVisbilityOfGivenElement(this.elementId, true)
 
         this.canvas = this.elementId as HTMLCanvasElement;
         this.canvas.style.backgroundColor = "black"
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-
-        this.canvas.width = window.innerWidth
-        this.canvas.height = window.innerHeight
     }
-
     drawBuffs() {
 
     }
-    dx = -12
-    dy = -12
+
     drawBall() {
+        //change to fix resizeable
         const ball: Ball = new Ball(this.ctx, 25)
         const RADIUS: number = ball.radiusOfBallGetter
         if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
-            this.dx = 12
+            this.ballMoveRateX = 12
         }
         if (this.gameState.ball_positions.ball_y - RADIUS < 0) {
-            this.dy = 12
+            this.ballMoveRateY = 12
         }
         if (this.gameState.ball_positions.ball_x + RADIUS > window.innerWidth) {
-            this.dx = -12
+            this.ballMoveRateX = -12
         }
         if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
-            this.dy = -12
+            this.ballMoveRateY = -12
             this.gameState.ball_positions = {
                 ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
             }
@@ -70,10 +82,10 @@ export class Canvas<T> extends Common {
         const paddle_x: number = this.gameState.paddle_positions.paddle_x
 
         if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
-            this.dy = -this.dy
+            this.ballMoveRateY = -this.ballMoveRateY
         }
 
-        ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.dx, ball_y: this.gameState.ball_positions.ball_y += this.dy })
+        ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY })
     }
 
     interval: any
@@ -96,28 +108,37 @@ export class Canvas<T> extends Common {
         const paddle: Paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx)
         paddle.drawPaddle(this.gameState.paddle_positions)
     }
-    private drawBrick(brick_x: number, brick_y: number, color: string, special: Specialbrick, counter: number): void {
-        const heightOfBrick: number = window.innerHeight / 16
-        const widthOfABrick: number = window.innerWidth / 8
-        const brick: Brick = new Brick(widthOfABrick, heightOfBrick, this.ctx, special, 1, brick_x, brick_y)
-        brick.drawBrick<T>(brick_x, brick_y, color, this.image, counter)
+    private drawBrick(brick_x: number, brick_y: number, color: string, special: Specialbrick | null): void {
+        const brick: Brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y)
+        brick.drawBrick<T>(brick_x, brick_y, color, this.image)
     }
-    private async drawGame(tabOfColors: string[], special: Specialbrick): Promise<void> {
+    private drawGame(tabOfColors: string[], special: Specialbrick | null): void {
         this.drawPaddle()
         this.drawBall()
-        let counter = 0
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 8; j++) {
-                this.drawBrick(i, j, tabOfColors[i], special, counter++)
+        if (special) {
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 8; j++) {
+                    this.drawBrick(i, j, tabOfColors[i], special)
+                }
             }
         }
+        else {
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 8; j++) {
+                    this.drawBrick(i, j, tabOfColors[i], null)
+                }
+            }
+        }
+
 
     }
     private clearCanvas(): void {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
     }
-    public draw(tabOfColors: string[], special: Specialbrick): void {
-        this.configureCanvas()
+    public draw(tabOfColors: string[], isSpecialLevel: boolean, special: Specialbrick): void {
+
+        this.canvas.width = window.innerWidth
+        this.canvas.height = window.innerHeight
         this.clearCanvas()
         window.addEventListener("resize", () => {
             let values: number[] = [window.innerHeight, window.innerWidth]
@@ -125,6 +146,7 @@ export class Canvas<T> extends Common {
             this.canvas.width = values[1]
             this.drawGame(tabOfColors, special)
         })
-        this.drawGame(tabOfColors, special)
+        isSpecialLevel ? this.drawGame(tabOfColors, special) : this.drawGame(tabOfColors, null)
+
     }
 }
