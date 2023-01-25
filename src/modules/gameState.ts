@@ -12,7 +12,7 @@ export class GameState {
         this.lives = lives
         this.ball_positions = ball_positions
     }
-    displayGameState() {
-
+    get GameState() {
+        return this
     }
 }

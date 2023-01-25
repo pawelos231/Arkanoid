@@ -62,7 +62,7 @@ export class Canvas<T> extends Common {
 
     }
 
-    drawBall() {
+    private drawBall(): void {
         //change to fix resizeable
         const ball: Ball = new Ball(this.ctx, 25)
         const RADIUS: number = ball.radiusOfBallGetter
@@ -94,8 +94,6 @@ export class Canvas<T> extends Common {
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY })
     }
 
-    interval: any
-
     public setListenerMovePaddle(): void {
         window.addEventListener("keydown", (event: KeyboardEvent) => {
             let keyCode = event.keyCode
@@ -119,7 +117,7 @@ export class Canvas<T> extends Common {
         brick.drawBrick<T>(brick_x, brick_y, color, this.image)
     }
 
-    private drawGameBricks(tabOfColors: string[], special: Specialbrick | null) {
+    private drawGameBricks(tabOfColors: string[], special: Specialbrick | null): void {
         for (let i = 0; i < this.rowsCount; i++) {
             for (let j = 0; j < this.columnsCount; j++) {
                 this.drawBrick(i, j, tabOfColors[i], special)
