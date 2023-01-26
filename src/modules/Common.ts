@@ -37,8 +37,13 @@ export class Common {
 
         return elements
     }
-    protected static displayMessageAtTheTopOfTheScreen(message: string) {
-        console.log(message)
+    protected displayMessageAtTheTopOfTheScreen(message: string) {
+        const messageNode = this.bindElementByClass(".MESSAGE")
+        this.changeVisbilityOfGivenElement(messageNode, true)
+        setTimeout(() => {
+            this.changeVisbilityOfGivenElement(messageNode, false)
+        }, 1000)
+        messageNode.textContent = message
     }
     protected makeLoginPanelInvisible(): void {
         const RegisterElemement: HTMLElement | null = this.bindElementById(REGISTER_FORMS)

@@ -36,8 +36,13 @@ let Common = class Common {
             throw new Error(`nie znaleziono elementu ${elementsTobBind}`);
         return elements;
     }
-    static displayMessageAtTheTopOfTheScreen(message) {
-        console.log(message);
+    displayMessageAtTheTopOfTheScreen(message) {
+        const messageNode = this.bindElementByClass(".MESSAGE");
+        this.changeVisbilityOfGivenElement(messageNode, true);
+        setTimeout(() => {
+            this.changeVisbilityOfGivenElement(messageNode, false);
+        }, 1000);
+        messageNode.textContent = message;
     }
     makeLoginPanelInvisible() {
         const RegisterElemement = this.bindElementById(REGISTER_FORMS);

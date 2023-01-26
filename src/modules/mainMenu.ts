@@ -2,7 +2,6 @@ import { Common } from './Common.js'
 import { Validator } from '../helpers/PasswordInputValidation.js'
 import { Fetcher } from '../helpers/Fetcher.js'
 import { Media } from './Media.js'
-import { loader } from "./Loader"
 import { levelSelect } from './LevelSelect.js'
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować"
@@ -25,6 +24,7 @@ const OPENED_SETTINGS_PAGE = "OpenedSettings"
 const CLOSE_SETTINGS = "closeSettings"
 const MUSIC_RANGE = "musicRange"
 const SOUND_RANGE = "soundRange"
+const LIST_OF_SONGS = "listOfSongs > ul"
 const INNER_MODAL_STATS_ELEMENT = "innerModalStats"
 const RESET_INPUT_SETTINGS = "resetInputsSettings"
 
@@ -116,14 +116,20 @@ class Menu extends Common {
         const CloseSettings: HTMLElement | null = this.bindElementByClass(CLOSE_SETTINGS)
         const increaseVolume: HTMLElement | null = this.bindElementByClass(MUSIC_RANGE)
         const resetInputsSettings: HTMLElement | null = this.bindElementByClass(RESET_INPUT_SETTINGS)
+        const songsList: HTMLElement | null = this.bindElementByClass(LIST_OF_SONGS)
 
         //TODO have those files on server to give user choice what to play in backgground
-        const backgroundAudio: HTMLAudioElement = await loader.loadSound("https://www.cjoint.com/doc/18_05/HEfplvJ186F_One-Punch-Man-OST---Genos-Sound---Fight-Music.mp3")
 
-        const media: Media = new Media(0.5, 0.5, true, true, backgroundAudio)
 
+        const media: Media = new Media(0.5, 0.5, true, true)
+        let tempTabOfSongs = ["https://www.cjoint.com/doc/18_05/HEfplvJ186F_One-Punch-Man-OST---Genos-Sound---Fight-Music.mp3", "http://localhost:1234/avicii_hey_bro.mp3", "", "", ""]
         OpenSettings.addEventListener("click", () => {
-            media.playMusic()
+            Array.from(songsList.children).forEach((item, i) => {
+                item.addEventListener("click", async () => {
+                    await media.setBackroundMusic(tempTabOfSongs[i])
+                    media.playMusic()
+                })
+            })
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
             resetInputsSettings.addEventListener("click", () => {
                 media.resetValuesToDefault(increaseVolume)

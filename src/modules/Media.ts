@@ -1,18 +1,32 @@
+import { loader } from "./Loader"
 export class Media {
-    private musicVolume: number
+    musicVolume: number
     soundVolume: number
     allowedMusic: boolean
     allowedSound: boolean
-    backgroundMusic: HTMLAudioElement
-    constructor(musicVolume: number = 0.3, soundVolume: number = 0.3, allowedMusic: boolean = true, allowedSound: boolean = true, backgroundMusic: HTMLAudioElement) {
+    backgroundMusic: any
+    cachedSongId: string = ""
+    constructor(musicVolume: number = 0.3, soundVolume: number = 0.3, allowedMusic: boolean = true, allowedSound: boolean = true) {
         this.musicVolume = musicVolume;
         this.soundVolume = soundVolume;
         this.allowedMusic = allowedMusic
         this.allowedSound = allowedSound
-        this.backgroundMusic = backgroundMusic
     }
+    public async setBackroundMusic(path: string) {
+        if (path.length == 0) throw new Error("niepoprawna ściezka")
+        if (this.cachedSongId == path) throw new Error("ta nuta juz bangla")
 
-
+        else if (this.cachedSongId.length !== 0 && this.cachedSongId !== path) {
+            this.backgroundMusic.pause()
+            this.backgroundMusic = null
+            const backgroundAudio: HTMLAudioElement = await loader.loadSound(path)
+            this.backgroundMusic = backgroundAudio
+        } else {
+            const backgroundAudio: HTMLAudioElement = await loader.loadSound(path)
+            this.backgroundMusic = backgroundAudio
+        }
+        this.cachedSongId = path
+    }
     playMusic(): void {
         this.backgroundMusic.loop = true
         this.backgroundMusic.volume = this.musicVolume
@@ -48,6 +62,6 @@ export class Media {
 
     }
     spawnSound(): void {
-        
+
     }
 }

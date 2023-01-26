@@ -22,14 +22,16 @@ class LevelSelect extends Common {
   }
   public handleOnClickLevel(): void {
     const levelSelect: HTMLElement = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU)
+
     Array.from(levelSelect.children).forEach((item: Element) => {
       item.addEventListener("click", async () => {
-        const tabOfColors: Array<string> = []
-        for (let i = 0; i < 3; i++) {
+        const tabOfColors: string[] = []
+
+        for (let i = 0; i < BRICK_ROWS_COUNT; i++) {
           tabOfColors.push(colorRandomizer())
         }
-        const isSpecialLevel: number = Math.floor(Math.random() * 1)
 
+        const isSpecialLevel: number = Math.floor(Math.random() * 1)
         if (isSpecialLevel == 0) {
           const randomBrick: number = Math.floor(Math.random() * 24)
           const image: HTMLImageElement = await loader.loadImage("http://localhost:1234/Krzysiu.a065cfe0.png")

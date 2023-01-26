@@ -23,7 +23,7 @@ class LevelSelect extends Common {
         Array.from(levelSelect.children).forEach((item) => {
             item.addEventListener("click", async () => {
                 const tabOfColors = [];
-                for (let i = 0; i < 3; i++) {
+                for (let i = 0; i < BRICK_ROWS_COUNT; i++) {
                     tabOfColors.push(colorRandomizer());
                 }
                 const isSpecialLevel = Math.floor(Math.random() * 1);

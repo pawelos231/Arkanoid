@@ -12,7 +12,20 @@ export class GameState {
         this.lives = lives
         this.ball_positions = ball_positions
     }
-    get GameState() {
-        return this
+    get GameLevel(): number {
+        return this.level
     }
+    get gamePointsToWin(): number {
+        return this.pointsToWin
+    }
+    get livesGetter(): number {
+        return this.lives
+    }
+    get ball_positions_getter(): Ball_Pos {
+        return this.ball_positions
+    }
+    get paddle_positions_getter(): Paddle_Pos {
+        return this.paddle_positions
+    }
+
 }

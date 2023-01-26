@@ -6,7 +6,19 @@ export class GameState {
         this.lives = lives;
         this.ball_positions = ball_positions;
     }
-    get GameState() {
-        return this;
+    get GameLevel() {
+        return this.level;
+    }
+    get gamePointsToWin() {
+        return this.pointsToWin;
+    }
+    get livesGetter() {
+        return this.lives;
+    }
+    get ball_positions_getter() {
+        return this.ball_positions;
+    }
+    get paddle_positions_getter() {
+        return this.paddle_positions;
     }
 }

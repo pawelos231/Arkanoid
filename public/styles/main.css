@@ -8,3 +8,14 @@ body {
     background-color: black;
     overflow: hidden;
 }
+
+.MESSAGE {
+    top: 40px;
+    font-size: 25px;
+    position: absolute;
+    z-index: 10000;
+    color: red;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: white;
+}

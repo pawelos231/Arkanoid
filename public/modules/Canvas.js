@@ -68,10 +68,10 @@ export class Canvas extends Common {
             };
             this.gameState.paddle_positions = { paddle_y: window.innerHeight - 40, paddle_x: window.innerWidth / 2 - 100 };
         }
-        const paddle_y = this.gameState.paddle_positions.paddle_y;
-        const ball_y = this.gameState.ball_positions.ball_y;
         const ball_x = this.gameState.ball_positions.ball_x;
+        const ball_y = this.gameState.ball_positions.ball_y;
         const paddle_x = this.gameState.paddle_positions.paddle_x;
+        const paddle_y = this.gameState.paddle_positions.paddle_y;
         if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
             this.ballMoveRateY = -this.ballMoveRateY;
         }
@@ -79,7 +79,7 @@ export class Canvas extends Common {
     }
     setListenerMovePaddle() {
         window.addEventListener("keydown", (event) => {
-            let keyCode = event.keyCode;
+            const keyCode = event.keyCode;
             if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
                 this.keyPressedLeft = true;
             }
@@ -88,8 +88,7 @@ export class Canvas extends Common {
             }
         });
         window.addEventListener("keyup", (event) => {
-            console.log(event.keyCode);
-            let keyCode = event.keyCode;
+            const keyCode = event.keyCode;
             if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
                 this.keyPressedLeft = false;
             }
