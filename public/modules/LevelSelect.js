@@ -8,12 +8,15 @@ const LEVEL = 1;
 const POINTS_TO_GET = 24;
 const LIVES = 3;
 const BRICK_ROWS_COUNT = 3;
-const BRICK_COLUMN_COUNT = 12;
+const BRICK_COLUMN_COUNT = 8;
 class LevelSelect extends Common {
     constructor() {
         super(LEVEL_SELECT);
     }
     fetchLevels() {
+    }
+    delay(ms) {
+        return new Promise((res, rej) => setTimeout(res, ms));
     }
     handleOnClickLevel() {
         const levelSelect = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU);

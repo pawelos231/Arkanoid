@@ -110,30 +110,31 @@ class Menu extends Common {
         })
     }
 
-    private openSettings(): void {
+    private async openSettings(): Promise<void> {
         const OpenSettings: HTMLElement | null = this.bindElementByClass(OPEN_SETTINGS)
         const OpenedSettingsPage: HTMLElement | null = this.bindElementByClass(OPENED_SETTINGS_PAGE)
         const CloseSettings: HTMLElement | null = this.bindElementByClass(CLOSE_SETTINGS)
         const increaseVolume: HTMLElement | null = this.bindElementByClass(MUSIC_RANGE)
         const resetInputsSettings: HTMLElement | null = this.bindElementByClass(RESET_INPUT_SETTINGS)
 
-
-        const backgroundAudio: HTMLAudioElement = loader.loadSound("https://media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4")
+        //TODO have those files on server to give user choice what to play in backgground
+        const backgroundAudio: HTMLAudioElement = await loader.loadSound("https://www.cjoint.com/doc/18_05/HEfplvJ186F_One-Punch-Man-OST---Genos-Sound---Fight-Music.mp3")
 
         const media: Media = new Media(0.5, 0.5, true, true, backgroundAudio)
 
         OpenSettings.addEventListener("click", () => {
+            media.playMusic()
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
             resetInputsSettings.addEventListener("click", () => {
                 media.resetValuesToDefault(increaseVolume)
             })
-            media.playMusic()
+
             media.changeVolumeOfBackgroundMusic(increaseVolume)
         })
 
         CloseSettings.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, false)
-            media.stopMusic()
+
         })
 
     }

@@ -86,25 +86,25 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(startGamePanel, true);
         });
     }
-    openSettings() {
+    async openSettings() {
         const OpenSettings = this.bindElementByClass(OPEN_SETTINGS);
         const OpenedSettingsPage = this.bindElementByClass(OPENED_SETTINGS_PAGE);
         const CloseSettings = this.bindElementByClass(CLOSE_SETTINGS);
         const increaseVolume = this.bindElementByClass(MUSIC_RANGE);
         const resetInputsSettings = this.bindElementByClass(RESET_INPUT_SETTINGS);
-        const backgroundAudio = loader.loadSound("https://media.w3.org/2010/07/bunny/04-Death_Becomes_Fur.mp4");
+        //TODO have those files on server to give user choice what to play in backgground
+        const backgroundAudio = await loader.loadSound("https://www.cjoint.com/doc/18_05/HEfplvJ186F_One-Punch-Man-OST---Genos-Sound---Fight-Music.mp3");
         const media = new Media(0.5, 0.5, true, true, backgroundAudio);
         OpenSettings.addEventListener("click", () => {
+            media.playMusic();
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {
                 media.resetValuesToDefault(increaseVolume);
             });
-            media.playMusic();
             media.changeVolumeOfBackgroundMusic(increaseVolume);
         });
         CloseSettings.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, false);
-            media.stopMusic();
         });
     }
     start() {

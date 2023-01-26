@@ -1,5 +1,5 @@
 export class Media {
-    musicVolume: number
+    private musicVolume: number
     soundVolume: number
     allowedMusic: boolean
     allowedSound: boolean
@@ -18,10 +18,10 @@ export class Media {
         this.backgroundMusic.volume = this.musicVolume
         this.backgroundMusic.play()
     }
-    stopMusic(): void {
+    public stopMusic(): void {
         this.backgroundMusic.pause()
     }
-    changeVolumeOfBackgroundMusic(element: Element): void {
+    public changeVolumeOfBackgroundMusic(element: Element): void {
         let inputMusic: any = element.children[0]
         inputMusic.value = this.musicVolume * 100
         inputMusic.addEventListener("input", (e: any) => {
@@ -29,7 +29,7 @@ export class Media {
             this.backgroundMusic.volume = valueOfAnElement
         })
     }
-    resetValuesToDefault(element: Element): void {
+    public resetValuesToDefault(element: Element): void {
         this.allowedMusic = true
         this.allowedSound = true
         this.musicVolume = 0.5
@@ -38,13 +38,16 @@ export class Media {
         inputMusic.value = this.musicVolume * 100
         this.backgroundMusic.volume = this.musicVolume
     }
-    resetMusic() {
+    resetMusic(): void {
 
     }
-    muteMusic() {
+    muteMusic(): void {
 
     }
-    muteSound() {
+    muteSound(): void {
 
+    }
+    spawnSound(): void {
+        
     }
 }

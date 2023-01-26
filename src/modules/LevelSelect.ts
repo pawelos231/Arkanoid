@@ -8,7 +8,7 @@ const LEVEL = 1;
 const POINTS_TO_GET = 24
 const LIVES = 3
 const BRICK_ROWS_COUNT = 3
-const BRICK_COLUMN_COUNT = 12
+const BRICK_COLUMN_COUNT = 8
 class LevelSelect extends Common {
   constructor() {
     super(LEVEL_SELECT)
@@ -17,7 +17,9 @@ class LevelSelect extends Common {
 
   }
 
-
+  delay(ms: number) {
+    return new Promise((res, rej) => setTimeout(res, ms))
+  }
   public handleOnClickLevel(): void {
     const levelSelect: HTMLElement = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU)
     Array.from(levelSelect.children).forEach((item: Element) => {

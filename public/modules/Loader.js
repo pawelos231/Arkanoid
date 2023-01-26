@@ -5,9 +5,11 @@ class Loader {
     }
     loadSound(soundUrl) {
         const audio = new Audio();
-        audio.addEventListener('canplaythrough', (event) => this.itemLoaded(event), false);
-        audio.src = soundUrl;
-        return audio;
+        return new Promise((resolve, reject) => {
+            audio.addEventListener('canplaythrough', (event) => this.itemLoaded(event), false);
+            audio.src = soundUrl;
+            resolve(audio);
+        });
     }
     itemLoaded(event) {
         if (!event.target)

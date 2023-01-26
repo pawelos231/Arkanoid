@@ -2,14 +2,16 @@ class Loader {
     constructor() {
 
     }
-    private IsUrlValid(){
+    private IsUrlValid() {
 
     }
-    public loadSound(soundUrl: string): HTMLAudioElement {
+    public loadSound(soundUrl: string): Promise<HTMLAudioElement> {
         const audio: HTMLAudioElement = new Audio()
-        audio.addEventListener('canplaythrough', (event: Event) => this.itemLoaded<Event>(event), false)
-        audio.src = soundUrl
-        return audio
+        return new Promise((resolve, reject) => {
+            audio.addEventListener('canplaythrough', (event: Event) => this.itemLoaded<Event>(event), false)
+            audio.src = soundUrl
+            resolve(audio)
+        })
     }
     public itemLoaded<T extends Event>(event: T): void {
         if (!event.target) return
@@ -17,13 +19,13 @@ class Loader {
     }
     public loadImage(imageUrl: string): Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
-            const image:HTMLImageElement = new Image();
+            const image: HTMLImageElement = new Image();
             image.src = imageUrl;
             image.addEventListener("load", (event: Event) => this.itemLoaded<Event>(event), false);
             resolve(image)
         })
-      }
-    public loadMultipleImages(imagesUrl: string[]): Promise<HTMLImageElement[]>{
+    }
+    public loadMultipleImages(imagesUrl: string[]): Promise<HTMLImageElement[]> {
         return new Promise((resolve, reject) => {
             const multiple = imagesUrl.map(item => {
                 const image: HTMLImageElement = new Image()

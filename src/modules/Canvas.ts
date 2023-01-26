@@ -82,7 +82,7 @@ export class Canvas<T> extends Common {
             this.gameState.ball_positions = {
                 ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
             }
-            this.gameState.paddle_positions = { paddle_y: window.innerHeight - 70, paddle_x: window.innerWidth / 2 - 100 }
+            this.gameState.paddle_positions = { paddle_y: window.innerHeight - 40, paddle_x: window.innerWidth / 2 - 100 }
         }
         const paddle_y: number = this.gameState.paddle_positions.paddle_y
         const ball_y: number = this.gameState.ball_positions.ball_y
