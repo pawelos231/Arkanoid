@@ -32,7 +32,7 @@ class LevelSelect extends Common {
 
         if (isSpecialLevel == 0) {
           const randomBrick: number = Math.floor(Math.random() * 24)
-          const image: HTMLImageElement = await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg")
+          const image: HTMLImageElement = await loader.loadImage("http://localhost:1234/Krzysiu.a065cfe0.png")
 
           const canvas: Canvas<HTMLImageElement> = new Canvas<HTMLImageElement>(LEVEL, POINTS_TO_GET, LIVES, image, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT)
           canvas.configureCanvas()

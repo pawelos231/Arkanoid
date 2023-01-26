@@ -74,3 +74,37 @@
     color: black;
     border: 1px solid black;
 }
+
+.listOfSongs {
+    overflow: scroll;
+    margin-top: 20px;
+    width: 80%;
+}
+
+.listOfSongs>ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.listOfSongs>ul>li {
+    display: flex;
+    gap: 12px;
+    overflow: hidden;
+    transition: .3s;
+    padding: 10px 0px 10px 5px;
+    border-radius: 5px;
+    align-items: center;
+}
+
+.listOfSongs>ul>li>img {
+    width: 70px;
+    height: 70px;
+    border-radius: 15%;
+}
+
+.listOfSongs>ul>li:hover {
+    background-color: grey;
+    cursor: pointer;
+}

@@ -29,7 +29,7 @@ class LevelSelect extends Common {
                 const isSpecialLevel = Math.floor(Math.random() * 1);
                 if (isSpecialLevel == 0) {
                     const randomBrick = Math.floor(Math.random() * 24);
-                    const image = await loader.loadImage("https://cdn2.thecatapi.com/images/4vg.jpg");
+                    const image = await loader.loadImage("http://localhost:1234/Krzysiu.a065cfe0.png");
                     const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, image, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT);
                     canvas.configureCanvas();
                     canvas.addEventOnResize();
