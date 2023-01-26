@@ -22,6 +22,8 @@ export class Canvas<T> extends Common {
     private ballMoveRateY: number = -12
     private rowsCount: number
     private columnsCount: number
+    private keyPressedLeft: boolean = false
+    private keyPressedRight: boolean = false
     private ctx: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
     gameState: GameState
@@ -97,13 +99,23 @@ export class Canvas<T> extends Common {
     public setListenerMovePaddle(): void {
         window.addEventListener("keydown", (event: KeyboardEvent) => {
             let keyCode = event.keyCode
-            const temp = this.gameState.paddle_positions.paddle_x
             if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
-                temp >= 0 ? this.gameState.paddle_positions.paddle_x -= 20 : null
+                this.keyPressedLeft = true
 
             }
             if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
-                (temp + PADDLE_WIDTH) <= window.innerWidth ? this.gameState.paddle_positions.paddle_x += 20 : null
+                this.keyPressedRight = true
+
+            }
+        })
+        window.addEventListener("keyup", (event: KeyboardEvent) => {
+            console.log(event.keyCode)
+            let keyCode = event.keyCode
+            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
+                this.keyPressedLeft = false
+            }
+            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
+                this.keyPressedRight = false
 
             }
         })
@@ -133,7 +145,17 @@ export class Canvas<T> extends Common {
     private clearCanvas(): void {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
     }
+    private handleKeyPress(): void {
+        const paddle_x: number = this.gameState.paddle_positions.paddle_x
+        if (this.keyPressedLeft && paddle_x > 0) {
+            this.gameState.paddle_positions.paddle_x -= 15
+        }
+        if (this.keyPressedRight && paddle_x + PADDLE_WIDTH < window.innerWidth) {
+            this.gameState.paddle_positions.paddle_x += 15
+        }
+    }
     public draw(tabOfColors: string[], isSpecialLevel: boolean, special: Specialbrick): void {
+        this.handleKeyPress()
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
         this.clearCanvas()

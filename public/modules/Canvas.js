@@ -19,6 +19,8 @@ export class Canvas extends Common {
         this.BRICK_WIDTH = 0;
         this.ballMoveRateX = -12;
         this.ballMoveRateY = -12;
+        this.keyPressedLeft = false;
+        this.keyPressedRight = false;
         this.canvas = null;
         this.ctx = null;
         this.bricksArray = [];
@@ -78,12 +80,21 @@ export class Canvas extends Common {
     setListenerMovePaddle() {
         window.addEventListener("keydown", (event) => {
             let keyCode = event.keyCode;
-            const temp = this.gameState.paddle_positions.paddle_x;
             if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
-                temp >= 0 ? this.gameState.paddle_positions.paddle_x -= 20 : null;
+                this.keyPressedLeft = true;
             }
             if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
-                (temp + PADDLE_WIDTH) <= window.innerWidth ? this.gameState.paddle_positions.paddle_x += 20 : null;
+                this.keyPressedRight = true;
+            }
+        });
+        window.addEventListener("keyup", (event) => {
+            console.log(event.keyCode);
+            let keyCode = event.keyCode;
+            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
+                this.keyPressedLeft = false;
+            }
+            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
+                this.keyPressedRight = false;
             }
         });
     }
@@ -110,7 +121,17 @@ export class Canvas extends Common {
     clearCanvas() {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     }
+    handleKeyPress() {
+        const paddle_x = this.gameState.paddle_positions.paddle_x;
+        if (this.keyPressedLeft && paddle_x > 0) {
+            this.gameState.paddle_positions.paddle_x -= 15;
+        }
+        if (this.keyPressedRight && paddle_x + PADDLE_WIDTH < window.innerWidth) {
+            this.gameState.paddle_positions.paddle_x += 15;
+        }
+    }
     draw(tabOfColors, isSpecialLevel, special) {
+        this.handleKeyPress();
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.clearCanvas();
