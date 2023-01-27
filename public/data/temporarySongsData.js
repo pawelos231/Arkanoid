@@ -12,4 +12,11 @@ export const tempTabOfSongs = [{
     },
     { name: "krzysiu gej", song: "", pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", description: "nie ma opisu bo krzysiu to gej" },
     { name: "krzysiu gej", song: "", pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", description: "nie ma opisu bo krzysiu to gej" },
-    { name: "krzysiu gej", song: "", pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", description: "nie ma opisu bo krzysiu to gej" },];
+    { name: "krzysiu gej", song: "", pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", description: "nie ma opisu bo krzysiu to gej" },
+    { name: "krzysiu gej", song: "", pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", description: "nie ma opisu bo krzysiu to gej" },
+    { name: "krzysiu gej", song: "", pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", description: "nie ma opisu bo krzysiu to gej" },
+    { name: "krzysiu gej", song: "", pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", description: "nie ma opisu bo krzysiu to gej" },
+    { name: "krzysiu gej", song: "", pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", description: "nie ma opisu bo krzysiu to gej" },
+    { name: "krzysiu gej", song: "", pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", description: "nie ma opisu bo krzysiu to gej" },
+    { name: "krzysiu gej", song: "", pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", description: "nie ma opisu bo krzysiu to gej" }
+];

@@ -68,7 +68,8 @@ class Menu extends Common {
         validator.DisplayBadPassword();
         this.fetcher.SendData();
     }
-    StartGame() {
+    async StartGame() {
+        await media.setSound();
         const isLogged = localStorage.getItem("game");
         const startGamePanel = this.bindElementByClass(START_THE_GAME);
         const BackToMenuPanel = this.bindElementByClass(BACK_TO_MENU);
@@ -88,28 +89,65 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(startGamePanel, true);
         });
     }
-    createSongsView(songsList) {
+    PaginateSongResults(songsList) {
+        const LEFT = this.bindElementByClass("paginateSongResults > .left");
+        const RIGHT = this.bindElementByClass("paginateSongResults > .right");
+        const PAGE = this.bindElementByClass("paginateSongResults > .page");
+        const SONG_LIST_LEN = tempTabOfSongs.length;
+        const ITEMS_PER_PAGE = 5;
+        const PAGES = Math.ceil(SONG_LIST_LEN / ITEMS_PER_PAGE);
+        console.log(PAGES);
+        let currentPage = 0;
+        PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
+        this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE);
+        RIGHT.addEventListener("click", () => {
+            currentPage++;
+            if (currentPage > PAGES - 1) {
+                currentPage--;
+                this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error);
+                return;
+            }
+            if (SONG_LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
+                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, SONG_LIST_LEN - currentPage * ITEMS_PER_PAGE);
+            }
+            else {
+                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE);
+            }
+            PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
+        });
+        LEFT.addEventListener("click", () => {
+            currentPage--;
+            if (currentPage < 0) {
+                currentPage++;
+                this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error);
+                return;
+            }
+            this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE);
+            PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
+        });
+    }
+    createSongsView(songsList, skipValue, itemsperPage) {
         songsList.innerHTML = "";
-        tempTabOfSongs.map((item, i) => {
+        for (let i = skipValue; i < skipValue + itemsperPage; i++) {
             let li = document.createElement("li");
             let img = document.createElement("img");
             let p = document.createElement("p");
-            img.src = item.pathToImage;
+            img.src = tempTabOfSongs[i].pathToImage;
             img.alt = "siema";
-            p.innerHTML = item.description;
+            p.innerHTML = tempTabOfSongs[i].description;
             li.appendChild(img);
             li.appendChild(p);
             li.addEventListener("click", async () => {
                 if (await media.setBackroundMusic(tempTabOfSongs[i].song)) {
-                    this.displayMessageAtTheTopOfTheScreen(`now playing: ${item.name}`, Logger.Message);
+                    this.displayMessageAtTheTopOfTheScreen(`now playing: ${tempTabOfSongs[i].name}`, Logger.Message);
                 }
                 else {
-                    this.displayMessageAtTheTopOfTheScreen(`nie mozemy zagrać nuty: ${item.name}, coś poszło nie tak`, Logger.Error);
+                    this.displayMessageAtTheTopOfTheScreen(`nie mozemy zagrać nuty: ${tempTabOfSongs[i].name}, coś poszło nie tak`, Logger.Error);
                 }
                 media.playMusic();
             });
             songsList.appendChild(li);
-        });
+        }
     }
     async openSettings() {
         const OpenSettings = this.bindElementByClass(OPEN_SETTINGS);
@@ -121,8 +159,7 @@ class Menu extends Common {
         const songsList = this.bindElementByClass(LIST_OF_SONGS);
         //TODO have those files on server to give user choice what to play in backgground
         OpenSettings.addEventListener("click", async () => {
-            this.createSongsView(songsList);
-            await media.setSound();
+            this.PaginateSongResults(songsList);
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {
                 media.resetValuesToDefault(changeVolumeOfMusic, changeVolumeOfSound);

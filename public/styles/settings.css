@@ -77,7 +77,7 @@
 
 .listOfSongs {
     overflow-y: scroll;
-    margin-top: 20px;
+    margin-top: 0px;
     width: 80%;
 }
 
@@ -129,4 +129,29 @@
 .listOfSongs>ul>li:hover {
     background-color: grey;
     cursor: pointer;
+}
+
+.paginateSongResults {
+    display: flex;
+    gap: 20px;
+    font-size: 20px;
+
+}
+
+.paginateSongResults>.right {
+    transition: .1s;
+    cursor: pointer;
+}
+
+.paginateSongResults>.left {
+    transition: .1s;
+    cursor: pointer;
+}
+
+.paginateSongResults>.right:hover {
+    transform: scale(1.24);
+}
+
+.paginateSongResults>.left:hover {
+    transform: scale(1.24);
 }

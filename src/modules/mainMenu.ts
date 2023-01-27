@@ -39,7 +39,6 @@ class Menu extends Common {
 
 
     private switchBetweenRegisterAndLogin(): void {
-
         const changeValueOfMenuToLogin: HTMLElement = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER)
 
         const formElementLogin: HTMLElement = this.bindElementByClass(FORM_TO_LOGIN)
@@ -81,13 +80,15 @@ class Menu extends Common {
 
         })
     }
+
     private SendUserDataToBackend(): void {
         const validator: Validator = new Validator(PASSWORD_INPUT_ELEMENT)
         validator.DisplayBadPassword()
         this.fetcher.SendData();
     }
 
-    private StartGame(): void {
+    private async StartGame(): Promise<void> {
+        await media.setSound()
         const isLogged: null | string = localStorage.getItem("game")
         const startGamePanel: HTMLElement = this.bindElementByClass(START_THE_GAME)
         const BackToMenuPanel: HTMLElement = this.bindElementByClass(BACK_TO_MENU)
@@ -105,34 +106,76 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(startGamePanel, false)
             levelSelect.handleOnClickLevel()
         })
+
         BackToMenuPanel.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(LevelSelect, false)
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         })
     }
-    private createSongsView(songsList: HTMLElement): void {
+
+    private PaginateSongResults(songsList: HTMLElement): void {
+
+        const LEFT: Element = this.bindElementByClass("paginateSongResults > .left")
+        const RIGHT: Element = this.bindElementByClass("paginateSongResults > .right")
+        const PAGE: Element = this.bindElementByClass("paginateSongResults > .page")
+        const SONG_LIST_LEN: number = tempTabOfSongs.length
+        const ITEMS_PER_PAGE = 5
+        const PAGES: number = Math.ceil(SONG_LIST_LEN / ITEMS_PER_PAGE)
+        console.log(PAGES)
+        let currentPage = 0
+
+        PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
+        this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
+        RIGHT.addEventListener("click", () => {
+            currentPage++
+            if (currentPage > PAGES - 1) {
+                currentPage--
+                this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error)
+                return
+            }
+            if (SONG_LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
+                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, SONG_LIST_LEN - currentPage * ITEMS_PER_PAGE)
+            } else {
+                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
+            }
+            PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
+        })
+        LEFT.addEventListener("click", () => {
+            currentPage--
+            if (currentPage < 0) {
+                currentPage++
+                this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error)
+                return
+            }
+            this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
+            PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
+        })
+
+    }
+    private createSongsView(songsList: HTMLElement, skipValue: number, itemsperPage: number): void {
         songsList.innerHTML = ""
-        tempTabOfSongs.map((item, i) => {
+        for (let i = skipValue; i < skipValue + itemsperPage; i++) {
             let li = document.createElement("li")
             let img = document.createElement("img")
             let p = document.createElement("p")
-            img.src = item.pathToImage
+            img.src = tempTabOfSongs[i].pathToImage
             img.alt = "siema"
-            p.innerHTML = item.description
+            p.innerHTML = tempTabOfSongs[i].description
             li.appendChild(img)
             li.appendChild(p)
             li.addEventListener("click", async () => {
                 if (await media.setBackroundMusic(tempTabOfSongs[i].song)) {
-                    this.displayMessageAtTheTopOfTheScreen(`now playing: ${item.name}`, Logger.Message)
+                    this.displayMessageAtTheTopOfTheScreen(`now playing: ${tempTabOfSongs[i].name}`, Logger.Message)
                 } else {
-                    this.displayMessageAtTheTopOfTheScreen(`nie mozemy zagrać nuty: ${item.name}, coś poszło nie tak`, Logger.Error)
+                    this.displayMessageAtTheTopOfTheScreen(`nie mozemy zagrać nuty: ${tempTabOfSongs[i].name}, coś poszło nie tak`, Logger.Error)
                 }
 
                 media.playMusic()
             })
             songsList.appendChild(li)
-        })
+        }
     }
+
     private async openSettings(): Promise<void> {
         const OpenSettings: HTMLElement | null = this.bindElementByClass(OPEN_SETTINGS)
         const OpenedSettingsPage: HTMLElement | null = this.bindElementByClass(OPENED_SETTINGS_PAGE)
@@ -145,8 +188,7 @@ class Menu extends Common {
         //TODO have those files on server to give user choice what to play in backgground
 
         OpenSettings.addEventListener("click", async () => {
-            this.createSongsView(songsList)
-            await media.setSound()
+            this.PaginateSongResults(songsList)
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
             resetInputsSettings.addEventListener("click", () => {
                 media.resetValuesToDefault(changeVolumeOfMusic, changeVolumeOfSound)
