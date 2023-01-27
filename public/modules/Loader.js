@@ -8,7 +8,7 @@ class Loader {
         return new Promise((resolve, reject) => {
             audio.addEventListener('canplaythrough', (event) => this.itemLoaded(event), false);
             audio.src = soundUrl;
-            resolve(audio);
+            soundUrl.length !== 0 ? resolve(audio) : reject("nie udało się wczytać pliku");
         });
     }
     itemLoaded(event) {

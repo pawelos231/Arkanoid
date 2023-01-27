@@ -12,9 +12,10 @@ export class Media {
         this.allowedMusic = allowedMusic
         this.allowedSound = allowedSound
     }
-    public async setBackroundMusic(path: string) {
-        if (path.length == 0) throw new Error("niepoprawna ściezka")
-        if (this.cachedSongId == path) throw new Error("ta nuta juz bangla")
+    public async setBackroundMusic(path: string): Promise<boolean> {
+        //do better error handling
+        if (path.length == 0) return false
+        if (this.cachedSongId == path) return false
 
         else if (this.cachedSongId.length !== 0 && this.cachedSongId !== path) {
             this.backgroundMusic.pause()
@@ -26,6 +27,7 @@ export class Media {
             this.backgroundMusic = backgroundAudio
         }
         this.cachedSongId = path
+        return true
     }
     playMusic(): void {
         this.backgroundMusic.loop = true
@@ -52,9 +54,6 @@ export class Media {
         inputMusic.value = this.musicVolume * 100
         this.backgroundMusic.volume = this.musicVolume
     }
-    resetMusic(): void {
-
-    }
     muteMusic(): void {
 
     }
@@ -62,6 +61,6 @@ export class Media {
 
     }
     spawnSound(): void {
-
+        
     }
 }

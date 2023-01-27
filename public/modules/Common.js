@@ -6,6 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { HIDDEN } from "../constants/classNames";
 import { sealed } from "../decorators/seal";
+import { Logger } from "../interfaces/Logger";
 const REGISTER_FORMS = "RegisterElement";
 let Common = class Common {
     constructor(elementId) {
@@ -36,12 +37,20 @@ let Common = class Common {
             throw new Error(`nie znaleziono elementu ${elementsTobBind}`);
         return elements;
     }
-    displayMessageAtTheTopOfTheScreen(message) {
-        const messageNode = this.bindElementByClass(".MESSAGE");
+    displayMessageAtTheTopOfTheScreen(message, status) {
+        if (status > 2 || status < 0)
+            throw new Error("nieporawny status wiadomości, wprowadź wartości z enuma Errors");
+        const messageNode = this.bindElementByClass("MESSAGE");
+        if (Logger.Error == status) {
+            messageNode.style.color = "red";
+        }
+        else if (status == Logger.Message) {
+            messageNode.style.color = "green";
+        }
         this.changeVisbilityOfGivenElement(messageNode, true);
         setTimeout(() => {
             this.changeVisbilityOfGivenElement(messageNode, false);
-        }, 1000);
+        }, 1500);
         messageNode.textContent = message;
     }
     makeLoginPanelInvisible() {

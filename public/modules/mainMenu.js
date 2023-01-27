@@ -3,6 +3,8 @@ import { Validator } from '../helpers/PasswordInputValidation.js';
 import { Fetcher } from '../helpers/Fetcher.js';
 import { Media } from './Media.js';
 import { levelSelect } from './LevelSelect.js';
+import { tempTabOfSongs } from '../data/temporarySongsData.js';
+import { Logger } from '../interfaces/Logger.js';
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -86,6 +88,29 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(startGamePanel, true);
         });
     }
+    createSongsView(media, songsList) {
+        songsList.innerHTML = "";
+        tempTabOfSongs.map((item, i) => {
+            let li = document.createElement("li");
+            let img = document.createElement("img");
+            let p = document.createElement("p");
+            img.src = item.pathToImage;
+            img.alt = "siema";
+            p.innerHTML = item.description;
+            li.appendChild(img);
+            li.appendChild(p);
+            li.addEventListener("click", async () => {
+                if (await media.setBackroundMusic(tempTabOfSongs[i].song)) {
+                    this.displayMessageAtTheTopOfTheScreen(`now playing: ${item.name}`, Logger.Message);
+                }
+                else {
+                    this.displayMessageAtTheTopOfTheScreen(`nie mozemy zagrać nuty: ${item.name}, coś poszło nie tak`, Logger.Error);
+                }
+                media.playMusic();
+            });
+            songsList.appendChild(li);
+        });
+    }
     async openSettings() {
         const OpenSettings = this.bindElementByClass(OPEN_SETTINGS);
         const OpenedSettingsPage = this.bindElementByClass(OPENED_SETTINGS_PAGE);
@@ -95,14 +120,8 @@ class Menu extends Common {
         const songsList = this.bindElementByClass(LIST_OF_SONGS);
         //TODO have those files on server to give user choice what to play in backgground
         const media = new Media(0.5, 0.5, true, true);
-        let tempTabOfSongs = ["https://www.cjoint.com/doc/18_05/HEfplvJ186F_One-Punch-Man-OST---Genos-Sound---Fight-Music.mp3", "http://localhost:1234/avicii_hey_bro.mp3", "", "", ""];
         OpenSettings.addEventListener("click", () => {
-            Array.from(songsList.children).forEach((item, i) => {
-                item.addEventListener("click", async () => {
-                    await media.setBackroundMusic(tempTabOfSongs[i]);
-                    media.playMusic();
-                });
-            });
+            this.createSongsView(media, songsList);
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {
                 media.resetValuesToDefault(increaseVolume);

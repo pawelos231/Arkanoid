@@ -50,6 +50,7 @@ export class Canvas<T> extends Common {
         })
 
     }
+    
     public configureCanvas(): void {
 
         this.changeVisbilityOfGivenElement(this.elementId, true)
@@ -60,6 +61,7 @@ export class Canvas<T> extends Common {
         this.BRICK_HEIGHT = window.innerHeight / 18
         this.BRICK_WIDTH = window.innerWidth / this.columnsCount
     }
+
     drawBuffs() {
 
     }
@@ -119,10 +121,12 @@ export class Canvas<T> extends Common {
             }
         })
     }
+
     private drawPaddle(): void {
         const paddle: Paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx)
         paddle.drawPaddle(this.gameState.paddle_positions)
     }
+
     private drawBrick(brick_x: number, brick_y: number, color: string, special: Specialbrick | null): void {
         const brick: Brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y)
         brick.drawBrick<T>(brick_x, brick_y, color, this.image)
@@ -141,9 +145,11 @@ export class Canvas<T> extends Common {
         this.drawBall()
         special ? this.drawGameBricks(tabOfColors, special) : this.drawGameBricks(tabOfColors, null)
     }
+
     private clearCanvas(): void {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
     }
+
     private handleKeyPress(): void {
         const paddle_x: number = this.gameState.paddle_positions.paddle_x
         if (this.keyPressedLeft && paddle_x > 0) {
@@ -153,6 +159,7 @@ export class Canvas<T> extends Common {
             this.gameState.paddle_positions.paddle_x += 15
         }
     }
+
     public draw(tabOfColors: string[], isSpecialLevel: boolean, special: Specialbrick): void {
         this.handleKeyPress()
         this.canvas.width = window.innerWidth

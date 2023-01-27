@@ -10,7 +10,7 @@ class Loader {
         return new Promise((resolve, reject) => {
             audio.addEventListener('canplaythrough', (event: Event) => this.itemLoaded<Event>(event), false)
             audio.src = soundUrl
-            resolve(audio)
+            soundUrl.length !== 0 ? resolve(audio) : reject("nie udało się wczytać pliku")
         })
     }
     public itemLoaded<T extends Event>(event: T): void {

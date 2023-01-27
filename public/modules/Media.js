@@ -8,10 +8,11 @@ export class Media {
         this.allowedSound = allowedSound;
     }
     async setBackroundMusic(path) {
+        //do better error handling
         if (path.length == 0)
-            throw new Error("niepoprawna ściezka");
+            return false;
         if (this.cachedSongId == path)
-            throw new Error("ta nuta juz bangla");
+            return false;
         else if (this.cachedSongId.length !== 0 && this.cachedSongId !== path) {
             this.backgroundMusic.pause();
             this.backgroundMusic = null;
@@ -23,6 +24,7 @@ export class Media {
             this.backgroundMusic = backgroundAudio;
         }
         this.cachedSongId = path;
+        return true;
     }
     playMusic() {
         this.backgroundMusic.loop = true;
@@ -48,8 +50,6 @@ export class Media {
         let inputMusic = element.children[0];
         inputMusic.value = this.musicVolume * 100;
         this.backgroundMusic.volume = this.musicVolume;
-    }
-    resetMusic() {
     }
     muteMusic() {
     }
