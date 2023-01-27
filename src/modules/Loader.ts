@@ -13,10 +13,12 @@ class Loader {
             soundUrl.length !== 0 ? resolve(audio) : reject("nie udało się wczytać pliku")
         })
     }
-    public itemLoaded<T extends Event>(event: T): void {
+
+    private itemLoaded<T extends Event>(event: T): void {
         if (!event.target) return
         event.target.removeEventListener(event.type, this.itemLoaded, false);
     }
+
     public loadImage(imageUrl: string): Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
             const image: HTMLImageElement = new Image();

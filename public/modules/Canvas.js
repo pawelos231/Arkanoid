@@ -4,6 +4,7 @@ import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
 import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS } from "../constants/gameState";
 import { GameState } from "./gameState";
+import { media } from "./Media";
 var Directions;
 (function (Directions) {
     Directions[Directions["LeftArrows"] = LEFT_ARROW] = "LeftArrows";
@@ -73,6 +74,7 @@ export class Canvas extends Common {
         const paddle_x = this.gameState.paddle_positions.paddle_x;
         const paddle_y = this.gameState.paddle_positions.paddle_y;
         if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
+            media.spawnSound();
             this.ballMoveRateY = -this.ballMoveRateY;
         }
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY });

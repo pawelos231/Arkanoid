@@ -5,6 +5,7 @@ import { Paddle } from "./Entities/Paddle";
 import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS } from "../constants/gameState";
 import { GameState } from "./gameState";
 import { Specialbrick } from "../interfaces/gameStateInterface";
+import { media } from "./Media";
 
 
 enum Directions {
@@ -50,7 +51,7 @@ export class Canvas<T> extends Common {
         })
 
     }
-    
+
     public configureCanvas(): void {
 
         this.changeVisbilityOfGivenElement(this.elementId, true)
@@ -92,6 +93,7 @@ export class Canvas<T> extends Common {
         const paddle_y: number = this.gameState.paddle_positions.paddle_y
 
         if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
+            media.spawnSound()
             this.ballMoveRateY = -this.ballMoveRateY
         }
 

@@ -1,7 +1,7 @@
 import { Common } from './Common.js'
 import { Validator } from '../helpers/PasswordInputValidation.js'
 import { Fetcher } from '../helpers/Fetcher.js'
-import { Media } from './Media.js'
+import { media } from './Media.js'
 import { levelSelect } from './LevelSelect.js'
 import { tempTabOfSongs } from '../data/temporarySongsData.js'
 import { Logger } from '../interfaces/Logger.js'
@@ -110,7 +110,7 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         })
     }
-    private createSongsView(media: Media, songsList: HTMLElement) {
+    private createSongsView(songsList: HTMLElement): void {
         songsList.innerHTML = ""
         tempTabOfSongs.map((item, i) => {
             let li = document.createElement("li")
@@ -137,23 +137,22 @@ class Menu extends Common {
         const OpenSettings: HTMLElement | null = this.bindElementByClass(OPEN_SETTINGS)
         const OpenedSettingsPage: HTMLElement | null = this.bindElementByClass(OPENED_SETTINGS_PAGE)
         const CloseSettings: HTMLElement | null = this.bindElementByClass(CLOSE_SETTINGS)
-        const increaseVolume: HTMLElement | null = this.bindElementByClass(MUSIC_RANGE)
+        const changeVolumeOfMusic: HTMLElement | null = this.bindElementByClass(MUSIC_RANGE)
+        const changeVolumeOfSound: HTMLElement | null = this.bindElementByClass(SOUND_RANGE)
         const resetInputsSettings: HTMLElement | null = this.bindElementByClass(RESET_INPUT_SETTINGS)
         const songsList: HTMLElement | null = this.bindElementByClass(LIST_OF_SONGS)
 
         //TODO have those files on server to give user choice what to play in backgground
 
-
-        const media: Media = new Media(0.5, 0.5, true, true)
-
-        OpenSettings.addEventListener("click", () => {
-            this.createSongsView(media, songsList)
+        OpenSettings.addEventListener("click", async () => {
+            this.createSongsView(songsList)
+            await media.setSound()
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
             resetInputsSettings.addEventListener("click", () => {
-                media.resetValuesToDefault(increaseVolume)
+                media.resetValuesToDefault(changeVolumeOfMusic, changeVolumeOfSound)
             })
-
-            media.changeVolumeOfBackgroundMusic(increaseVolume)
+            media.changeVolumeOfBackgroundMusic(changeVolumeOfMusic)
+            media.changeVolumeOfSound(changeVolumeOfSound)
         })
 
         CloseSettings.addEventListener("click", () => {

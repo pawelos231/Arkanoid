@@ -1,12 +1,13 @@
 import { loader } from "./Loader"
-export class Media {
+class Media {
     musicVolume: number
     soundVolume: number
     allowedMusic: boolean
     allowedSound: boolean
     backgroundMusic: any
+    sound: any
     cachedSongId: string = ""
-    constructor(musicVolume: number = 0.3, soundVolume: number = 0.3, allowedMusic: boolean = true, allowedSound: boolean = true) {
+    constructor(musicVolume: number = 0.5, soundVolume: number = 0.5, allowedMusic: boolean = true, allowedSound: boolean = true) {
         this.musicVolume = musicVolume;
         this.soundVolume = soundVolume;
         this.allowedMusic = allowedMusic
@@ -29,6 +30,13 @@ export class Media {
         this.cachedSongId = path
         return true
     }
+
+    public async setSound(path: string = "http://localhost:1234/hitPaddle.mp3") {
+        if (path.length == 0) return false
+        const sound: HTMLAudioElement = await loader.loadSound(path)
+        this.sound = sound
+    }
+
     playMusic(): void {
         this.backgroundMusic.loop = true
         this.backgroundMusic.volume = this.musicVolume
@@ -37,22 +45,35 @@ export class Media {
     public stopMusic(): void {
         this.backgroundMusic.pause()
     }
-    public changeVolumeOfBackgroundMusic(element: Element): void {
-        let inputMusic: any = element.children[0]
+    public changeVolumeOfBackgroundMusic(musicElement: Element): void {
+        let inputMusic: any = musicElement.children[0]
         inputMusic.value = this.musicVolume * 100
+
         inputMusic.addEventListener("input", (e: any) => {
             const valueOfAnElement: number = e.target.value / 100
             this.backgroundMusic.volume = valueOfAnElement
         })
     }
-    public resetValuesToDefault(element: Element): void {
+    public changeVolumeOfSound(SoundElement: Element): void {
+        let inputMusic: any = SoundElement.children[0]
+        inputMusic.value = this.soundVolume * 100
+
+        inputMusic.addEventListener("input", (e: any) => {
+            const valueOfAnElement: number = e.target.value / 100
+            this.sound.volume = valueOfAnElement
+        })
+    }
+    public resetValuesToDefault(music: Element, sound: Element): void {
         this.allowedMusic = true
         this.allowedSound = true
         this.musicVolume = 0.5
         this.soundVolume = 0.5
-        let inputMusic: any = element.children[0]
+        let inputMusic: any = music.children[0]
         inputMusic.value = this.musicVolume * 100
+        let inputSound: any = sound.children[0]
+        inputSound.value = this.soundVolume * 100
         this.backgroundMusic.volume = this.musicVolume
+        this.sound.volume = this.soundVolume
     }
     muteMusic(): void {
 
@@ -61,6 +82,8 @@ export class Media {
 
     }
     spawnSound(): void {
-        
+        this.sound.play()
+        this.sound.loop = false
     }
 }
+export const media = new Media()

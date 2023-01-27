@@ -2,6 +2,7 @@ import { Common } from "./Common";
 import { Canvas } from "./Canvas";
 import { colorRandomizer } from "../helpers/colorRandomizer";
 import { loader } from "./Loader";
+import { media } from "./Media";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu"
 const LEVEL_SELECT = "levelSelect"
 const LEVEL = 1;
@@ -20,6 +21,7 @@ class LevelSelect extends Common {
   delay(ms: number) {
     return new Promise((res, rej) => setTimeout(res, ms))
   }
+
   public handleOnClickLevel(): void {
     const levelSelect: HTMLElement = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU)
 
@@ -30,7 +32,6 @@ class LevelSelect extends Common {
         for (let i = 0; i < BRICK_ROWS_COUNT; i++) {
           tabOfColors.push(colorRandomizer())
         }
-
         const isSpecialLevel: number = Math.floor(Math.random() * 1)
         if (isSpecialLevel == 0) {
           const randomBrick: number = Math.floor(Math.random() * 24)

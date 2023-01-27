@@ -1,6 +1,6 @@
 import { loader } from "./Loader";
-export class Media {
-    constructor(musicVolume = 0.3, soundVolume = 0.3, allowedMusic = true, allowedSound = true) {
+class Media {
+    constructor(musicVolume = 0.5, soundVolume = 0.5, allowedMusic = true, allowedSound = true) {
         this.cachedSongId = "";
         this.musicVolume = musicVolume;
         this.soundVolume = soundVolume;
@@ -26,6 +26,12 @@ export class Media {
         this.cachedSongId = path;
         return true;
     }
+    async setSound(path = "http://localhost:1234/hitPaddle.mp3") {
+        if (path.length == 0)
+            return false;
+        const sound = await loader.loadSound(path);
+        this.sound = sound;
+    }
     playMusic() {
         this.backgroundMusic.loop = true;
         this.backgroundMusic.volume = this.musicVolume;
@@ -34,27 +40,41 @@ export class Media {
     stopMusic() {
         this.backgroundMusic.pause();
     }
-    changeVolumeOfBackgroundMusic(element) {
-        let inputMusic = element.children[0];
+    changeVolumeOfBackgroundMusic(musicElement) {
+        let inputMusic = musicElement.children[0];
         inputMusic.value = this.musicVolume * 100;
         inputMusic.addEventListener("input", (e) => {
             const valueOfAnElement = e.target.value / 100;
             this.backgroundMusic.volume = valueOfAnElement;
         });
     }
-    resetValuesToDefault(element) {
+    changeVolumeOfSound(SoundElement) {
+        let inputMusic = SoundElement.children[0];
+        inputMusic.value = this.soundVolume * 100;
+        inputMusic.addEventListener("input", (e) => {
+            const valueOfAnElement = e.target.value / 100;
+            this.sound.volume = valueOfAnElement;
+        });
+    }
+    resetValuesToDefault(music, sound) {
         this.allowedMusic = true;
         this.allowedSound = true;
         this.musicVolume = 0.5;
         this.soundVolume = 0.5;
-        let inputMusic = element.children[0];
+        let inputMusic = music.children[0];
         inputMusic.value = this.musicVolume * 100;
+        let inputSound = sound.children[0];
+        inputSound.value = this.soundVolume * 100;
         this.backgroundMusic.volume = this.musicVolume;
+        this.sound.volume = this.soundVolume;
     }
     muteMusic() {
     }
     muteSound() {
     }
     spawnSound() {
+        this.sound.play();
+        this.sound.loop = false;
     }
 }
+export const media = new Media();
