@@ -26,7 +26,7 @@ class LevelSelect extends Common {
                 for (let i = 0; i < BRICK_ROWS_COUNT; i++) {
                     tabOfColors.push(colorRandomizer());
                 }
-                const isSpecialLevel = Math.floor(Math.random() * 1);
+                const isSpecialLevel = Math.floor(Math.random() * 2);
                 if (isSpecialLevel == 0) {
                     const randomBrick = Math.floor(Math.random() * 24);
                     const image = await loader.loadImage("http://localhost:1234/Krzysiu.a065cfe0.png");

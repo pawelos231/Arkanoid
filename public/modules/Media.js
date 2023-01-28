@@ -37,11 +37,15 @@ class Media {
             this.sound.pause();
             this.sound = null;
             const sound = await loader.loadSound(path);
+            const sound2 = await loader.loadSound(path);
             this.sound = sound;
+            this.bricksound = sound2;
         }
         else {
             const sound = await loader.loadSound(path);
+            const sound2 = await loader.loadSound(path);
             this.sound = sound;
+            this.bricksound = sound2;
         }
         this.cachedSoundId = path;
         return true;
@@ -86,8 +90,14 @@ class Media {
     }
     muteSound() {
     }
-    spawnSound() {
-        this.sound.play();
+    spawnSoundWhenHitPaddle() {
+        if (this.sound) {
+            this.sound.play();
+            this.sound.loop = false;
+        }
+    }
+    spawnSoundWhenHitBrick() {
+        this.bricksound.play();
         this.sound.loop = false;
     }
 }

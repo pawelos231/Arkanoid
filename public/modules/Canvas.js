@@ -80,22 +80,22 @@ export class Canvas extends Common {
         const paddle_x = this.gameState.paddle_positions.paddle_x;
         const paddle_y = this.gameState.paddle_positions.paddle_y;
         if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
-            media.spawnSound();
+            media.spawnSoundWhenHitPaddle();
             this.ballMoveRateY = -this.ballMoveRateY;
         }
         for (let i = 0; i < this.bricksArray.length; i++) {
             if (this.bricksArray[i].brickStateGet.status == 0)
                 continue;
-            if (this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS && this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH < ball_x && this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH > ball_x) {
+            if (this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS && this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH + RADIUS + this.BRICK_WIDTH > ball_x) {
                 const temp = this.bricksArray[i].brickStateGet.special;
                 if (temp && temp.Position) {
-                    if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x && ball_x < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
+                    if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
                         console.log("trafiony special");
                     }
                 }
                 console.log(this.bricksArray[i].brickStateGet.special);
                 this.bricksArray[i].setStatus = 0;
-                media.spawnSound();
+                media.spawnSoundWhenHitBrick();
                 this.ballMoveRateY = -this.ballMoveRateY;
             }
         }

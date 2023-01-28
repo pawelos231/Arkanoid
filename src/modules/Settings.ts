@@ -100,7 +100,7 @@ class Settings extends Common {
                         throw new Error("nie mozemy wczytać tego dźwięku")
                     }
                     console.log("media spawn sound")
-                    media.spawnSound()
+                    media.spawnSoundWhenHitPaddle()
                 })
                 songsList.appendChild(li)
             }

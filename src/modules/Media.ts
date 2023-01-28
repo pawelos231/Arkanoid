@@ -7,6 +7,7 @@ class Media {
     allowedSound: boolean
     backgroundMusic: any
     sound: any
+    bricksound: any
     cachedSongId: string = ""
     cachedSoundId: string = ""
     constructor(musicVolume: number = 0.5, soundVolume: number = 0.5, allowedMusic: boolean = true, allowedSound: boolean = true) {
@@ -40,10 +41,14 @@ class Media {
             this.sound.pause()
             this.sound = null
             const sound: HTMLAudioElement = await loader.loadSound(path)
+            const sound2: HTMLAudioElement = await loader.loadSound(path)
             this.sound = sound
+            this.bricksound = sound2
         } else {
             const sound: HTMLAudioElement = await loader.loadSound(path)
+            const sound2: HTMLAudioElement = await loader.loadSound(path)
             this.sound = sound
+            this.bricksound = sound2
         }
         this.cachedSoundId = path
         return true
@@ -93,8 +98,14 @@ class Media {
     muteSound(): void {
 
     }
-    spawnSound(): void {
-        this.sound.play()
+    spawnSoundWhenHitPaddle(): void {
+        if (this.sound) {
+            this.sound.play()
+            this.sound.loop = false
+        }
+    }
+    spawnSoundWhenHitBrick() {
+        this.bricksound.play()
         this.sound.loop = false
     }
 }
