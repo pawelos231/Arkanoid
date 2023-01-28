@@ -31,19 +31,19 @@ class LevelSelect extends Common {
                     const randomBrick = Math.floor(Math.random() * 24);
                     const image = await loader.loadImage("http://localhost:1234/Krzysiu.a065cfe0.png");
                     const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, image, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT);
-                    canvas.configureCanvas();
+                    canvas.configureCanvas(tabOfColors, isSpecialLevel == 0, { randomBrick, Position: { brick_x: -10, brick_y: -10 } });
                     canvas.addEventOnResize();
-                    setInterval(() => {
-                        canvas.draw(tabOfColors, isSpecialLevel == 0, { randomBrick, Position: { brick_x: -10, brick_y: -10 } });
-                    }, 20);
                     canvas.setListenerMovePaddle();
+                    setInterval(() => {
+                        canvas.draw();
+                    }, 20);
                 }
                 else {
                     const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, null, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT);
-                    canvas.configureCanvas();
+                    canvas.configureCanvas(tabOfColors, false, { randomBrick: null, Position: null });
                     canvas.addEventOnResize();
                     setInterval(() => {
-                        canvas.draw(tabOfColors, false, { randomBrick: null, Position: null });
+                        canvas.draw();
                     }, 20);
                     canvas.setListenerMovePaddle();
                 }

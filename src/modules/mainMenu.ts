@@ -91,6 +91,7 @@ class Menu extends Common {
     }
 
     private async StartGame(): Promise<void> {
+        media.setSound()
         const isLogged: null | string = localStorage.getItem("game")
         const startGamePanel: HTMLElement = this.bindElementByClass(START_THE_GAME)
         const BackToMenuPanel: HTMLElement = this.bindElementByClass(BACK_TO_MENU)
@@ -130,7 +131,7 @@ class Menu extends Common {
         //TODO have those files on server to give user choice what to play in backgground
 
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults<Sounds, string>(songsList, 5, tempTabOfSounds, MediaEnum.Sounds)
+            settings.PaginateResults<Songs, string>(songsList, 5, tempTabOfSongs, MediaEnum.Music)
             SOUNDS.addEventListener("click", () => {
                 settings.PaginateResults<Sounds, string>(songsList, 5, tempTabOfSounds, MediaEnum.Sounds)
             })

@@ -6,16 +6,13 @@ export class Brick {
     private height: number
     private ctx: CanvasRenderingContext2D
     private brickState: BrickState
-    public constructor(width: number, height: number, ctx: CanvasRenderingContext2D, special: Specialbrick | null, status: number, brick_x: number, brick_y: number) {
+    color: string
+    public constructor(width: number, height: number, ctx: CanvasRenderingContext2D, special: Specialbrick | null, status: number, brick_x: number, brick_y: number, color: string) {
         this.width = width
         this.height = height
         this.ctx = ctx
         this.brickState = { brick_x, brick_y, status, special }
-    }
-    private initBrickState(brick_x: number, brick_y: number): void {
-
-        this.brickState.brick_x = brick_x
-        this.brickState.brick_y = brick_y
+        this.color = color
     }
     WriteBrickToConsole(): void {
         console.log(this.brickState)
@@ -23,29 +20,36 @@ export class Brick {
     public get brickStateGet() {
         return this.brickState
     }
-
-    private setColor<T>(special: Specialbrick | null, color: string, x: number, y: number, image: T): void {
-        if (special && special.randomBrick == (this.brickState.brick_x + 1) * (this.brickState.brick_y + 1)) {
+    public set setStatus(value: number) {
+        this.brickState.status = value
+    }
+    private setColor<T>(special: Specialbrick | null, x: number, y: number, image: T, counter: number): void {
+        if (special && special.randomBrick == counter) {
             if (special.Position) {
                 special.Position.brick_x = this.brickState.brick_x
                 special.Position.brick_y = this.brickState.brick_y
             }
-            this.ctx.drawImage(image as HTMLImageElement, x + 1, y + 1, this.width - 2, this.height - 2);
+            this.ctx.drawImage(image as HTMLImageElement, x, y, this.width - 2, this.height - 2);
         }
         else {
-            this.ctx.fillStyle = color
+            this.ctx.fillStyle = this.color
             this.ctx.fillRect(this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, this.width - 1, this.height - 1)
         }
     }
-    public async drawBrick<T>(heightOffset: number, widthOffset: number, color: string, image: T | null = null) {
+    public set widthSetter(width: number) {
+        this.width = width
+    }
+    public set heightSetter(height: number) {
+        this.height = height
+    }
+    public async drawBrick<T>(image: T | null = null, counter: number) {
 
-        this.initBrickState(widthOffset, heightOffset)
-
-        this.setColor<T | null>(this.brickState.special, color, widthOffset * this.width, heightOffset * this.height, image)
+        if (this.brickState.status == 0) return
+        this.setColor<T | null>(this.brickState.special, this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, image, counter)
 
         this.ctx.strokeStyle = "white"
 
-        this.ctx.strokeRect(widthOffset * this.width, heightOffset * this.height, this.width, this.height)
+        this.ctx.strokeRect(this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, this.width, this.height)
 
         //this.WriteBrickToConsole()
     }

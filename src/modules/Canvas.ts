@@ -28,7 +28,7 @@ export class Canvas<T> extends Common {
     private ctx: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
     gameState: GameState
-    bricksArray: Array<any>
+    bricksArray: Array<Brick>
     image: T
     constructor(level: number, pointsToWin: number, lives: number, image: T, rowsCount: number, columnsCount: number) {
         super(GAME_CANVAS)
@@ -48,19 +48,23 @@ export class Canvas<T> extends Common {
             this.canvas.width = values[1]
             this.BRICK_HEIGHT = window.innerHeight / 18
             this.BRICK_WIDTH = window.innerWidth / 8
+            for (let i = 0; i < this.bricksArray.length; i++) {
+                this.bricksArray[i].widthSetter = this.BRICK_WIDTH
+                this.bricksArray[i].heightSetter = this.BRICK_HEIGHT
+            }
         })
 
     }
 
-    public configureCanvas(): void {
-
+    public configureCanvas(tabOfColors: string[], isSpecialLevel: boolean, special: Specialbrick | null): void {
         this.changeVisbilityOfGivenElement(this.elementId, true)
-
         this.canvas = this.elementId as HTMLCanvasElement;
         this.canvas.style.backgroundColor = "black"
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
         this.BRICK_HEIGHT = window.innerHeight / 18
         this.BRICK_WIDTH = window.innerWidth / this.columnsCount
+        isSpecialLevel ? this.initBricks(special, tabOfColors) : this.initBricks(null, tabOfColors)
+        console.log(this.bricksArray)
     }
 
     drawBuffs() {
@@ -87,6 +91,7 @@ export class Canvas<T> extends Common {
             }
             this.gameState.paddle_positions = { paddle_y: window.innerHeight - 40, paddle_x: window.innerWidth / 2 - 100 }
         }
+
         const ball_x: number = this.gameState.ball_positions.ball_x
         const ball_y: number = this.gameState.ball_positions.ball_y
         const paddle_x: number = this.gameState.paddle_positions.paddle_x
@@ -96,7 +101,22 @@ export class Canvas<T> extends Common {
             media.spawnSound()
             this.ballMoveRateY = -this.ballMoveRateY
         }
+        for (let i = 0; i < this.bricksArray.length; i++) {
+            if (this.bricksArray[i].brickStateGet.status == 0) continue
+            if (this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS && this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH < ball_x && this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH > ball_x) {
+                const temp = this.bricksArray[i].brickStateGet.special
+                if (temp && temp.Position) {
+                    if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x && ball_x < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
+                        console.log("trafiony special")
+                    }
+                }
+                console.log(this.bricksArray[i].brickStateGet.special)
+                this.bricksArray[i].setStatus = 0
+                media.spawnSound()
+                this.ballMoveRateY = -this.ballMoveRateY
+            }
 
+        }
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY })
     }
 
@@ -129,23 +149,28 @@ export class Canvas<T> extends Common {
         paddle.drawPaddle(this.gameState.paddle_positions)
     }
 
-    private drawBrick(brick_x: number, brick_y: number, color: string, special: Specialbrick | null): void {
-        const brick: Brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y)
-        brick.drawBrick<T>(brick_x, brick_y, color, this.image)
+    private addBricksToArray(brick_x: number, brick_y: number, special: Specialbrick | null, color: string): void {
+        const brick: Brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y, color)
+        this.bricksArray.push(brick)
     }
 
-    private drawGameBricks(tabOfColors: string[], special: Specialbrick | null): void {
+    private initBricks(special: Specialbrick | null, tabOfColor: string[]): void {
         for (let i = 0; i < this.rowsCount; i++) {
             for (let j = 0; j < this.columnsCount; j++) {
-                this.drawBrick(i, j, tabOfColors[i], special)
+                this.addBricksToArray(j, i, special, tabOfColor[i])
             }
         }
     }
+    private drawBricks() {
+        for (let i = 0; i < this.bricksArray.length; i++) {
+            this.bricksArray[i].drawBrick(this.image, i)
+        }
+    }
 
-    private drawGame(tabOfColors: string[], special: Specialbrick | null): void {
+    private drawGame(): void {
         this.drawPaddle()
         this.drawBall()
-        special ? this.drawGameBricks(tabOfColors, special) : this.drawGameBricks(tabOfColors, null)
+        this.drawBricks()
     }
 
     private clearCanvas(): void {
@@ -162,12 +187,12 @@ export class Canvas<T> extends Common {
         }
     }
 
-    public draw(tabOfColors: string[], isSpecialLevel: boolean, special: Specialbrick): void {
+    public draw(): void {
         this.handleKeyPress()
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
         this.clearCanvas()
-        isSpecialLevel ? this.drawGame(tabOfColors, special) : this.drawGame(tabOfColors, null)
+        this.drawGame()
 
     }
 }

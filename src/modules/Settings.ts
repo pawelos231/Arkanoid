@@ -72,7 +72,7 @@ class Settings extends Common {
                 li.appendChild(p)
                 li.addEventListener("click", async () => {
                     if (await media.setBackroundMusic(tempTabOfMusic[i].song)) {
-                        this.displayMessageAtTheTopOfTheScreen(`now playing: ${tempTabOfMusic[i].name}`, Logger.Message)
+                        this.displayMessageAtTheTopOfTheScreen(`Ustawiono piosenkę o nazwie: ${tempTabOfMusic[i].name}`, Logger.Message)
                     } else {
                         this.displayMessageAtTheTopOfTheScreen(`nie mozemy zagrać nuty: ${tempTabOfMusic[i].name}, coś poszło nie tak`, Logger.Error)
                         throw new Error("nie mozemy zagrać tej piosenki")
@@ -94,7 +94,7 @@ class Settings extends Common {
                 li.appendChild(p)
                 li.addEventListener("click", async () => {
                     if (await media.setSound(tempTabOfMusic[i].sound)) {
-                        this.displayMessageAtTheTopOfTheScreen(`Dźwięk o nazwie: ${tempTabOfSongs[i].name}`, Logger.Message)
+                        this.displayMessageAtTheTopOfTheScreen(`Ustawiono dźwięk o nazwie: ${tempTabOfSongs[i].name}`, Logger.Message)
                     } else {
                         this.displayMessageAtTheTopOfTheScreen(`nie wczytać dźwięku: ${tempTabOfMusic[i].name}, coś poszło nie tak`, Logger.Error)
                         throw new Error("nie mozemy wczytać tego dźwięku")

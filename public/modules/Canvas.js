@@ -37,15 +37,21 @@ export class Canvas extends Common {
             this.canvas.width = values[1];
             this.BRICK_HEIGHT = window.innerHeight / 18;
             this.BRICK_WIDTH = window.innerWidth / 8;
+            for (let i = 0; i < this.bricksArray.length; i++) {
+                this.bricksArray[i].widthSetter = this.BRICK_WIDTH;
+                this.bricksArray[i].heightSetter = this.BRICK_HEIGHT;
+            }
         });
     }
-    configureCanvas() {
+    configureCanvas(tabOfColors, isSpecialLevel, special) {
         this.changeVisbilityOfGivenElement(this.elementId, true);
         this.canvas = this.elementId;
         this.canvas.style.backgroundColor = "black";
         this.ctx = this.canvas.getContext("2d");
         this.BRICK_HEIGHT = window.innerHeight / 18;
         this.BRICK_WIDTH = window.innerWidth / this.columnsCount;
+        isSpecialLevel ? this.initBricks(special, tabOfColors) : this.initBricks(null, tabOfColors);
+        console.log(this.bricksArray);
     }
     drawBuffs() {
     }
@@ -77,6 +83,22 @@ export class Canvas extends Common {
             media.spawnSound();
             this.ballMoveRateY = -this.ballMoveRateY;
         }
+        for (let i = 0; i < this.bricksArray.length; i++) {
+            if (this.bricksArray[i].brickStateGet.status == 0)
+                continue;
+            if (this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS && this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH < ball_x && this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH > ball_x) {
+                const temp = this.bricksArray[i].brickStateGet.special;
+                if (temp && temp.Position) {
+                    if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x && ball_x < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
+                        console.log("trafiony special");
+                    }
+                }
+                console.log(this.bricksArray[i].brickStateGet.special);
+                this.bricksArray[i].setStatus = 0;
+                media.spawnSound();
+                this.ballMoveRateY = -this.ballMoveRateY;
+            }
+        }
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY });
     }
     setListenerMovePaddle() {
@@ -103,21 +125,26 @@ export class Canvas extends Common {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
         paddle.drawPaddle(this.gameState.paddle_positions);
     }
-    drawBrick(brick_x, brick_y, color, special) {
-        const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y);
-        brick.drawBrick(brick_x, brick_y, color, this.image);
+    addBricksToArray(brick_x, brick_y, special, color) {
+        const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y, color);
+        this.bricksArray.push(brick);
     }
-    drawGameBricks(tabOfColors, special) {
+    initBricks(special, tabOfColor) {
         for (let i = 0; i < this.rowsCount; i++) {
             for (let j = 0; j < this.columnsCount; j++) {
-                this.drawBrick(i, j, tabOfColors[i], special);
+                this.addBricksToArray(j, i, special, tabOfColor[i]);
             }
         }
     }
-    drawGame(tabOfColors, special) {
+    drawBricks() {
+        for (let i = 0; i < this.bricksArray.length; i++) {
+            this.bricksArray[i].drawBrick(this.image, i);
+        }
+    }
+    drawGame() {
         this.drawPaddle();
         this.drawBall();
-        special ? this.drawGameBricks(tabOfColors, special) : this.drawGameBricks(tabOfColors, null);
+        this.drawBricks();
     }
     clearCanvas() {
         this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -131,11 +158,11 @@ export class Canvas extends Common {
             this.gameState.paddle_positions.paddle_x += 15;
         }
     }
-    draw(tabOfColors, isSpecialLevel, special) {
+    draw() {
         this.handleKeyPress();
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.clearCanvas();
-        isSpecialLevel ? this.drawGame(tabOfColors, special) : this.drawGame(tabOfColors, null);
+        this.drawGame();
     }
 }

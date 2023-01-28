@@ -73,6 +73,7 @@ class Menu extends Common {
         this.fetcher.SendData();
     }
     async StartGame() {
+        media.setSound();
         const isLogged = localStorage.getItem("game");
         const startGamePanel = this.bindElementByClass(START_THE_GAME);
         const BackToMenuPanel = this.bindElementByClass(BACK_TO_MENU);
@@ -104,7 +105,7 @@ class Menu extends Common {
         const MUSIC = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW);
         //TODO have those files on server to give user choice what to play in backgground
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults(songsList, 5, tempTabOfSounds, MediaEnum.Sounds);
+            settings.PaginateResults(songsList, 5, tempTabOfSongs, MediaEnum.Music);
             SOUNDS.addEventListener("click", () => {
                 settings.PaginateResults(songsList, 5, tempTabOfSounds, MediaEnum.Sounds);
             });
