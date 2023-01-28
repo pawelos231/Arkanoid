@@ -4,6 +4,8 @@ import { Fetcher } from '../helpers/Fetcher.js';
 import { media } from './Media.js';
 import { levelSelect } from './LevelSelect.js';
 import { settings } from './Settings.js';
+import { tempTabOfSongs } from '../data/temporarySongsData.js';
+import { MediaEnum } from '../interfaces/HelperEnums.js';
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -25,6 +27,8 @@ const MUSIC_RANGE = "musicRange";
 const SOUND_RANGE = "soundRange";
 const LIST_OF_SONGS = "listOfSongs > ul";
 const RESET_INPUT_SETTINGS = "resetInputsSettings";
+const SOUND_VIEW_LAYER_SHOW = "Sound";
+const MUSIC_VIEW_LAYER_SHOW = "Music";
 class Menu extends Common {
     constructor() {
         super(REGISTER_FORMS);
@@ -96,9 +100,17 @@ class Menu extends Common {
         const changeVolumeOfSound = this.bindElementByClass(SOUND_RANGE);
         const resetInputsSettings = this.bindElementByClass(RESET_INPUT_SETTINGS);
         const songsList = this.bindElementByClass(LIST_OF_SONGS);
+        const SOUNDS = this.bindElementByClass(SOUND_VIEW_LAYER_SHOW);
+        const MUSIC = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW);
         //TODO have those files on server to give user choice what to play in backgground
-        OpenSettings.addEventListener("click", async () => {
-            settings.PaginateSongResults(songsList);
+        OpenSettings.addEventListener("click", () => {
+            settings.PaginateResults(songsList, 5, tempTabOfSongs, MediaEnum.Music);
+            SOUNDS.addEventListener("click", () => {
+                settings.PaginateResults(songsList, 6, tempTabOfSongs, MediaEnum.Sounds);
+            });
+            MUSIC.addEventListener("click", () => {
+                settings.PaginateResults(songsList, 6, tempTabOfSongs, MediaEnum.Music);
+            });
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {
                 media.resetValuesToDefault(changeVolumeOfMusic, changeVolumeOfSound);

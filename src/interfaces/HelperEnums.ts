@@ -3,3 +3,7 @@ export enum Logger {
     LoginError = 1,
     Error = 2,
 }
+export enum MediaEnum {
+    Sounds = "sounds",
+    Music = "music"
+}

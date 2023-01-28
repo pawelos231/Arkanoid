@@ -1,6 +1,6 @@
 import { HIDDEN } from "../constants/classNames";
 import { sealed } from "../decorators/seal";
-import { Logger } from "../interfaces/Logger";
+import { Logger } from "../interfaces/HelperEnums";
 const REGISTER_FORMS = "RegisterElement"
 
 @sealed

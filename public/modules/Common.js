@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { HIDDEN } from "../constants/classNames";
 import { sealed } from "../decorators/seal";
-import { Logger } from "../interfaces/Logger";
+import { Logger } from "../interfaces/HelperEnums";
 const REGISTER_FORMS = "RegisterElement";
 let Common = class Common {
     constructor(elementId) {

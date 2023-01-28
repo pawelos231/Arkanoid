@@ -37,7 +37,7 @@ class Media {
         this.sound = sound
     }
 
-    playMusic(): void {
+    public playMusic(): void {
         this.backgroundMusic.loop = true
         this.backgroundMusic.volume = this.musicVolume
         this.backgroundMusic.play()

@@ -1,23 +1,34 @@
 import { Common } from "./Common";
-import { tempTabOfSongs } from '../data/temporarySongsData.js'
-import { Logger } from "../interfaces/Logger";
+import { Logger } from "../interfaces/HelperEnums";
 import { media } from "./Media";
+import { MediaEnum } from "../interfaces/HelperEnums";
+import { Sounds } from "../data/temporarySoundsData";
+import { Songs } from "../data/temporarySongsData";
 class Settings extends Common {
     constructor() {
         super("levelSelect")
     }
-    public PaginateSongResults(songsList: HTMLElement): void {
-        const LEFT: Element = this.bindElementByClass("paginateSongResults > .left")
-        const RIGHT: Element = this.bindElementByClass("paginateSongResults > .right")
-        const PAGE: Element = this.bindElementByClass("paginateSongResults > .page")
-        const SONG_LIST_LEN: number = tempTabOfSongs.length
-        const ITEMS_PER_PAGE = 5
+    public PaginateResults<T, P>(songsList: HTMLElement, ITEMS_PER_PAGE: number, mediaToLoad: T[], ListToPaginateId: P): void {
+        const LEFT: HTMLElement = this.bindElementByClass("paginateSongResults > .left")
+        const RIGHT: HTMLElement = this.bindElementByClass("paginateSongResults > .right")
+        const PAGE: HTMLElement = this.bindElementByClass("paginateSongResults > .page")
+        const PAGINATION_ELEMENT: HTMLElement = this.bindElementByClass("paginateSongResults")
+        this.changeVisbilityOfGivenElement(PAGINATION_ELEMENT, true)
+
+
+        if (ListToPaginateId == MediaEnum.Music) {
+            console.log("muzyka do załadowania")
+        }
+        if (ListToPaginateId == MediaEnum.Sounds) {
+            console.log("sounds do załadowania")
+        }
+
+        const SONG_LIST_LEN: number = mediaToLoad.length
         const PAGES: number = Math.ceil(SONG_LIST_LEN / ITEMS_PER_PAGE)
-        console.log(PAGES)
-        let currentPage = 0
+        let currentPage: number = 0
 
         PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
-        this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
+        this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Songs[])
         RIGHT.addEventListener("click", () => {
             currentPage++
             if (currentPage > PAGES - 1) {
@@ -26,9 +37,9 @@ class Settings extends Common {
                 return
             }
             if (SONG_LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
-                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, SONG_LIST_LEN - currentPage * ITEMS_PER_PAGE)
+                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, SONG_LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad as Songs[])
             } else {
-                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
+                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Songs[])
             }
             PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
         })
@@ -39,18 +50,20 @@ class Settings extends Common {
                 this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error)
                 return
             }
-            this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
+            this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Songs[])
             PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
         })
 
     }
+    private createSoundsView(songsList: HTMLElement, skipValue: number, itemsperPage: number, tempTabOfSounds: Sounds[]) {
 
-    private createSongsView(songsList: HTMLElement, skipValue: number, itemsperPage: number): void {
+    }
+    private createSongsView(songsList: HTMLElement, skipValue: number, itemsperPage: number, tempTabOfSongs: Songs[]): void {
         songsList.innerHTML = ""
         for (let i = skipValue; i < skipValue + itemsperPage; i++) {
-            let li = document.createElement("li")
-            let img = document.createElement("img")
-            let p = document.createElement("p")
+            const li: HTMLLIElement = document.createElement("li")
+            const img: HTMLImageElement = document.createElement("img")
+            const p: HTMLParagraphElement = document.createElement("p")
             img.src = tempTabOfSongs[i].pathToImage
             img.alt = "siema"
             p.innerHTML = tempTabOfSongs[i].description

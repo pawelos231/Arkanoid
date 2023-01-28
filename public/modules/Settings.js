@@ -1,22 +1,28 @@
 import { Common } from "./Common";
-import { tempTabOfSongs } from '../data/temporarySongsData.js';
-import { Logger } from "../interfaces/Logger";
+import { Logger } from "../interfaces/HelperEnums";
 import { media } from "./Media";
+import { MediaEnum } from "../interfaces/HelperEnums";
 class Settings extends Common {
     constructor() {
         super("levelSelect");
     }
-    PaginateSongResults(songsList) {
+    PaginateResults(songsList, ITEMS_PER_PAGE, mediaToLoad, ListToPaginateId) {
         const LEFT = this.bindElementByClass("paginateSongResults > .left");
         const RIGHT = this.bindElementByClass("paginateSongResults > .right");
         const PAGE = this.bindElementByClass("paginateSongResults > .page");
-        const SONG_LIST_LEN = tempTabOfSongs.length;
-        const ITEMS_PER_PAGE = 5;
+        const PAGINATION_ELEMENT = this.bindElementByClass("paginateSongResults");
+        this.changeVisbilityOfGivenElement(PAGINATION_ELEMENT, true);
+        if (ListToPaginateId == MediaEnum.Music) {
+            console.log("muzyka do załadowania");
+        }
+        if (ListToPaginateId == MediaEnum.Sounds) {
+            console.log("sounds do załadowania");
+        }
+        const SONG_LIST_LEN = mediaToLoad.length;
         const PAGES = Math.ceil(SONG_LIST_LEN / ITEMS_PER_PAGE);
-        console.log(PAGES);
         let currentPage = 0;
         PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
-        this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE);
+        this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad);
         RIGHT.addEventListener("click", () => {
             currentPage++;
             if (currentPage > PAGES - 1) {
@@ -25,10 +31,10 @@ class Settings extends Common {
                 return;
             }
             if (SONG_LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
-                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, SONG_LIST_LEN - currentPage * ITEMS_PER_PAGE);
+                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, SONG_LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad);
             }
             else {
-                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE);
+                this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad);
             }
             PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
         });
@@ -39,16 +45,18 @@ class Settings extends Common {
                 this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error);
                 return;
             }
-            this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE);
+            this.createSongsView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad);
             PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
         });
     }
-    createSongsView(songsList, skipValue, itemsperPage) {
+    createSoundsView(songsList, skipValue, itemsperPage, tempTabOfSounds) {
+    }
+    createSongsView(songsList, skipValue, itemsperPage, tempTabOfSongs) {
         songsList.innerHTML = "";
         for (let i = skipValue; i < skipValue + itemsperPage; i++) {
-            let li = document.createElement("li");
-            let img = document.createElement("img");
-            let p = document.createElement("p");
+            const li = document.createElement("li");
+            const img = document.createElement("img");
+            const p = document.createElement("p");
             img.src = tempTabOfSongs[i].pathToImage;
             img.alt = "siema";
             p.innerHTML = tempTabOfSongs[i].description;

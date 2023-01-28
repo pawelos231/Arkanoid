@@ -1,4 +1,4 @@
-interface Songs {
+export interface Songs {
     name: string
     song: string
     pathToImage: string
