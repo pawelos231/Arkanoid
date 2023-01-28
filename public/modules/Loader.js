@@ -25,15 +25,16 @@ class Loader {
         });
     }
     loadMultipleImages(imagesUrl) {
-        return new Promise((resolve, reject) => {
-            const multiple = imagesUrl.map(item => {
+        const PromiseArray = [];
+        imagesUrl.map((item) => {
+            PromiseArray.push(new Promise((resolve, reject) => {
                 const image = new Image();
                 image.src = item;
                 image.addEventListener("load", (event) => this.itemLoaded(event), false);
-                return image;
-            });
-            resolve(multiple);
+                resolve(image);
+            }));
         });
+        return PromiseArray;
     }
 }
 export const loader = new Loader();

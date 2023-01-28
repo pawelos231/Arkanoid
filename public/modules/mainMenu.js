@@ -5,6 +5,7 @@ import { media } from './Media.js';
 import { levelSelect } from './LevelSelect.js';
 import { settings } from './Settings.js';
 import { tempTabOfSongs } from '../data/temporarySongsData.js';
+import { tempTabOfSounds } from '../data/temporarySoundsData.js';
 import { MediaEnum } from '../interfaces/HelperEnums.js';
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
@@ -72,7 +73,6 @@ class Menu extends Common {
         this.fetcher.SendData();
     }
     async StartGame() {
-        await media.setSound();
         const isLogged = localStorage.getItem("game");
         const startGamePanel = this.bindElementByClass(START_THE_GAME);
         const BackToMenuPanel = this.bindElementByClass(BACK_TO_MENU);
@@ -104,12 +104,12 @@ class Menu extends Common {
         const MUSIC = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW);
         //TODO have those files on server to give user choice what to play in backgground
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults(songsList, 5, tempTabOfSongs, MediaEnum.Music);
+            settings.PaginateResults(songsList, 5, tempTabOfSounds, MediaEnum.Sounds);
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults(songsList, 6, tempTabOfSongs, MediaEnum.Sounds);
+                settings.PaginateResults(songsList, 5, tempTabOfSounds, MediaEnum.Sounds);
             });
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults(songsList, 6, tempTabOfSongs, MediaEnum.Music);
+                settings.PaginateResults(songsList, 5, tempTabOfSongs, MediaEnum.Music);
             });
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {

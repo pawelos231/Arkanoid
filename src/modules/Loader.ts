@@ -27,16 +27,17 @@ class Loader {
             resolve(image)
         })
     }
-    public loadMultipleImages(imagesUrl: string[]): Promise<HTMLImageElement[]> {
-        return new Promise((resolve, reject) => {
-            const multiple = imagesUrl.map(item => {
-                const image: HTMLImageElement = new Image()
-                image.src = item
+    public loadMultipleImages(imagesUrl: string[]): Promise<unknown>[] {
+        const PromiseArray: Promise<unknown>[] = []
+        imagesUrl.map((item: string) => {
+            PromiseArray.push(new Promise((resolve, reject) => {
+                const image: HTMLImageElement = new Image();
+                image.src = item;
                 image.addEventListener("load", (event: Event) => this.itemLoaded<Event>(event), false);
-                return image
-            })
-            resolve(multiple)
+                resolve(image)
+            }))
         })
+        return PromiseArray
     }
 }
 export const loader: Loader = new Loader()

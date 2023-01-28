@@ -1,4 +1,5 @@
 import { loader } from "./Loader"
+const DEFAULT_SOUND = "http://localhost:1234/hitPaddle.mp3"
 class Media {
     musicVolume: number
     soundVolume: number
@@ -7,6 +8,7 @@ class Media {
     backgroundMusic: any
     sound: any
     cachedSongId: string = ""
+    cachedSoundId: string = ""
     constructor(musicVolume: number = 0.5, soundVolume: number = 0.5, allowedMusic: boolean = true, allowedSound: boolean = true) {
         this.musicVolume = musicVolume;
         this.soundVolume = soundVolume;
@@ -31,10 +33,20 @@ class Media {
         return true
     }
 
-    public async setSound(path: string = "http://localhost:1234/hitPaddle.mp3") {
+    public async setSound(path: string = DEFAULT_SOUND): Promise<boolean> {
         if (path.length == 0) return false
-        const sound: HTMLAudioElement = await loader.loadSound(path)
-        this.sound = sound
+        if (this.cachedSoundId === path) return false
+        else if (this.cachedSoundId.length != 0 && this.cachedSoundId !== path) {
+            this.sound.pause()
+            this.sound = null
+            const sound: HTMLAudioElement = await loader.loadSound(path)
+            this.sound = sound
+        } else {
+            const sound: HTMLAudioElement = await loader.loadSound(path)
+            this.sound = sound
+        }
+        this.cachedSoundId = path
+        return true
     }
 
     public playMusic(): void {
@@ -46,7 +58,7 @@ class Media {
         this.backgroundMusic.pause()
     }
     public changeVolumeOfBackgroundMusic(musicElement: Element): void {
-        let inputMusic: any = musicElement.children[0]
+        const inputMusic: any = musicElement.children[0]
         inputMusic.value = this.musicVolume * 100
 
         inputMusic.addEventListener("input", (e: any) => {
@@ -55,7 +67,7 @@ class Media {
         })
     }
     public changeVolumeOfSound(SoundElement: Element): void {
-        let inputMusic: any = SoundElement.children[0]
+        const inputMusic: any = SoundElement.children[0]
         inputMusic.value = this.soundVolume * 100
 
         inputMusic.addEventListener("input", (e: any) => {

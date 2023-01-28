@@ -1,7 +1,9 @@
 import { loader } from "./Loader";
+const DEFAULT_SOUND = "http://localhost:1234/hitPaddle.mp3";
 class Media {
     constructor(musicVolume = 0.5, soundVolume = 0.5, allowedMusic = true, allowedSound = true) {
         this.cachedSongId = "";
+        this.cachedSoundId = "";
         this.musicVolume = musicVolume;
         this.soundVolume = soundVolume;
         this.allowedMusic = allowedMusic;
@@ -26,11 +28,23 @@ class Media {
         this.cachedSongId = path;
         return true;
     }
-    async setSound(path = "http://localhost:1234/hitPaddle.mp3") {
+    async setSound(path = DEFAULT_SOUND) {
         if (path.length == 0)
             return false;
-        const sound = await loader.loadSound(path);
-        this.sound = sound;
+        if (this.cachedSoundId === path)
+            return false;
+        else if (this.cachedSoundId.length != 0 && this.cachedSoundId !== path) {
+            this.sound.pause();
+            this.sound = null;
+            const sound = await loader.loadSound(path);
+            this.sound = sound;
+        }
+        else {
+            const sound = await loader.loadSound(path);
+            this.sound = sound;
+        }
+        this.cachedSoundId = path;
+        return true;
     }
     playMusic() {
         this.backgroundMusic.loop = true;
@@ -41,7 +55,7 @@ class Media {
         this.backgroundMusic.pause();
     }
     changeVolumeOfBackgroundMusic(musicElement) {
-        let inputMusic = musicElement.children[0];
+        const inputMusic = musicElement.children[0];
         inputMusic.value = this.musicVolume * 100;
         inputMusic.addEventListener("input", (e) => {
             const valueOfAnElement = e.target.value / 100;
@@ -49,7 +63,7 @@ class Media {
         });
     }
     changeVolumeOfSound(SoundElement) {
-        let inputMusic = SoundElement.children[0];
+        const inputMusic = SoundElement.children[0];
         inputMusic.value = this.soundVolume * 100;
         inputMusic.addEventListener("input", (e) => {
             const valueOfAnElement = e.target.value / 100;
