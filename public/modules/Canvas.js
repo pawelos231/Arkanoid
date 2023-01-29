@@ -51,9 +51,18 @@ export class Canvas extends Common {
         this.BRICK_HEIGHT = window.innerHeight / 18;
         this.BRICK_WIDTH = window.innerWidth / this.columnsCount;
         isSpecialLevel ? this.initBricks(special, tabOfColors) : this.initBricks(null, tabOfColors);
-        console.log(this.bricksArray);
     }
     drawBuffs() {
+    }
+    isCollisonFromSide(i, ball_x, ball_y, RADIUS) {
+        const brick_pos_x = this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH;
+        const brick_pos_y = this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT;
+        return ((brick_pos_x + this.BRICK_WIDTH <= ball_x - RADIUS && brick_pos_x + this.BRICK_WIDTH >= ball_x - RADIUS - 12) || (brick_pos_x <= ball_x + RADIUS && brick_pos_x >= ball_x + RADIUS + 10) && ball_y - RADIUS > brick_pos_y + this.BRICK_HEIGHT && brick_pos_y < brick_pos_y + RADIUS);
+    }
+    isCollision(i, ball_x, ball_y, RADIUS) {
+        const brick_pos_x = this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH;
+        const brick_pos_y = this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT;
+        return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS && brick_pos_y < ball_y + RADIUS && brick_pos_x < ball_x + RADIUS + 12.5 && brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5);
     }
     drawBall() {
         //change to fix resizeable
@@ -86,17 +95,18 @@ export class Canvas extends Common {
         for (let i = 0; i < this.bricksArray.length; i++) {
             if (this.bricksArray[i].brickStateGet.status == 0)
                 continue;
-            if (this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS && this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH + RADIUS + this.BRICK_WIDTH > ball_x) {
+            if (this.isCollision(i, ball_x, ball_y, RADIUS)) {
+                this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null;
                 const temp = this.bricksArray[i].brickStateGet.special;
                 if (temp && temp.Position) {
                     if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
                         console.log("trafiony special");
                     }
                 }
-                console.log(this.bricksArray[i].brickStateGet.special);
+                this.ballMoveRateY = -this.ballMoveRateY;
                 this.bricksArray[i].setStatus = 0;
                 media.spawnSoundWhenHitBrick();
-                this.ballMoveRateY = -this.ballMoveRateY;
+                break;
             }
         }
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY });

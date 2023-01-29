@@ -36,6 +36,7 @@ class Media {
         else if (this.cachedSoundId.length != 0 && this.cachedSoundId !== path) {
             this.sound.pause();
             this.sound = null;
+            this.bricksound = null;
             const sound = await loader.loadSound(path);
             const sound2 = await loader.loadSound(path);
             this.sound = sound;

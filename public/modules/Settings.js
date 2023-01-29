@@ -8,7 +8,6 @@ class Settings extends Common {
         super("levelSelect");
     }
     PaginateResults(songsList, ITEMS_PER_PAGE, mediaToLoad, ListToPaginateId) {
-        console.log(ListToPaginateId);
         const LEFT = this.bindElementByClass("paginateSongResults > .left");
         const RIGHT = this.bindElementByClass("paginateSongResults > .right");
         const PAGE = this.bindElementByClass("paginateSongResults > .page");

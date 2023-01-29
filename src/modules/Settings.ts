@@ -4,12 +4,14 @@ import { media } from "./Media";
 import { MediaEnum } from "../interfaces/HelperEnums";
 import { Sounds } from "../data/temporarySoundsData";
 import { Songs, tempTabOfSongs } from "../data/temporarySongsData";
-class Settings extends Common {
+interface SettingsInterface {
+    PaginateResults: <T, P>(arg0: HTMLElement, arg1: number, arg2: T[], arg3: P) => void,
+}
+class Settings extends Common implements SettingsInterface {
     constructor() {
         super("levelSelect")
     }
     public PaginateResults<T, P>(songsList: HTMLElement, ITEMS_PER_PAGE: number, mediaToLoad: T[], ListToPaginateId: P): void {
-        console.log(ListToPaginateId)
         const LEFT: HTMLElement = this.bindElementByClass("paginateSongResults > .left")
         const RIGHT: HTMLElement = this.bindElementByClass("paginateSongResults > .right")
         const PAGE: HTMLElement = this.bindElementByClass("paginateSongResults > .page")

@@ -43,7 +43,7 @@ class LevelSelect extends Common {
           canvas.setListenerMovePaddle()
           setInterval(() => {
             canvas.draw()
-          }, 20)
+          }, 18)
 
 
         }
@@ -54,7 +54,7 @@ class LevelSelect extends Common {
           canvas.addEventOnResize()
           setInterval(() => {
             canvas.draw()
-          }, 20)
+          }, 18)
 
           canvas.setListenerMovePaddle()
         }

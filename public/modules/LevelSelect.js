@@ -36,7 +36,7 @@ class LevelSelect extends Common {
                     canvas.setListenerMovePaddle();
                     setInterval(() => {
                         canvas.draw();
-                    }, 20);
+                    }, 18);
                 }
                 else {
                     const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, null, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT);
@@ -44,7 +44,7 @@ class LevelSelect extends Common {
                     canvas.addEventOnResize();
                     setInterval(() => {
                         canvas.draw();
-                    }, 20);
+                    }, 18);
                     canvas.setListenerMovePaddle();
                 }
             });
