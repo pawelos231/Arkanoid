@@ -1,4 +1,4 @@
-export const colorRandomizer = () => {
+export const tabOfBrickData = () => {
     let sum = "#";
     const togenerate = "123456789ABCDFE";
     for (let i = 0; i < 6; i++) {

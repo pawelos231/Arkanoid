@@ -4,7 +4,7 @@ export class Brick {
         this.height = height;
         this.ctx = ctx;
         this.brickState = { brick_x, brick_y, status, special };
-        this.color = color;
+        this.brickPoints = color;
     }
     WriteBrickToConsole() {
         console.log(this.brickState);
@@ -24,7 +24,7 @@ export class Brick {
             this.ctx.drawImage(image, x, y, this.width - 2, this.height - 2);
         }
         else {
-            this.ctx.fillStyle = this.color;
+            this.ctx.fillStyle = this.brickPoints.color;
             this.ctx.fillRect(this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, this.width - 1, this.height - 1);
         }
     }

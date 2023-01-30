@@ -6,7 +6,11 @@ import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDL
 import { GameState } from "./gameState";
 import { Specialbrick } from "../interfaces/gameStateInterface";
 import { media } from "./Media";
-
+import { BrickPoints } from "../interfaces/gameStateInterface";
+interface StatusOfEnd {
+    end: boolean
+    status: number //1 - win, 0 - loss
+}
 
 enum Directions {
     LeftArrows = LEFT_ARROW,
@@ -38,7 +42,7 @@ export class Canvas<T> extends Common {
         this.image = image
         this.rowsCount = rowsCount
         this.columnsCount = columnsCount
-        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS)
+        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, 0)
     }
 
     public addEventOnResize(): void {
@@ -56,31 +60,67 @@ export class Canvas<T> extends Common {
 
     }
 
-    public configureCanvas(tabOfColors: string[], isSpecialLevel: boolean, special: Specialbrick | null): void {
+    public configureCanvas(brickPoints: BrickPoints[], isSpecialLevel: boolean, special: Specialbrick | null): void {
         this.changeVisbilityOfGivenElement(this.elementId, true)
         this.canvas = this.elementId as HTMLCanvasElement;
         this.canvas.style.backgroundColor = "black"
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
         this.BRICK_HEIGHT = window.innerHeight / 18
         this.BRICK_WIDTH = window.innerWidth / this.columnsCount
-        isSpecialLevel ? this.initBricks(special, tabOfColors) : this.initBricks(null, tabOfColors)
+        isSpecialLevel ? this.initBricks(special, brickPoints) : this.initBricks(null, brickPoints)
     }
 
     drawBuffs() {
 
     }
+
     private isCollisonFromSide(i: number, ball_x: number, ball_y: number, RADIUS: number): boolean {
         const brick_pos_x: number = this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH
         const brick_pos_y: number = this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT
         return ((brick_pos_x + this.BRICK_WIDTH <= ball_x - RADIUS && brick_pos_x + this.BRICK_WIDTH >= ball_x - RADIUS - 12) || (brick_pos_x <= ball_x + RADIUS && brick_pos_x >= ball_x + RADIUS + 10) && ball_y - RADIUS > brick_pos_y + this.BRICK_HEIGHT && brick_pos_y < brick_pos_y + RADIUS)
     }
+
     private isCollision(i: number, ball_x: number, ball_y: number, RADIUS: number): boolean {
         const brick_pos_x: number = this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH
         const brick_pos_y: number = this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT
 
         return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS && brick_pos_y < ball_y + RADIUS && brick_pos_x < ball_x + RADIUS + 12.5 && brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5)
     }
-    private drawBall(): void {
+
+
+    private CheckCollisionWithBricks(ball_x: number, ball_y: number, RADIUS: number) {
+        for (let i = 0; i < this.bricksArray.length; i++) {
+            if (this.bricksArray[i].brickStateGet.status == 0) continue
+
+            if (this.isCollision(i, ball_x, ball_y, RADIUS)) {
+
+                this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null
+                this.gameState.counter = this.gameState.counter += 1
+                const temp: Specialbrick | null = this.bricksArray[i].brickStateGet.special
+
+                if (temp && temp.Position) {
+                    if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
+                        console.log("trafiony special")
+                    }
+                }
+
+                this.ballMoveRateY = -this.ballMoveRateY
+                this.bricksArray[i].setStatus = 0
+                media.spawnSoundWhenHitBrick()
+                break;
+            }
+
+        }
+    }
+
+    private CheckCollisionWithPaddle(ball_y: number, ball_x: number, RADIUS: number, paddle_x: number, paddle_y: number) {
+        if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
+            media.spawnSoundWhenHitPaddle()
+            this.ballMoveRateY = -this.ballMoveRateY
+        }
+    }
+
+    private drawBall(): StatusOfEnd {
         //change to fix resizeable
         const ball: Ball = new Ball(this.ctx, 25)
         const RADIUS: number = ball.radiusOfBallGetter
@@ -94,6 +134,11 @@ export class Canvas<T> extends Common {
             this.ballMoveRateX = -12
         }
         if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
+            this.gameState.lives = this.gameState.lives - 1
+            if (this.gameState.lives == 0) {
+                return { end: false, status: 0 }
+            }
+
             this.ballMoveRateY = -12
             this.gameState.ball_positions = {
                 ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
@@ -106,31 +151,15 @@ export class Canvas<T> extends Common {
         const paddle_x: number = this.gameState.paddle_positions.paddle_x
         const paddle_y: number = this.gameState.paddle_positions.paddle_y
 
-        if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
-            media.spawnSoundWhenHitPaddle()
-            this.ballMoveRateY = -this.ballMoveRateY
+        if (this.gameState.counter == this.bricksArray.length - 1) {
+            return { end: false, status: 1 }
         }
-        for (let i = 0; i < this.bricksArray.length; i++) {
-            if (this.bricksArray[i].brickStateGet.status == 0) continue
 
-            if (this.isCollision(i, ball_x, ball_y, RADIUS)) {
-                this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null
-
-                const temp: Specialbrick | null = this.bricksArray[i].brickStateGet.special
-                if (temp && temp.Position) {
-                    if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
-                        console.log("trafiony special")
-                    }
-                }
-                this.ballMoveRateY = -this.ballMoveRateY
-                this.bricksArray[i].setStatus = 0
-                media.spawnSoundWhenHitBrick()
-                break;
-            }
-
-        }
+        this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y)
+        this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS)
 
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY })
+        return { end: true, status: 0 }
     }
 
     public setListenerMovePaddle(): void {
@@ -159,12 +188,12 @@ export class Canvas<T> extends Common {
         paddle.drawPaddle(this.gameState.paddle_positions)
     }
 
-    private addBricksToArray(brick_x: number, brick_y: number, special: Specialbrick | null, color: string): void {
+    private addBricksToArray(brick_x: number, brick_y: number, special: Specialbrick | null, color: BrickPoints): void {
         const brick: Brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y, color)
         this.bricksArray.push(brick)
     }
 
-    private initBricks(special: Specialbrick | null, tabOfColor: string[]): void {
+    private initBricks(special: Specialbrick | null, tabOfColor: BrickPoints[]): void {
         for (let i = 0; i < this.rowsCount; i++) {
             for (let j = 0; j < this.columnsCount; j++) {
                 this.addBricksToArray(j, i, special, tabOfColor[i])
@@ -178,10 +207,10 @@ export class Canvas<T> extends Common {
         }
     }
 
-    private drawGame(): void {
+    private drawGame(): StatusOfEnd {
         this.drawPaddle()
-        this.drawBall()
         this.drawBricks()
+        return this.drawBall()
     }
 
     private clearCanvas(): void {
@@ -198,12 +227,12 @@ export class Canvas<T> extends Common {
         }
     }
 
-    public draw(): void {
+    public draw(): StatusOfEnd {
         this.handleKeyPress()
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
         this.clearCanvas()
-        this.drawGame()
+        return this.drawGame()
 
     }
 }

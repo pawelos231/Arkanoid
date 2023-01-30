@@ -131,12 +131,12 @@ class Menu extends Common {
         //TODO have those files on server to give user choice what to play in backgground
 
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults<Songs, string>(songsList, 5, tempTabOfSongs, MediaEnum.Music)
+            settings.PaginateResults<Songs>(songsList, 5, tempTabOfSongs, MediaEnum.Music)
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults<Sounds, string>(songsList, 5, tempTabOfSounds, MediaEnum.Sounds)
+                settings.PaginateResults<Sounds>(songsList, 5, tempTabOfSounds, MediaEnum.Sounds)
             })
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults<Songs, string>(songsList, 5, tempTabOfSongs, MediaEnum.Music)
+                settings.PaginateResults<Songs>(songsList, 5, tempTabOfSongs, MediaEnum.Music)
             })
 
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)

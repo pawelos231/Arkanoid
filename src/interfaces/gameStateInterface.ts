@@ -16,3 +16,8 @@ export interface Specialbrick {
     randomBrick: number | null
     Position: Pick<BrickState, "brick_x" | "brick_y"> | null
 }
+export interface BrickPoints {
+    color: string
+    timesToHit: number
+    points: number
+}

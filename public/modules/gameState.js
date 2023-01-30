@@ -1,9 +1,10 @@
 export class GameState {
-    constructor(level, pointsToWin, paddle_positions, lives, ball_positions) {
+    constructor(level, pointsToWin, paddle_positions, lives, ball_positions, counter) {
         this.level = level;
         this.pointsToWin = pointsToWin;
         this.paddle_positions = paddle_positions;
         this.lives = lives;
+        this.counter = counter;
         this.ball_positions = ball_positions;
     }
     get GameLevel() {

@@ -1,12 +1,12 @@
 import { Common } from "./Common";
 import { Canvas } from "./Canvas";
-import { colorRandomizer } from "../helpers/colorRandomizer";
+import { tabOfBrickData } from "../helpers/tabOfBrickData";
 import { loader } from "./Loader";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
 const LEVEL_SELECT = "levelSelect";
 const LEVEL = 1;
 const POINTS_TO_GET = 24;
-const LIVES = 3;
+const LIVES = 50;
 const BRICK_ROWS_COUNT = 3;
 const BRICK_COLUMN_COUNT = 8;
 class LevelSelect extends Common {
@@ -15,36 +15,41 @@ class LevelSelect extends Common {
     }
     fetchLevels() {
     }
-    delay(ms) {
-        return new Promise((res, rej) => setTimeout(res, ms));
+    DrawOnCanvas(canvas) {
+        const interval = setInterval(() => {
+            const draw = canvas.draw();
+            if (!draw.end) {
+                clearInterval(interval);
+                switch (draw.status) {
+                    case 1:
+                        console.log("Wygrałeś");
+                        break;
+                    case 0:
+                        console.log("przgrałeś");
+                        break;
+                }
+            }
+        }, 17);
     }
     handleOnClickLevel() {
         const levelSelect = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU);
         Array.from(levelSelect.children).forEach((item) => {
             item.addEventListener("click", async () => {
-                const tabOfColors = [];
-                for (let i = 0; i < BRICK_ROWS_COUNT; i++) {
-                    tabOfColors.push(colorRandomizer());
-                }
                 const isSpecialLevel = Math.floor(Math.random() * 2);
                 if (isSpecialLevel == 0) {
                     const randomBrick = Math.floor(Math.random() * 24);
                     const image = await loader.loadImage("http://localhost:1234/Krzysiu.a065cfe0.png");
                     const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, image, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT);
-                    canvas.configureCanvas(tabOfColors, isSpecialLevel == 0, { randomBrick, Position: { brick_x: -10, brick_y: -10 } });
+                    canvas.configureCanvas(tabOfBrickData(), isSpecialLevel == 0, { randomBrick, Position: { brick_x: -10, brick_y: -10 } });
                     canvas.addEventOnResize();
                     canvas.setListenerMovePaddle();
-                    setInterval(() => {
-                        canvas.draw();
-                    }, 18);
+                    this.DrawOnCanvas(canvas);
                 }
                 else {
                     const canvas = new Canvas(LEVEL, POINTS_TO_GET, LIVES, null, BRICK_ROWS_COUNT, BRICK_COLUMN_COUNT);
-                    canvas.configureCanvas(tabOfColors, false, { randomBrick: null, Position: null });
+                    canvas.configureCanvas(tabOfBrickData(), false, { randomBrick: null, Position: null });
                     canvas.addEventOnResize();
-                    setInterval(() => {
-                        canvas.draw();
-                    }, 18);
+                    this.DrawOnCanvas(canvas);
                     canvas.setListenerMovePaddle();
                 }
             });

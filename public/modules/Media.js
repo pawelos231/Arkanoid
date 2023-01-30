@@ -36,17 +36,12 @@ class Media {
         else if (this.cachedSoundId.length != 0 && this.cachedSoundId !== path) {
             this.sound.pause();
             this.sound = null;
-            this.bricksound = null;
             const sound = await loader.loadSound(path);
-            const sound2 = await loader.loadSound(path);
             this.sound = sound;
-            this.bricksound = sound2;
         }
         else {
             const sound = await loader.loadSound(path);
-            const sound2 = await loader.loadSound(path);
             this.sound = sound;
-            this.bricksound = sound2;
         }
         this.cachedSoundId = path;
         return true;
@@ -97,8 +92,9 @@ class Media {
             this.sound.loop = false;
         }
     }
-    spawnSoundWhenHitBrick() {
-        this.bricksound.play();
+    async spawnSoundWhenHitBrick() {
+        const sound = await loader.loadSound(this.cachedSoundId);
+        sound.play();
         this.sound.loop = false;
     }
 }

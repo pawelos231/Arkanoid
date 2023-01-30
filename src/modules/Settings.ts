@@ -4,14 +4,16 @@ import { media } from "./Media";
 import { MediaEnum } from "../interfaces/HelperEnums";
 import { Sounds } from "../data/temporarySoundsData";
 import { Songs, tempTabOfSongs } from "../data/temporarySongsData";
+
 interface SettingsInterface {
-    PaginateResults: <T, P>(arg0: HTMLElement, arg1: number, arg2: T[], arg3: P) => void,
+    PaginateResults: <T>(arg0: HTMLElement, arg1: number, arg2: T[], arg3: string) => void,
 }
+
 class Settings extends Common implements SettingsInterface {
     constructor() {
         super("levelSelect")
     }
-    public PaginateResults<T, P>(songsList: HTMLElement, ITEMS_PER_PAGE: number, mediaToLoad: T[], ListToPaginateId: P): void {
+    public PaginateResults<T>(songsList: HTMLElement, ITEMS_PER_PAGE: number, mediaToLoad: T[], ListToPaginateId: string): void {
         const LEFT: HTMLElement = this.bindElementByClass("paginateSongResults > .left")
         const RIGHT: HTMLElement = this.bindElementByClass("paginateSongResults > .right")
         const PAGE: HTMLElement = this.bindElementByClass("paginateSongResults > .page")
@@ -25,7 +27,7 @@ class Settings extends Common implements SettingsInterface {
 
         PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
 
-        this.createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId as string)
+        this.createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Sounds[] & Songs[], ListToPaginateId as string)
 
         RIGHT.addEventListener("click", () => {
             currentPage++
@@ -36,7 +38,7 @@ class Settings extends Common implements SettingsInterface {
             }
             if (SONG_LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
 
-                this.createView(songsList, currentPage * ITEMS_PER_PAGE, SONG_LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId as MediaEnum)
+                this.createView(songsList, currentPage * ITEMS_PER_PAGE, SONG_LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId as string)
 
             } else {
 
@@ -59,19 +61,23 @@ class Settings extends Common implements SettingsInterface {
 
     }
 
-    private createView(songsList: HTMLElement, skipValue: number, itemsperPage: number, tempTabOfMusic: Songs[] & Sounds[], ListToPaginateId: string): void {
+    private createView(songsList: HTMLElement, skipValue: number, itemsperPage: number, tempTabOfMusic: Sounds[] & Songs[], ListToPaginateId: string): void {
         songsList.innerHTML = ""
 
-        if (ListToPaginateId == MediaEnum.Music) {
-            for (let i = skipValue; i < skipValue + itemsperPage; i++) {
-                const li: HTMLLIElement = document.createElement("li")
-                const img: HTMLImageElement = document.createElement("img")
-                const p: HTMLParagraphElement = document.createElement("p")
-                img.src = tempTabOfMusic[i].pathToImage
+        for (let i = skipValue; i < skipValue + itemsperPage; i++) {
+            const li: HTMLLIElement = document.createElement("li")
+            const img: HTMLImageElement = document.createElement("img")
+            const p: HTMLParagraphElement = document.createElement("p")
+            img.src = tempTabOfMusic[i].pathToImage
+            if (ListToPaginateId == MediaEnum.Music) {
                 img.alt = `Piosenka o nazwie  ${tempTabOfMusic[i].song}`
-                p.innerHTML = tempTabOfMusic[i].description
-                li.appendChild(img)
-                li.appendChild(p)
+            } else if (ListToPaginateId == MediaEnum.Music) {
+                img.alt = `Dźwięk o nazwie  ${tempTabOfMusic[i].sound}`
+            }
+            p.innerHTML = tempTabOfMusic[i].description
+            li.appendChild(img)
+            li.appendChild(p)
+            if (ListToPaginateId == MediaEnum.Music) {
                 li.addEventListener("click", async () => {
                     if (await media.setBackroundMusic(tempTabOfMusic[i].song)) {
                         this.displayMessageAtTheTopOfTheScreen(`Ustawiono piosenkę o nazwie: ${tempTabOfMusic[i].name}`, Logger.Message)
@@ -82,18 +88,7 @@ class Settings extends Common implements SettingsInterface {
 
                     media.playMusic()
                 })
-                songsList.appendChild(li)
-            }
-        } else if (ListToPaginateId == MediaEnum.Sounds) {
-            for (let i = skipValue; i < skipValue + itemsperPage; i++) {
-                const li: HTMLLIElement = document.createElement("li")
-                const img: HTMLImageElement = document.createElement("img")
-                const p: HTMLParagraphElement = document.createElement("p")
-                img.src = tempTabOfMusic[i].pathToImage
-                img.alt = `Dźwięk o nazwie  ${tempTabOfMusic[i].sound}`
-                p.innerHTML = tempTabOfMusic[i].description
-                li.appendChild(img)
-                li.appendChild(p)
+            } else if (ListToPaginateId == MediaEnum.Sounds) {
                 li.addEventListener("click", async () => {
                     if (await media.setSound(tempTabOfMusic[i].sound)) {
                         this.displayMessageAtTheTopOfTheScreen(`Ustawiono dźwięk o nazwie: ${tempTabOfSongs[i].name}`, Logger.Message)
@@ -104,8 +99,9 @@ class Settings extends Common implements SettingsInterface {
                     console.log("media spawn sound")
                     media.spawnSoundWhenHitPaddle()
                 })
-                songsList.appendChild(li)
             }
+            songsList.appendChild(li)
+
         }
     }
 }
