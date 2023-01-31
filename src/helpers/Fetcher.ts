@@ -101,7 +101,9 @@ export class Fetcher extends Common {
     }
 
     public async sendDataToBackend<T>(url: string, data: T): Promise<void> {
-
+        await fetch(url, {
+            body: JSON.stringify(data),
+            method: POST
+        }).then(res => res.json()).then(data => console.log(data))
     }
-
 }

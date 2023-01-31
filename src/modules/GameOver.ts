@@ -20,16 +20,21 @@ export class GameOver extends Common implements GameOverInterface {
         const fetcher: Fetcher = new Fetcher(null)
         fetcher.sendDataToBackend<DataSendGameOver>(SEND_STATS_ABOUT_GAME, this.LevelInfo)
     }
-    public ShowUserScreenOver() {
+    public ShowUserScreenOver(): void {
         this.changeVisbilityOfGivenElement(this.elementId, true)
+        this.createView()
 
     }
-    public hideScreen() {
+    public hideScreen(): void {
         this.changeVisbilityOfGivenElement(this.elementId, false)
     }
-    public createView() {
+    private createView(): void {
         const innerElement: HTMLElement = this.bindElementByClass(INNER_GAME_OVER)
-        innerElement.textContent = ""
+        innerElement.innerHTML += "<h2>Wygrałeś !</h2>"
+        innerElement.innerHTML += "</br>"
+        innerElement.innerHTML += "<p>Statystyki gry: </p>"
+        innerElement.innerHTML += `<ul> <li>Zdobyte punkty: ${this.LevelInfo.points}</li><li>czas gry: ${this.LevelInfo.elapsedTime}</li></ul>`
+        innerElement.innerHTML += "<button>Powrót do menu</button>"
 
         this.LevelInfo.status == 1 ? innerElement.style.border = "2px solid green" : innerElement.style.border = "2px solid red"
 

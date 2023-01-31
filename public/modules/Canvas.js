@@ -122,7 +122,7 @@ export class Canvas extends Common {
         const paddle_x = this.gameState.paddle_positions.paddle_x;
         const paddle_y = this.gameState.paddle_positions.paddle_y;
         //winning condtion
-        if (this.gameState.counter == this.bricksArray.length) {
+        if (this.gameState.counter == 3) {
             return { end: false, status: 1 };
         }
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);

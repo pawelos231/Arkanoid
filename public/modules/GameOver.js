@@ -13,13 +13,18 @@ export class GameOver extends Common {
     }
     ShowUserScreenOver() {
         this.changeVisbilityOfGivenElement(this.elementId, true);
+        this.createView();
     }
     hideScreen() {
         this.changeVisbilityOfGivenElement(this.elementId, false);
     }
     createView() {
         const innerElement = this.bindElementByClass(INNER_GAME_OVER);
-        innerElement.textContent = "";
+        innerElement.innerHTML += "<h2>Wygrałeś !</h2>";
+        innerElement.innerHTML += "</br>";
+        innerElement.innerHTML += "<p>Statystyki gry: </p>";
+        innerElement.innerHTML += `<ul> <li>Zdobyte punkty: ${this.LevelInfo.points}</li><li>czas gry: ${this.LevelInfo.elapsedTime}</li></ul>`;
+        innerElement.innerHTML += "<button>Powrót do menu</button>";
         this.LevelInfo.status == 1 ? innerElement.style.border = "2px solid green" : innerElement.style.border = "2px solid red";
     }
 }

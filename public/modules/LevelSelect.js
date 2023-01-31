@@ -7,7 +7,7 @@ const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
 const LEVEL_SELECT = "levelSelect";
 const LEVEL = 1;
 const POINTS_TO_GET = 24;
-const LIVES = 50;
+const LIVES = 3;
 const BRICK_ROWS_COUNT = 3;
 const BRICK_COLUMN_COUNT = 8;
 class LevelSelect extends Common {
@@ -21,16 +21,18 @@ class LevelSelect extends Common {
             const draw = canvas.draw();
             if (!draw.end) {
                 clearInterval(interval);
+                const state = canvas.getGameState;
                 switch (draw.status) {
                     case 1:
                         {
-                            const state = canvas.getGameState;
                             const gameOver = new GameOver(state.counter, 1, 10, state.level);
                             gameOver.ShowUserScreenOver();
                             gameOver.SendUserLevelData();
                         }
                         break;
                     case 0:
+                        const gameOver = new GameOver(state.counter, 0, 10, state.level);
+                        gameOver.ShowUserScreenOver();
                         console.log("przgrałeś");
                         break;
                 }
