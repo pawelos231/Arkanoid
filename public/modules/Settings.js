@@ -81,7 +81,6 @@ class Settings extends Common {
                         this.displayMessageAtTheTopOfTheScreen(`nie wczytać dźwięku: ${tempTabOfMusic[i].name}, coś poszło nie tak`, Logger.Error);
                         throw new Error("nie mozemy wczytać tego dźwięku");
                     }
-                    console.log("media spawn sound");
                     media.spawnSoundWhenHitPaddle();
                 });
             }

@@ -1,4 +1,4 @@
-class EnterGameScreen {
+class Special {
     constructor() {
 
     }

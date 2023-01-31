@@ -28,7 +28,7 @@ export class Canvas extends Common {
         this.image = image;
         this.rowsCount = rowsCount;
         this.columnsCount = columnsCount;
-        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, 0);
+        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, 0, 0);
     }
     addEventOnResize() {
         window.addEventListener("resize", () => {
@@ -42,6 +42,9 @@ export class Canvas extends Common {
                 this.bricksArray[i].heightSetter = this.BRICK_HEIGHT;
             }
         });
+    }
+    get getGameState() {
+        return this.gameState;
     }
     configureCanvas(brickPoints, isSpecialLevel, special) {
         this.changeVisbilityOfGivenElement(this.elementId, true);
@@ -118,7 +121,8 @@ export class Canvas extends Common {
         const ball_y = this.gameState.ball_positions.ball_y;
         const paddle_x = this.gameState.paddle_positions.paddle_x;
         const paddle_y = this.gameState.paddle_positions.paddle_y;
-        if (this.gameState.counter == this.bricksArray.length - 1) {
+        //winning condtion
+        if (this.gameState.counter == this.bricksArray.length) {
             return { end: false, status: 1 };
         }
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);

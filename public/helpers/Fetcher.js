@@ -43,7 +43,7 @@ export class Fetcher extends Common {
             }
         });
     }
-    SendData() {
+    SendUserAuthData() {
         var _a;
         if (this.formElement == null)
             throw new Error(ELEMENT_DOES_NOT_EXIST);
@@ -77,8 +77,6 @@ export class Fetcher extends Common {
         });
     }
     async FetchData(url) {
-        //const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
-        //await delay(1000)
         const data = await fetch(url, {
             method: GET
         })

@@ -1,7 +1,4 @@
 class Loader {
-    constructor() {
-
-    }
     private IsUrlValid() {
 
     }

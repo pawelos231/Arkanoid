@@ -13,8 +13,8 @@ const LOGIN_STATUS_MESSAGE = "LoginStatus"
 const START_THE_GAME = "startTheGame"
 
 export class Fetcher extends Common {
-    private formElement: HTMLElement
-    public constructor(formElement: HTMLElement) {
+    private formElement: HTMLElement | null
+    public constructor(formElement: HTMLElement | null) {
         super("form")
         this.formElement = formElement
     }
@@ -53,7 +53,7 @@ export class Fetcher extends Common {
 
     }
 
-    public SendData(): void {
+    public SendUserAuthData(): void {
         if (this.formElement == null) throw new Error(ELEMENT_DOES_NOT_EXIST)
 
         const allRegisterElementItems: HTMLCollection = this?.formElement?.children
@@ -91,8 +91,6 @@ export class Fetcher extends Common {
     }
 
     public async FetchData<T>(url: string): Promise<T> {
-        //const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
-        //await delay(1000)
         const data: T = await fetch(url, {
             method: GET
         })

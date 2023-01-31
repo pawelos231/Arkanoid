@@ -1,6 +1,4 @@
 class Loader {
-    constructor() {
-    }
     IsUrlValid() {
     }
     loadSound(soundUrl) {

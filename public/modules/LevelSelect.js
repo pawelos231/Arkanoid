@@ -2,6 +2,7 @@ import { Common } from "./Common";
 import { Canvas } from "./Canvas";
 import { tabOfBrickData } from "../helpers/tabOfBrickData";
 import { loader } from "./Loader";
+import { GameOver } from "./GameOver";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
 const LEVEL_SELECT = "levelSelect";
 const LEVEL = 1;
@@ -22,7 +23,12 @@ class LevelSelect extends Common {
                 clearInterval(interval);
                 switch (draw.status) {
                     case 1:
-                        console.log("Wygrałeś");
+                        {
+                            const state = canvas.getGameState;
+                            const gameOver = new GameOver(state.counter, 1, 10, state.level);
+                            gameOver.ShowUserScreenOver();
+                            gameOver.SendUserLevelData();
+                        }
                         break;
                     case 0:
                         console.log("przgrałeś");

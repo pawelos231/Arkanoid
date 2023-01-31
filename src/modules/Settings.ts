@@ -38,16 +38,17 @@ class Settings extends Common implements SettingsInterface {
             }
             if (SONG_LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
 
-                this.createView(songsList, currentPage * ITEMS_PER_PAGE, SONG_LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId as string)
+                this.createView(songsList, currentPage * ITEMS_PER_PAGE, SONG_LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId)
 
             } else {
 
-                this.createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId as string)
+                this.createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId)
 
             }
 
             PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
         })
+
         LEFT.addEventListener("click", () => {
             currentPage--
             if (currentPage < 0) {
@@ -55,7 +56,7 @@ class Settings extends Common implements SettingsInterface {
                 this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error)
                 return
             }
-            this.createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId as string)
+            this.createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId)
             PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
         })
 
@@ -96,7 +97,6 @@ class Settings extends Common implements SettingsInterface {
                         this.displayMessageAtTheTopOfTheScreen(`nie wczytać dźwięku: ${tempTabOfMusic[i].name}, coś poszło nie tak`, Logger.Error)
                         throw new Error("nie mozemy wczytać tego dźwięku")
                     }
-                    console.log("media spawn sound")
                     media.spawnSoundWhenHitPaddle()
                 })
             }
@@ -105,4 +105,5 @@ class Settings extends Common implements SettingsInterface {
         }
     }
 }
+
 export const settings: Settings = new Settings()

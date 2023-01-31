@@ -42,7 +42,7 @@ export class Canvas<T> extends Common {
         this.image = image
         this.rowsCount = rowsCount
         this.columnsCount = columnsCount
-        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, 0)
+        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, 0, 0)
     }
 
     public addEventOnResize(): void {
@@ -58,6 +58,11 @@ export class Canvas<T> extends Common {
             }
         })
 
+    }
+
+
+    public get getGameState() {
+        return this.gameState
     }
 
     public configureCanvas(brickPoints: BrickPoints[], isSpecialLevel: boolean, special: Specialbrick | null): void {
@@ -95,6 +100,7 @@ export class Canvas<T> extends Common {
             if (this.isCollision(i, ball_x, ball_y, RADIUS)) {
 
                 this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null
+
                 this.gameState.counter = this.gameState.counter += 1
                 const temp: Specialbrick | null = this.bricksArray[i].brickStateGet.special
 
@@ -124,6 +130,7 @@ export class Canvas<T> extends Common {
         //change to fix resizeable
         const ball: Ball = new Ball(this.ctx, 25)
         const RADIUS: number = ball.radiusOfBallGetter
+
         if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
             this.ballMoveRateX = 12
         }
@@ -151,7 +158,8 @@ export class Canvas<T> extends Common {
         const paddle_x: number = this.gameState.paddle_positions.paddle_x
         const paddle_y: number = this.gameState.paddle_positions.paddle_y
 
-        if (this.gameState.counter == this.bricksArray.length - 1) {
+        //winning condtion
+        if (this.gameState.counter == this.bricksArray.length) {
             return { end: false, status: 1 }
         }
 

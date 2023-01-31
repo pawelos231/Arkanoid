@@ -7,6 +7,7 @@ import { settings } from './Settings.js';
 import { tempTabOfSongs } from '../data/temporarySongsData.js';
 import { tempTabOfSounds } from '../data/temporarySoundsData.js';
 import { MediaEnum } from '../interfaces/HelperEnums.js';
+import { GET_STATS_URL } from '../constants/api/Urls.js';
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -55,7 +56,7 @@ class Menu extends Common {
         StatsElement.addEventListener("click", async () => {
             this.changeVisbilityOfGivenElement(ModalElementStats, flag);
             flag = !flag;
-            const fetchData = this.fetcher.FetchData("http://localhost:8081/stats");
+            const fetchData = this.fetcher.FetchData(GET_STATS_URL);
             ResultsCheckBoard.children[0].textContent = "ładuje";
             const stats = await fetchData;
             ResultsCheckBoard.children[1].textContent = "";
@@ -70,7 +71,7 @@ class Menu extends Common {
     SendUserDataToBackend() {
         const validator = new Validator(PASSWORD_INPUT_ELEMENT);
         validator.DisplayBadPassword();
-        this.fetcher.SendData();
+        this.fetcher.SendUserAuthData();
     }
     async StartGame() {
         media.setSound();
@@ -104,13 +105,14 @@ class Menu extends Common {
         const SOUNDS = this.bindElementByClass(SOUND_VIEW_LAYER_SHOW);
         const MUSIC = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW);
         //TODO have those files on server to give user choice what to play in backgground
+        const ITEMS_PER_PAGE = 5;
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults(songsList, 5, tempTabOfSongs, MediaEnum.Music);
+            settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music);
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults(songsList, 5, tempTabOfSounds, MediaEnum.Sounds);
+                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSounds, MediaEnum.Sounds);
             });
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults(songsList, 5, tempTabOfSongs, MediaEnum.Music);
+                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music);
             });
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {

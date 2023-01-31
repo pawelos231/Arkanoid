@@ -7,6 +7,7 @@ import { settings } from './Settings.js'
 import { Songs, tempTabOfSongs } from '../data/temporarySongsData.js'
 import { Sounds, tempTabOfSounds } from '../data/temporarySoundsData.js'
 import { MediaEnum } from '../interfaces/HelperEnums.js'
+import { GET_STATS_URL } from '../constants/api/Urls.js'
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować"
 const I_WANT_TO_LOGIN = "Chce się zalogować"
@@ -68,10 +69,12 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(ModalElementStats, flag)
             flag = !flag
 
-            const fetchData: Promise<string[]> = this.fetcher.FetchData<string[]>("http://localhost:8081/stats")
+            const fetchData: Promise<string[]> = this.fetcher.FetchData<string[]>(GET_STATS_URL)
 
             ResultsCheckBoard.children[0].textContent = "ładuje"
+
             const stats: string[] = await fetchData
+
             ResultsCheckBoard.children[1].textContent = ""
             ResultsCheckBoard.children[0].textContent = "Najlepsze Statystyki Graczy"
 
@@ -87,7 +90,7 @@ class Menu extends Common {
     private SendUserDataToBackend(): void {
         const validator: Validator = new Validator(PASSWORD_INPUT_ELEMENT)
         validator.DisplayBadPassword()
-        this.fetcher.SendData();
+        this.fetcher.SendUserAuthData();
     }
 
     private async StartGame(): Promise<void> {
@@ -118,25 +121,25 @@ class Menu extends Common {
 
 
     private async openSettings(): Promise<void> {
-        const OpenSettings: HTMLElement | null = this.bindElementByClass(OPEN_SETTINGS)
-        const OpenedSettingsPage: HTMLElement | null = this.bindElementByClass(OPENED_SETTINGS_PAGE)
-        const CloseSettings: HTMLElement | null = this.bindElementByClass(CLOSE_SETTINGS)
-        const changeVolumeOfMusic: HTMLElement | null = this.bindElementByClass(MUSIC_RANGE)
-        const changeVolumeOfSound: HTMLElement | null = this.bindElementByClass(SOUND_RANGE)
-        const resetInputsSettings: HTMLElement | null = this.bindElementByClass(RESET_INPUT_SETTINGS)
-        const songsList: HTMLElement | null = this.bindElementByClass(LIST_OF_SONGS)
-        const SOUNDS: HTMLElement | null = this.bindElementByClass(SOUND_VIEW_LAYER_SHOW)
-        const MUSIC: HTMLElement | null = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW)
+        const OpenSettings: HTMLElement = this.bindElementByClass(OPEN_SETTINGS)
+        const OpenedSettingsPage: HTMLElement = this.bindElementByClass(OPENED_SETTINGS_PAGE)
+        const CloseSettings: HTMLElement = this.bindElementByClass(CLOSE_SETTINGS)
+        const changeVolumeOfMusic: HTMLElement = this.bindElementByClass(MUSIC_RANGE)
+        const changeVolumeOfSound: HTMLElement = this.bindElementByClass(SOUND_RANGE)
+        const resetInputsSettings: HTMLElement = this.bindElementByClass(RESET_INPUT_SETTINGS)
+        const songsList: HTMLElement = this.bindElementByClass(LIST_OF_SONGS)
+        const SOUNDS: HTMLElement = this.bindElementByClass(SOUND_VIEW_LAYER_SHOW)
+        const MUSIC: HTMLElement = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW)
 
         //TODO have those files on server to give user choice what to play in backgground
-
+        const ITEMS_PER_PAGE = 5
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults<Songs>(songsList, 5, tempTabOfSongs, MediaEnum.Music)
+            settings.PaginateResults<Songs>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music)
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults<Sounds>(songsList, 5, tempTabOfSounds, MediaEnum.Sounds)
+                settings.PaginateResults<Sounds>(songsList, ITEMS_PER_PAGE, tempTabOfSounds, MediaEnum.Sounds)
             })
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults<Songs>(songsList, 5, tempTabOfSongs, MediaEnum.Music)
+                settings.PaginateResults<Songs>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music)
             })
 
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
