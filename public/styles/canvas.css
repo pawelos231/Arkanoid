@@ -27,3 +27,43 @@
     background-color: white;
     border-radius: 10px;
 }
+
+.innerGameOver>h2 {
+    font-size: 28px;
+}
+
+.innerGameOver>.statsInfo {
+    font-size: 20px;
+}
+
+.innerGameOver>ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    gap: 10px;
+}
+
+.innerGameOver>ul>li {
+    padding: 12px 20px 12px 20px;
+    width: 80%;
+    background-color: #ddd;
+    border-radius: 2px;
+}
+
+.innerGameOver>.backToMenuOver {
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 3px;
+    font-size: 15px;
+    margin-top: 10px;
+    transition: 0.2s;
+    cursor: pointer;
+    background-color: white;
+}
+
+.innerGameOver>.backToMenuOver:hover {
+    transform: scale(1.05);
+    background-color: black;
+    color: white;
+}

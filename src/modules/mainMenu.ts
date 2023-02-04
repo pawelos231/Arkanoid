@@ -11,6 +11,7 @@ import { GET_STATS_URL } from '../constants/api/Urls.js'
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować"
 const I_WANT_TO_LOGIN = "Chce się zalogować"
+
 const REGISTER_FORMS = "RegisterElement"
 const FORM_TO_REGISTER = "formToRegister"
 const FORM_TO_LOGIN = "formToLogin"
