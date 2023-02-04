@@ -22,7 +22,12 @@ export class GameOver extends Common {
     }
     createView() {
         const innerElement = this.bindElementByClass(INNER_GAME_OVER);
-        innerElement.innerHTML += `<h2 class="info">Wygrałeś !</h2>`;
+        if (this.LevelInfo.status == 1) {
+            innerElement.innerHTML += `<h2 class="info">Wygrałeś !</h2>`;
+        }
+        else if (this.LevelInfo.status == 0) {
+            innerElement.innerHTML += `<h2 class="info">Przegrałeś !</h2>`;
+        }
         innerElement.innerHTML += `<p class="statsInfo">Twoje statystyki</p>`;
         innerElement.innerHTML += `<ul> <li>Ilość punktów</li> <li>Poziom: nie</li> <li>Zdobyte punkty: ${this.LevelInfo.points}</li><li>czas gry: ${this.LevelInfo.elapsedTime}</li></ul>`;
         this.LevelInfo.status == 1 ? innerElement.style.border = "2px solid green" : innerElement.style.border = "2px solid red";

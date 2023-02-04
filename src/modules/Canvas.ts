@@ -159,7 +159,7 @@ export class Canvas<T> extends Common {
         const paddle_y: number = this.gameState.paddle_positions.paddle_y
 
         //winning condtion
-        if (this.gameState.counter == 3) {
+        if (this.gameState.counter == this.bricksArray.length) {
             return { end: false, status: 1 }
         }
 
