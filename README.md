@@ -1,2 +1,2 @@
 # Arkanoid
-Better version of my previous attempt to create arkanoid, to run it on your local machine you have to type tsc --w in your cmd in visual studio
+My implementation of arkanoid game with custom addons, game comes also with backend to manage users and stats about each game 
