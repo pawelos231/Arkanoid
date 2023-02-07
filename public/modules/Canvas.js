@@ -5,6 +5,7 @@ import { Paddle } from "./Entities/Paddle";
 import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS } from "../constants/gameState";
 import { GameState } from "./gameState";
 import { media } from "./Media";
+import { SpecialBrick } from "./SpecialBrickView";
 var Directions;
 (function (Directions) {
     Directions[Directions["LeftArrows"] = LEFT_ARROW] = "LeftArrows";
@@ -77,7 +78,8 @@ export class Canvas extends Common {
                 const temp = this.bricksArray[i].brickStateGet.special;
                 if (temp && temp.Position) {
                     if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
-                        console.log("trafiony special");
+                        const specialBrick = new SpecialBrick(this.image, "http://localhost:1234/cotomabyc.mp3");
+                        specialBrick.displayViewOfSpecialBrick();
                     }
                 }
                 this.ballMoveRateY = -this.ballMoveRateY;

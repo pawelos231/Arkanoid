@@ -1,6 +1,6 @@
 import { Common } from "./Common";
 import { Canvas } from "./Canvas";
-import { tabOfBrickData } from "../helpers/tabOfBrickData";
+import { tabOfBrickData } from "../data/tabOfBrickData";
 import { loader } from "./Loader";
 import { GameOver } from "./GameOver";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu"
@@ -8,7 +8,7 @@ const LEVEL_SELECT = "levelSelect"
 //temporary data for levels
 const LEVEL = 1;
 const POINTS_TO_GET = 24
-const LIVES = 3
+const LIVES = 30
 const BRICK_ROWS_COUNT = 3
 const BRICK_COLUMN_COUNT = 8
 

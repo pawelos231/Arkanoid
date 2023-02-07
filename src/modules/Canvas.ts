@@ -7,6 +7,7 @@ import { GameState } from "./gameState";
 import { Specialbrick } from "../interfaces/gameStateInterface";
 import { media } from "./Media";
 import { BrickPoints } from "../interfaces/gameStateInterface";
+import { SpecialBrick } from "./SpecialBrickView";
 interface StatusOfEnd {
     end: boolean
     status: number //1 - win, 0 - loss
@@ -106,7 +107,8 @@ export class Canvas<T> extends Common {
 
                 if (temp && temp.Position) {
                     if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
-                        console.log("trafiony special")
+                        const specialBrick: SpecialBrick = new SpecialBrick(this.image as HTMLImageElement, "http://localhost:1234/cotomabyc.mp3")
+                        specialBrick.displayViewOfSpecialBrick()
                     }
                 }
 

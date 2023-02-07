@@ -95,7 +95,11 @@ class Media {
     async spawnSoundWhenHitBrick() {
         const sound = await loader.loadSound(this.cachedSoundId);
         sound.play();
-        this.sound.loop = false;
+    }
+    async spanwCustomSound(soundToLoad) {
+        const sound = await loader.loadSound(soundToLoad);
+        sound.play();
+        sound.loop = false;
     }
 }
 export const media = new Media();

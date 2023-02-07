@@ -100,10 +100,14 @@ class Media {
             this.sound.loop = false
         }
     }
-    async spawnSoundWhenHitBrick() {
+    public async spawnSoundWhenHitBrick(): Promise<void> {
         const sound: HTMLAudioElement = await loader.loadSound(this.cachedSoundId)
         sound.play()
-        this.sound.loop = false
     }
+    public async spanwCustomSound(soundToLoad: string): Promise<void>{
+        const sound: HTMLAudioElement = await loader.loadSound(soundToLoad)
+        sound.play()
+        sound.loop = false
+    } 
 }
 export const media = new Media()
