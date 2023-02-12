@@ -26,8 +26,8 @@ export class Canvas<T> extends Common {
     private BRICK_WIDTH: number = 0
     private ballMoveRateX: number = -12
     private ballMoveRateY: number = -12
-    private rowsCount: number
-    private columnsCount: number
+     rowsCount: number
+     columnsCount: number
     private keyPressedLeft: boolean = false
     private keyPressedRight: boolean = false
     private ctx: CanvasRenderingContext2D;

@@ -84,10 +84,10 @@ class Menu extends Common {
             this.makeLoginPanelInvisible();
             this.changeVisbilityOfGivenElement(startGamePanel, true);
         }
-        StartGameButton.addEventListener("click", () => {
+        StartGameButton.addEventListener("click", async () => {
             this.changeVisbilityOfGivenElement(LevelSelect, true);
             this.changeVisbilityOfGivenElement(startGamePanel, false);
-            levelSelect.handleOnClickLevel();
+            levelSelect.handleOnClickLevel(await levelSelect.fetchLevels());
         });
         BackToMenuPanel.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(LevelSelect, false);
