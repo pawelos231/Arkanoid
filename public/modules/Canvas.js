@@ -76,8 +76,10 @@ export class Canvas extends Common {
                 this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null;
                 this.gameState.counter = this.gameState.counter += 1;
                 const temp = this.bricksArray[i].brickStateGet.special;
+                console.log(temp);
                 if (temp && temp.Position) {
                     if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
+                        console.log("łąąła");
                         const specialBrick = new SpecialBrick(this.image, "http://localhost:1234/cotomabyc.mp3");
                         specialBrick.displayViewOfSpecialBrick();
                     }

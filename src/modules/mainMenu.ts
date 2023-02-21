@@ -111,7 +111,7 @@ class Menu extends Common {
         StartGameButton.addEventListener("click", async () => {
             this.changeVisbilityOfGivenElement(LevelSelect, true)
             this.changeVisbilityOfGivenElement(startGamePanel, false)
-            levelSelect.handleOnClickLevel(await levelSelect.fetchLevels())
+            levelSelect.handleOnClickLevel()
         })
 
         BackToMenuPanel.addEventListener("click", () => {

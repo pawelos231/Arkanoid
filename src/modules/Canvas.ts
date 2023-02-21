@@ -104,9 +104,10 @@ export class Canvas<T> extends Common {
 
                 this.gameState.counter = this.gameState.counter += 1
                 const temp: Specialbrick | null = this.bricksArray[i].brickStateGet.special
-
+                console.log(temp)
                 if (temp && temp.Position) {
                     if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
+                        console.log("łąąła")
                         const specialBrick: SpecialBrick = new SpecialBrick(this.image as HTMLImageElement, "http://localhost:1234/cotomabyc.mp3")
                         specialBrick.displayViewOfSpecialBrick()
                     }

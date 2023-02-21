@@ -8,11 +8,7 @@ import { FETCH_LEVELS } from "../constants/api/Urls";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
 const LEVEL_SELECT = "levelSelect";
 //temporary data for levels
-const LEVEL = 1;
 const POINTS_TO_GET = 24;
-const LIVES = 30;
-const BRICK_ROWS_COUNT = 3;
-const BRICK_COLUMN_COUNT = 8;
 class LevelSelect extends Common {
     constructor() {
         super(LEVEL_SELECT);
@@ -47,8 +43,10 @@ class LevelSelect extends Common {
     createLevel(item, i, levelData) {
         const tempLevelsData = JSON.parse(String(levelData));
         item.addEventListener("click", async () => {
-            const random = tempLevelsData[Math.floor(Math.random() * 2)];
-            const isSpecialLevel = Math.floor(Math.random() * 2);
+            const randomLevel = Math.floor(Math.random() * tempLevelsData.length);
+            console.log(randomLevel);
+            const random = tempLevelsData[randomLevel];
+            const isSpecialLevel = Math.floor(Math.random() * 1);
             if (isSpecialLevel == 0) {
                 const randomBrick = Math.floor(Math.random() * 24);
                 const image = await loader.loadImage("http://localhost:1234/Krzysiu.a065cfe0.png");
@@ -60,7 +58,6 @@ class LevelSelect extends Common {
             }
             else {
                 const random = tempLevelsData[Math.floor(Math.random() * 2)];
-                console.log(random.numberOfColumns);
                 const canvas = new Canvas(random.level, POINTS_TO_GET, random.lives, null, random.numberOfRows, random.numberOfColumns);
                 canvas.configureCanvas(tabOfBrickData(), false, { randomBrick: null, Position: null });
                 canvas.addEventOnResize();
@@ -70,7 +67,8 @@ class LevelSelect extends Common {
             }
         });
     }
-    handleOnClickLevel(levelData) {
+    async handleOnClickLevel() {
+        const levelData = await this.fetchLevels();
         const levelSelect = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU);
         Array.from(levelSelect.children).forEach((item, i) => this.createLevel(item, i, levelData));
     }
