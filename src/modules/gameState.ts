@@ -16,7 +16,14 @@ export class GameState {
         this.ball_positions = ball_positions
         this.playerPoints = playerPoints
     }
-    get GameLevel(): number {
+
+    set playerPointsSet(points: number){
+        this.playerPoints = points
+    }
+    get playerPointsGet(): number{
+        return this.playerPoints
+    }
+    get getLevel(): number {
         return this.level
     }
     get gamePointsToWin(): number {

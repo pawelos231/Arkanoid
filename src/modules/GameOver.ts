@@ -25,9 +25,6 @@ export class GameOver extends Common implements GameOverInterface {
         this.createView()
 
     }
-    private BackToMenuScreen(backButton: HTMLElement) {
-
-    }
     public hideScreen(): void {
         this.changeVisbilityOfGivenElement(this.elementId, false)
     }
@@ -39,7 +36,7 @@ export class GameOver extends Common implements GameOverInterface {
             innerElement.innerHTML += `<h2 class="info">Przegrałeś !</h2>`
         }
         innerElement.innerHTML += `<p class="statsInfo">Twoje statystyki</p>`
-        innerElement.innerHTML += `<ul> <li>Ilość punktów</li> <li>Poziom: nie</li> <li>Zdobyte punkty: ${this.LevelInfo.points}</li><li>czas gry: ${this.LevelInfo.elapsedTime}</li></ul>`
+        innerElement.innerHTML += `<ul> <li>Ilość punktów</li> <li>Poziom: ${this.LevelInfo.level}</li> <li>Zdobyte punkty: ${this.LevelInfo.points}</li><li>czas gry: ${this.LevelInfo.elapsedTime}</li></ul>`
 
         this.LevelInfo.status == 1 ? innerElement.style.border = "2px solid green" : innerElement.style.border = "2px solid red"
 

@@ -19,20 +19,19 @@ class LevelSelect extends Common {
     }
     DrawOnCanvas(canvas) {
         const interval = setInterval(() => {
-            const draw = canvas.draw();
-            if (!draw.end) {
+            const { end, status, points, level } = canvas.draw();
+            if (!end) {
                 clearInterval(interval);
-                const state = canvas.getGameState;
-                switch (draw.status) {
+                switch (status) {
                     case 1:
                         {
-                            const gameOver = new GameOver(state.counter, 1, 10, state.level);
+                            const gameOver = new GameOver(points, status, 10, level);
                             gameOver.ShowUserScreenOver();
                             gameOver.SendUserLevelData();
                         }
                         break;
                     case 0:
-                        const gameOver = new GameOver(state.counter, 0, 10, state.level);
+                        const gameOver = new GameOver(points, status, 10, level);
                         gameOver.ShowUserScreenOver();
                         console.log("przgrałeś");
                         break;

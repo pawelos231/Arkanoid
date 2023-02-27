@@ -12,3 +12,5 @@ export const INIT_BALL_POS = {
 
 export let BRICK_HEIGHT: number = window.innerHeight / 18
 export let BRICK_WIDTH: number = window.innerWidth / 8
+
+export const REFRESH_RATE_MS = 17

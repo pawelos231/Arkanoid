@@ -8,7 +8,13 @@ export class GameState {
         this.ball_positions = ball_positions;
         this.playerPoints = playerPoints;
     }
-    get GameLevel() {
+    set playerPointsSet(points) {
+        this.playerPoints = points;
+    }
+    get playerPointsGet() {
+        return this.playerPoints;
+    }
+    get getLevel() {
         return this.level;
     }
     get gamePointsToWin() {

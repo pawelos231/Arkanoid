@@ -1,23 +1,37 @@
 export class Brick {
-    constructor(width, height, ctx, special, status, brick_x, brick_y, color) {
+    constructor(width, height, ctx, special, status, brick_x, brick_y, brickPoints) {
         this.width = width;
         this.height = height;
         this.ctx = ctx;
         this.brickState = { brick_x, brick_y, status, special };
-        this.brickPoints = color;
+        this.brickPoints = Object.assign({}, brickPoints);
     }
-    WriteBrickToConsole() {
-        console.log(this.brickState);
+    set heightSetter(height) {
+        this.height = height;
+    }
+    set widthSetter(width) {
+        this.width = width;
     }
     get brickStateGet() {
         return this.brickState;
     }
+    get brickPointsGet() {
+        return this.brickPoints;
+    }
+    get getStatus() {
+        return this.brickState.status;
+    }
     set setStatus(value) {
         this.brickState.status = value;
+    }
+    set timesToHitSet(times) {
+        this.brickPoints.timesToHit = times;
     }
     setColor(special, x, y, image, counter) {
         if (special && special.randomBrick == counter) {
             if (special.Position) {
+                this.brickPoints.points = 100;
+                this.brickPoints.timesToHit = 1;
                 special.Position.brick_x = this.brickState.brick_x;
                 special.Position.brick_y = this.brickState.brick_y;
             }
@@ -28,19 +42,11 @@ export class Brick {
             this.ctx.fillRect(this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, this.width - 1, this.height - 1);
         }
     }
-    set widthSetter(width) {
-        this.width = width;
-    }
-    set heightSetter(height) {
-        this.height = height;
-    }
     async drawBrick(image = null, counter) {
         if (this.brickState.status == 0)
             return;
         this.setColor(this.brickState.special, this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, image, counter);
         this.ctx.strokeStyle = "white";
         this.ctx.strokeRect(this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, this.width, this.height);
-        //this.WriteBrickToConsole()
     }
-    testBrick() { }
 }

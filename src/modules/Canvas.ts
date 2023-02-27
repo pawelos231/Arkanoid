@@ -9,6 +9,8 @@ import { media } from "./Media";
 import { BrickPoints } from "../interfaces/gameStateInterface";
 import { SpecialBrick } from "./SpecialBrickView";
 interface StatusOfEnd {
+    level: number
+    points: number
     end: boolean
     status: number //1 - win, 0 - loss
 }
@@ -19,6 +21,7 @@ enum Directions {
     RigthArrows = RIGHT_ARROW,
     RigthNormal = RIGHT_NORMAL,
 }
+
 const GAME_CANVAS = "game_canvas"
 
 export class Canvas<T> extends Common {
@@ -28,6 +31,8 @@ export class Canvas<T> extends Common {
     private ballMoveRateY: number = -12
      rowsCount: number
      columnsCount: number
+     counter: number
+     playerPoints: number
     private keyPressedLeft: boolean = false
     private keyPressedRight: boolean = false
     private ctx: CanvasRenderingContext2D;
@@ -43,7 +48,9 @@ export class Canvas<T> extends Common {
         this.image = image
         this.rowsCount = rowsCount
         this.columnsCount = columnsCount
-        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, 0, 0)
+        this.playerPoints = 0
+        this.counter = 0
+        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, this.counter, this.playerPoints)
     }
 
     public addEventOnResize(): void {
@@ -87,34 +94,51 @@ export class Canvas<T> extends Common {
     }
 
     private isCollision(i: number, ball_x: number, ball_y: number, RADIUS: number): boolean {
-        const brick_pos_x: number = this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH
-        const brick_pos_y: number = this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT
+        const BRICK = this.bricksArray[i]
+        const brick_pos_x: number = BRICK.brickStateGet.brick_x * this.BRICK_WIDTH
+        const brick_pos_y: number = BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT
 
-        return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS && brick_pos_y < ball_y + RADIUS && brick_pos_x < ball_x + RADIUS + 12.5 && brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5)
+
+
+        return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS && brick_pos_y < ball_y + RADIUS && brick_pos_x < ball_x + RADIUS + 12.5 && brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5) 
+           
     }
 
+    private upadateScore(index: number){
+        this.gameState.playerPointsSet = this.bricksArray[index].brickPointsGet.points + this.getGameState.playerPointsGet
+    }
 
     private CheckCollisionWithBricks(ball_x: number, ball_y: number, RADIUS: number) {
         for (let i = 0; i < this.bricksArray.length; i++) {
-            if (this.bricksArray[i].brickStateGet.status == 0) continue
+
+            const BRICK: Brick = this.bricksArray[i]
+            
+            if (BRICK.brickStateGet.status == 0) continue
 
             if (this.isCollision(i, ball_x, ball_y, RADIUS)) {
 
+                this.upadateScore(i)
+              
                 this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null
 
-                this.gameState.counter = this.gameState.counter += 1
-                const temp: Specialbrick | null = this.bricksArray[i].brickStateGet.special
-                console.log(temp)
-                if (temp && temp.Position) {
-                    if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
-                        console.log("łąąła")
+
+                const Special: Specialbrick | null = this.bricksArray[i].brickStateGet.special
+
+                if (Special && Special.Position) {
+                    if (Special.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < Special.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && Special.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
                         const specialBrick: SpecialBrick = new SpecialBrick(this.image as HTMLImageElement, "http://localhost:1234/cotomabyc.mp3")
                         specialBrick.displayViewOfSpecialBrick()
                     }
                 }
 
+
                 this.ballMoveRateY = -this.ballMoveRateY
-                this.bricksArray[i].setStatus = 0
+                let timesToHit: number = this.bricksArray[i].brickPointsGet.timesToHit
+                timesToHit--
+                this.bricksArray[i].timesToHitSet = timesToHit
+                if(timesToHit <= 0){
+                    this.bricksArray[i].setStatus = 0
+                }
                 media.spawnSoundWhenHitBrick()
                 break;
             }
@@ -146,7 +170,7 @@ export class Canvas<T> extends Common {
         if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
             this.gameState.lives = this.gameState.lives - 1
             if (this.gameState.lives == 0) {
-                return { end: false, status: 0 }
+                return { end: false, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPoints }
             }
 
             this.ballMoveRateY = -12
@@ -162,15 +186,15 @@ export class Canvas<T> extends Common {
         const paddle_y: number = this.gameState.paddle_positions.paddle_y
 
         //winning condtion
-        if (this.gameState.counter == this.bricksArray.length) {
-            return { end: false, status: 1 }
+        if (!(this.bricksArray.find((item: Brick) => item.getStatus == 1 ))) {
+            return { end: false, status: 1, level: this.gameState.getLevel, points: this.gameState.playerPoints }
         }
 
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y)
         this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS)
 
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY })
-        return { end: true, status: 0 }
+        return { end: true, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPoints }
     }
 
     public setListenerMovePaddle(): void {
@@ -199,15 +223,16 @@ export class Canvas<T> extends Common {
         paddle.drawPaddle(this.gameState.paddle_positions)
     }
 
-    private addBricksToArray(brick_x: number, brick_y: number, special: Specialbrick | null, color: BrickPoints): void {
-        const brick: Brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y, color)
+    private addBricksToArray(brick_x: number, brick_y: number, special: Specialbrick | null, brickData: BrickPoints): void {
+        const brick: Brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y, brickData)
         this.bricksArray.push(brick)
+        console.log(brick)
     }
 
-    private initBricks(special: Specialbrick | null, tabOfColor: BrickPoints[]): void {
+    private initBricks(special: Specialbrick | null, BrickPoints: BrickPoints[]): void {
         for (let i = 0; i < this.rowsCount; i++) {
             for (let j = 0; j < this.columnsCount; j++) {
-                this.addBricksToArray(j, i, special, tabOfColor[i])
+                this.addBricksToArray(j, i, special, BrickPoints[i])
             }
         }
     }

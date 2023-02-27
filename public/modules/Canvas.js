@@ -29,7 +29,9 @@ export class Canvas extends Common {
         this.image = image;
         this.rowsCount = rowsCount;
         this.columnsCount = columnsCount;
-        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, 0, 0);
+        this.playerPoints = 0;
+        this.counter = 0;
+        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, this.counter, this.playerPoints);
     }
     addEventOnResize() {
         window.addEventListener("resize", () => {
@@ -64,28 +66,36 @@ export class Canvas extends Common {
         return ((brick_pos_x + this.BRICK_WIDTH <= ball_x - RADIUS && brick_pos_x + this.BRICK_WIDTH >= ball_x - RADIUS - 12) || (brick_pos_x <= ball_x + RADIUS && brick_pos_x >= ball_x + RADIUS + 10) && ball_y - RADIUS > brick_pos_y + this.BRICK_HEIGHT && brick_pos_y < brick_pos_y + RADIUS);
     }
     isCollision(i, ball_x, ball_y, RADIUS) {
-        const brick_pos_x = this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH;
-        const brick_pos_y = this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT;
+        const BRICK = this.bricksArray[i];
+        const brick_pos_x = BRICK.brickStateGet.brick_x * this.BRICK_WIDTH;
+        const brick_pos_y = BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT;
         return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS && brick_pos_y < ball_y + RADIUS && brick_pos_x < ball_x + RADIUS + 12.5 && brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5);
+    }
+    upadateScore(index) {
+        this.gameState.playerPointsSet = this.bricksArray[index].brickPointsGet.points + this.getGameState.playerPointsGet;
     }
     CheckCollisionWithBricks(ball_x, ball_y, RADIUS) {
         for (let i = 0; i < this.bricksArray.length; i++) {
-            if (this.bricksArray[i].brickStateGet.status == 0)
+            const BRICK = this.bricksArray[i];
+            if (BRICK.brickStateGet.status == 0)
                 continue;
             if (this.isCollision(i, ball_x, ball_y, RADIUS)) {
+                this.upadateScore(i);
                 this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null;
-                this.gameState.counter = this.gameState.counter += 1;
-                const temp = this.bricksArray[i].brickStateGet.special;
-                console.log(temp);
-                if (temp && temp.Position) {
-                    if (temp.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < temp.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && temp.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
-                        console.log("łąąła");
+                const Special = this.bricksArray[i].brickStateGet.special;
+                if (Special && Special.Position) {
+                    if (Special.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < Special.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && Special.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
                         const specialBrick = new SpecialBrick(this.image, "http://localhost:1234/cotomabyc.mp3");
                         specialBrick.displayViewOfSpecialBrick();
                     }
                 }
                 this.ballMoveRateY = -this.ballMoveRateY;
-                this.bricksArray[i].setStatus = 0;
+                let timesToHit = this.bricksArray[i].brickPointsGet.timesToHit;
+                timesToHit--;
+                this.bricksArray[i].timesToHitSet = timesToHit;
+                if (timesToHit <= 0) {
+                    this.bricksArray[i].setStatus = 0;
+                }
                 media.spawnSoundWhenHitBrick();
                 break;
             }
@@ -113,7 +123,7 @@ export class Canvas extends Common {
         if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
             this.gameState.lives = this.gameState.lives - 1;
             if (this.gameState.lives == 0) {
-                return { end: false, status: 0 };
+                return { end: false, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPoints };
             }
             this.ballMoveRateY = -12;
             this.gameState.ball_positions = {
@@ -126,13 +136,13 @@ export class Canvas extends Common {
         const paddle_x = this.gameState.paddle_positions.paddle_x;
         const paddle_y = this.gameState.paddle_positions.paddle_y;
         //winning condtion
-        if (this.gameState.counter == this.bricksArray.length) {
-            return { end: false, status: 1 };
+        if (!(this.bricksArray.find((item) => item.getStatus == 1))) {
+            return { end: false, status: 1, level: this.gameState.getLevel, points: this.gameState.playerPoints };
         }
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);
         this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS);
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY });
-        return { end: true, status: 0 };
+        return { end: true, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPoints };
     }
     setListenerMovePaddle() {
         window.addEventListener("keydown", (event) => {
@@ -158,14 +168,15 @@ export class Canvas extends Common {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
         paddle.drawPaddle(this.gameState.paddle_positions);
     }
-    addBricksToArray(brick_x, brick_y, special, color) {
-        const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y, color);
+    addBricksToArray(brick_x, brick_y, special, brickData) {
+        const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y, brickData);
         this.bricksArray.push(brick);
+        console.log(brick);
     }
-    initBricks(special, tabOfColor) {
+    initBricks(special, BrickPoints) {
         for (let i = 0; i < this.rowsCount; i++) {
             for (let j = 0; j < this.columnsCount; j++) {
-                this.addBricksToArray(j, i, special, tabOfColor[i]);
+                this.addBricksToArray(j, i, special, BrickPoints[i]);
             }
         }
     }
