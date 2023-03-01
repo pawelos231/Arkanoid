@@ -9,6 +9,7 @@ const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
 const LEVEL_SELECT = "levelSelect";
 //temporary data for levels
 const POINTS_TO_GET = 24;
+const TEMP_SPECIAL_IMG = "http://localhost:1234/Krzysiu.a065cfe0.png";
 class LevelSelect extends Common {
     constructor() {
         super(LEVEL_SELECT);
@@ -39,37 +40,41 @@ class LevelSelect extends Common {
             }
         }, 17);
     }
-    createLevel(item, i, levelData) {
-        const tempLevelsData = JSON.parse(String(levelData));
+    createLevel(item, levelData) {
         item.addEventListener("click", async () => {
-            const randomLevel = Math.floor(Math.random() * tempLevelsData.length);
-            console.log(randomLevel);
-            const random = tempLevelsData[randomLevel];
             const isSpecialLevel = Math.floor(Math.random() * 1);
+            const { level, lives, numberOfColumns, numberOfRows, timer } = levelData;
             if (isSpecialLevel == 0) {
                 const randomBrick = Math.floor(Math.random() * 24);
-                const image = await loader.loadImage("http://localhost:1234/Krzysiu.a065cfe0.png");
-                const canvas = new Canvas(random.level, POINTS_TO_GET, random.lives, image, random.numberOfRows, random.numberOfColumns);
+                const image = await loader.loadImage(TEMP_SPECIAL_IMG);
+                const canvas = new Canvas(level, POINTS_TO_GET, lives, image, numberOfRows, numberOfColumns);
                 canvas.configureCanvas(tabOfBrickData(), isSpecialLevel == 0, { randomBrick, Position: { brick_x: -10, brick_y: -10 } });
                 canvas.addEventOnResize();
                 canvas.setListenerMovePaddle();
                 this.DrawOnCanvas(canvas);
             }
             else {
-                const random = tempLevelsData[Math.floor(Math.random() * 2)];
-                const canvas = new Canvas(random.level, POINTS_TO_GET, random.lives, null, random.numberOfRows, random.numberOfColumns);
+                const canvas = new Canvas(level, POINTS_TO_GET, lives, null, numberOfRows, numberOfColumns);
                 canvas.configureCanvas(tabOfBrickData(), false, { randomBrick: null, Position: null });
                 canvas.addEventOnResize();
-                console.log(canvas.getGameState);
                 this.DrawOnCanvas(canvas);
                 canvas.setListenerMovePaddle();
             }
         });
     }
+    createViewForLevels(levelData, parentNode) {
+        let div = document.createElement("div");
+        div.textContent = String(levelData.level);
+        parentNode.appendChild(div);
+        this.createLevel(div, levelData);
+    }
     async handleOnClickLevel() {
-        const levelData = await this.fetchLevels();
+        const levelData = JSON.parse(await this.fetchLevels());
         const levelSelect = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU);
-        Array.from(levelSelect.children).forEach((item, i) => this.createLevel(item, i, levelData));
+        levelSelect.textContent = "";
+        levelData.forEach((item, i) => {
+            this.createViewForLevels(item, levelSelect);
+        });
     }
 }
 export const levelSelect = new LevelSelect();

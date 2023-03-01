@@ -16,11 +16,6 @@ export const tabOfBrickData = () => {
             points: 10
         },
         {
-            color: "#000",
-            timesToHit: 4,
-            points: 50
-        },
-        {
             color: "#cb356d",
             timesToHit: 1,
             points: 50
@@ -34,6 +29,16 @@ export const tabOfBrickData = () => {
             color: "##CAD982",
             timesToHit: 1,
             points: 10
+        },
+        {
+            color: "#000",
+            timesToHit: 4,
+            points: 50
+        },
+        {
+            color: "#808080",
+            timesToHit: 1000000000,
+            points: 0
         }
     ];
 };

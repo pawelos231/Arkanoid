@@ -4,7 +4,8 @@
     height: 100%;
     display: flex;
     justify-content: center;
-    opacity: 0.8;
+    opacity: 1;
+    font-family: Arial, Helvetica, sans-serif;
     align-items: center;
     background-color: black;
     z-index: 10;
@@ -46,7 +47,7 @@
 .backToMenu {
     position: absolute;
     top: 0;
-    left: 0;
+    left: 20px;
     font-size: 30px;
     cursor: pointer;
     transition: .15s;

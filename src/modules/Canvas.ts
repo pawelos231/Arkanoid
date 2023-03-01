@@ -40,6 +40,7 @@ export class Canvas<T> extends Common {
     gameState: GameState
     bricksArray: Array<Brick>
     image: T
+
     constructor(level: number, pointsToWin: number, lives: number, image: T, rowsCount: number, columnsCount: number) {
         super(GAME_CANVAS)
         this.canvas = null as any
@@ -83,7 +84,7 @@ export class Canvas<T> extends Common {
         isSpecialLevel ? this.initBricks(special, brickPoints) : this.initBricks(null, brickPoints)
     }
 
-    drawBuffs() {
+    private drawBuffs(): void {
 
     }
 
@@ -120,7 +121,6 @@ export class Canvas<T> extends Common {
                 this.upadateScore(i)
               
                 this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null
-
 
                 const Special: Specialbrick | null = this.bricksArray[i].brickStateGet.special
 
