@@ -8,12 +8,12 @@ export class Paddle {
     initPaddlePos() {
         return { paddle_x: window.innerWidth / 2 - 100, paddle_y: window.innerHeight - 70 };
     }
+    clearPaddle(heightOffset) {
+        this.ctx.clearRect(this.positions.paddle_x, heightOffset, this.width + 1, this.height + 1);
+    }
     drawPaddle(positions = Object.assign({}, this.initPaddlePos())) {
         this.positions = positions;
         this.ctx.fillStyle = "white";
         this.ctx.fillRect(positions.paddle_x, positions.paddle_y, this.width - 1, this.height - 1);
-    }
-    clearPaddle(heightOffset) {
-        this.ctx.clearRect(this.positions.paddle_x, heightOffset, this.width + 1, this.height + 1);
     }
 }

@@ -6,7 +6,7 @@ export class GameState {
     lives: number
     ball_positions: Ball_Pos
     counter: number
-    playerPoints: number
+    private playerPoints: number
     public constructor(level: number, pointsToWin: number, paddle_positions: Paddle_Pos, lives: number, ball_positions: Ball_Pos, counter: number, playerPoints: number) {
         this.level = level
         this.pointsToWin = pointsToWin
@@ -20,21 +20,27 @@ export class GameState {
     set playerPointsSet(points: number){
         this.playerPoints = points
     }
+
     get playerPointsGet(): number{
         return this.playerPoints
     }
+
     get getLevel(): number {
         return this.level
     }
+
     get gamePointsToWin(): number {
         return this.pointsToWin
     }
+
     get livesGetter(): number {
         return this.lives
     }
+
     get ball_positions_getter(): Ball_Pos {
         return this.ball_positions
     }
+
     get paddle_positions_getter(): Paddle_Pos {
         return this.paddle_positions
     }

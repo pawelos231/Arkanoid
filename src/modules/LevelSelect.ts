@@ -52,13 +52,13 @@ class LevelSelect extends Common {
 
       if (isSpecialLevel == 0) {
 
-        const randomBrick: number = Math.floor(Math.random() * 24)
+        const randomBrick: number = Math.floor(Math.random() * ((numberOfColumns-1) * (numberOfRows - 1)))
 
         const image: HTMLImageElement = await loader.loadImage(TEMP_SPECIAL_IMG)
 
         const canvas: Canvas<HTMLImageElement> = new Canvas<HTMLImageElement>(level, POINTS_TO_GET, lives, image, numberOfRows, numberOfColumns)
 
-        canvas.configureCanvas(tabOfBrickData(), isSpecialLevel == 0, { randomBrick, Position: { brick_x: -10, brick_y: -10 } })
+        canvas.configureCanvas(tabOfBrickData(), true, randomBrick)
 
         canvas.addEventOnResize()
         canvas.setListenerMovePaddle()
@@ -70,7 +70,7 @@ class LevelSelect extends Common {
       else {
         const canvas: Canvas<null> = new Canvas<null>(level, POINTS_TO_GET, lives, null, numberOfRows, numberOfColumns)
 
-        canvas.configureCanvas(tabOfBrickData(), false, { randomBrick: null, Position: null })
+        canvas.configureCanvas(tabOfBrickData(), false)
 
         canvas.addEventOnResize()
         

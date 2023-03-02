@@ -45,17 +45,17 @@ class LevelSelect extends Common {
             const isSpecialLevel = Math.floor(Math.random() * 1);
             const { level, lives, numberOfColumns, numberOfRows, timer } = levelData;
             if (isSpecialLevel == 0) {
-                const randomBrick = Math.floor(Math.random() * 24);
+                const randomBrick = Math.floor(Math.random() * ((numberOfColumns - 1) * (numberOfRows - 1)));
                 const image = await loader.loadImage(TEMP_SPECIAL_IMG);
                 const canvas = new Canvas(level, POINTS_TO_GET, lives, image, numberOfRows, numberOfColumns);
-                canvas.configureCanvas(tabOfBrickData(), isSpecialLevel == 0, { randomBrick, Position: { brick_x: -10, brick_y: -10 } });
+                canvas.configureCanvas(tabOfBrickData(), true, randomBrick);
                 canvas.addEventOnResize();
                 canvas.setListenerMovePaddle();
                 this.DrawOnCanvas(canvas);
             }
             else {
                 const canvas = new Canvas(level, POINTS_TO_GET, lives, null, numberOfRows, numberOfColumns);
-                canvas.configureCanvas(tabOfBrickData(), false, { randomBrick: null, Position: null });
+                canvas.configureCanvas(tabOfBrickData(), false);
                 canvas.addEventOnResize();
                 this.DrawOnCanvas(canvas);
                 canvas.setListenerMovePaddle();

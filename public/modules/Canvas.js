@@ -33,6 +33,18 @@ export class Canvas extends Common {
         this.counter = 0;
         this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, this.counter, this.playerPoints);
     }
+    get getGameState() {
+        return this.gameState;
+    }
+    configureCanvas(brickPoints, isSpecialLevel, randomBrickIndex = 0) {
+        this.changeVisbilityOfGivenElement(this.elementId, true);
+        this.canvas = this.elementId;
+        this.canvas.style.backgroundColor = "black";
+        this.ctx = this.canvas.getContext("2d");
+        this.BRICK_HEIGHT = window.innerHeight / 18;
+        this.BRICK_WIDTH = window.innerWidth / this.columnsCount;
+        isSpecialLevel ? this.initBricks(randomBrickIndex, brickPoints) : this.initBricks(-100, brickPoints);
+    }
     addEventOnResize() {
         window.addEventListener("resize", () => {
             let values = [window.innerHeight, window.innerWidth];
@@ -45,18 +57,6 @@ export class Canvas extends Common {
                 this.bricksArray[i].heightSetter = this.BRICK_HEIGHT;
             }
         });
-    }
-    get getGameState() {
-        return this.gameState;
-    }
-    configureCanvas(brickPoints, isSpecialLevel, special) {
-        this.changeVisbilityOfGivenElement(this.elementId, true);
-        this.canvas = this.elementId;
-        this.canvas.style.backgroundColor = "black";
-        this.ctx = this.canvas.getContext("2d");
-        this.BRICK_HEIGHT = window.innerHeight / 18;
-        this.BRICK_WIDTH = window.innerWidth / this.columnsCount;
-        isSpecialLevel ? this.initBricks(special, brickPoints) : this.initBricks(null, brickPoints);
     }
     drawBuffs() {
     }
@@ -82,12 +82,11 @@ export class Canvas extends Common {
             if (this.isCollision(i, ball_x, ball_y, RADIUS)) {
                 this.upadateScore(i);
                 this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null;
-                const Special = this.bricksArray[i].brickStateGet.special;
-                if (Special && Special.Position) {
-                    if (Special.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < Special.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && Special.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
-                        const specialBrick = new SpecialBrick(this.image, "http://localhost:1234/cotomabyc.mp3");
-                        specialBrick.displayViewOfSpecialBrick();
-                    }
+                const Special = this.bricksArray[i].brickStateGet.specialBrick;
+                const status = this.bricksArray[i].getStatus;
+                if (Special && status == 1) {
+                    const specialBrick = new SpecialBrick(this.image, "http://localhost:1234/cotomabyc.mp3");
+                    specialBrick.displayViewOfSpecialBrick();
                 }
                 this.ballMoveRateY = -this.ballMoveRateY;
                 let timesToHit = this.bricksArray[i].brickPointsGet.timesToHit;
@@ -123,7 +122,7 @@ export class Canvas extends Common {
         if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
             this.gameState.lives = this.gameState.lives - 1;
             if (this.gameState.lives == 0) {
-                return { end: false, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPoints };
+                return { end: false, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPointsGet };
             }
             this.ballMoveRateY = -12;
             this.gameState.ball_positions = {
@@ -137,12 +136,12 @@ export class Canvas extends Common {
         const paddle_y = this.gameState.paddle_positions.paddle_y;
         //winning condtion
         if (!(this.bricksArray.find((item) => item.getStatus == 1))) {
-            return { end: false, status: 1, level: this.gameState.getLevel, points: this.gameState.playerPoints };
+            return { end: false, status: 1, level: this.gameState.getLevel, points: this.gameState.playerPointsGet };
         }
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);
         this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS);
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY });
-        return { end: true, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPoints };
+        return { end: true, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPointsGet };
     }
     setListenerMovePaddle() {
         window.addEventListener("keydown", (event) => {
@@ -168,21 +167,30 @@ export class Canvas extends Common {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
         paddle.drawPaddle(this.gameState.paddle_positions);
     }
-    addBricksToArray(brick_x, brick_y, special, brickData) {
-        const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y, brickData);
+    addBricksToArray(brick_x, brick_y, specialBrick, brickData) {
+        const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, specialBrick, 1, brick_x, brick_y, brickData);
         this.bricksArray.push(brick);
-        console.log(brick);
+        if (brick.brickStateGet.specialBrick) {
+            console.log(brick);
+        }
     }
-    initBricks(special, BrickPoints) {
+    initBricks(SpecialBrickIndex = -100, BrickPoints) {
+        let count = 0;
         for (let i = 0; i < this.rowsCount; i++) {
             for (let j = 0; j < this.columnsCount; j++) {
-                this.addBricksToArray(j, i, special, BrickPoints[i]);
+                count++;
+                if (SpecialBrickIndex === count) {
+                    this.addBricksToArray(j, i, true, BrickPoints[i]);
+                }
+                else {
+                    this.addBricksToArray(j, i, false, BrickPoints[i]);
+                }
             }
         }
     }
     drawBricks() {
         for (let i = 0; i < this.bricksArray.length; i++) {
-            this.bricksArray[i].drawBrick(this.image, i);
+            this.bricksArray[i].drawBrick(this.image);
         }
     }
     drawGame() {
@@ -202,10 +210,13 @@ export class Canvas extends Common {
             this.gameState.paddle_positions.paddle_x += 15;
         }
     }
-    draw() {
-        this.handleKeyPress();
+    setInitCanvasSize() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
+    }
+    draw() {
+        this.handleKeyPress();
+        this.setInitCanvasSize();
         this.clearCanvas();
         return this.drawGame();
     }

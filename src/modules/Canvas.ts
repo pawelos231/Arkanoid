@@ -4,7 +4,6 @@ import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
 import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS } from "../constants/gameState";
 import { GameState } from "./gameState";
-import { Specialbrick } from "../interfaces/gameStateInterface";
 import { media } from "./Media";
 import { BrickPoints } from "../interfaces/gameStateInterface";
 import { SpecialBrick } from "./SpecialBrickView";
@@ -54,6 +53,22 @@ export class Canvas<T> extends Common {
         this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, this.counter, this.playerPoints)
     }
 
+    public get getGameState() {
+        return this.gameState
+    }
+
+    public configureCanvas(brickPoints: BrickPoints[], isSpecialLevel: boolean, randomBrickIndex: number = 0): void {
+
+        this.changeVisbilityOfGivenElement(this.elementId, true)
+        this.canvas = this.elementId as HTMLCanvasElement;
+        this.canvas.style.backgroundColor = "black"
+        this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+        this.BRICK_HEIGHT = window.innerHeight / 18
+        this.BRICK_WIDTH = window.innerWidth / this.columnsCount
+        isSpecialLevel ? this.initBricks(randomBrickIndex, brickPoints) : this.initBricks(-100, brickPoints)
+
+    }
+
     public addEventOnResize(): void {
         window.addEventListener("resize", () => {
             let values: number[] = [window.innerHeight, window.innerWidth]
@@ -69,20 +84,6 @@ export class Canvas<T> extends Common {
 
     }
 
-
-    public get getGameState() {
-        return this.gameState
-    }
-
-    public configureCanvas(brickPoints: BrickPoints[], isSpecialLevel: boolean, special: Specialbrick | null): void {
-        this.changeVisbilityOfGivenElement(this.elementId, true)
-        this.canvas = this.elementId as HTMLCanvasElement;
-        this.canvas.style.backgroundColor = "black"
-        this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-        this.BRICK_HEIGHT = window.innerHeight / 18
-        this.BRICK_WIDTH = window.innerWidth / this.columnsCount
-        isSpecialLevel ? this.initBricks(special, brickPoints) : this.initBricks(null, brickPoints)
-    }
 
     private drawBuffs(): void {
 
@@ -122,23 +123,26 @@ export class Canvas<T> extends Common {
               
                 this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null
 
-                const Special: Specialbrick | null = this.bricksArray[i].brickStateGet.special
+                const Special: boolean = this.bricksArray[i].brickStateGet.specialBrick
+                const status: number = this.bricksArray[i].getStatus
 
-                if (Special && Special.Position) {
-                    if (Special.Position.brick_x * this.BRICK_WIDTH < ball_x - RADIUS && ball_x + RADIUS < Special.Position.brick_x * this.BRICK_WIDTH + this.BRICK_WIDTH && Special.Position.brick_y * this.BRICK_HEIGHT + this.BRICK_HEIGHT > ball_y - RADIUS) {
-                        const specialBrick: SpecialBrick = new SpecialBrick(this.image as HTMLImageElement, "http://localhost:1234/cotomabyc.mp3")
-                        specialBrick.displayViewOfSpecialBrick()
-                    }
+                if (Special && status == 1) {
+                    const specialBrick: SpecialBrick = new SpecialBrick(this.image as HTMLImageElement, "http://localhost:1234/cotomabyc.mp3")
+                    specialBrick.displayViewOfSpecialBrick()     
                 }
 
 
                 this.ballMoveRateY = -this.ballMoveRateY
+
                 let timesToHit: number = this.bricksArray[i].brickPointsGet.timesToHit
                 timesToHit--
+
                 this.bricksArray[i].timesToHitSet = timesToHit
+
                 if(timesToHit <= 0){
                     this.bricksArray[i].setStatus = 0
                 }
+
                 media.spawnSoundWhenHitBrick()
                 break;
             }
@@ -170,7 +174,7 @@ export class Canvas<T> extends Common {
         if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
             this.gameState.lives = this.gameState.lives - 1
             if (this.gameState.lives == 0) {
-                return { end: false, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPoints }
+                return { end: false, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPointsGet }
             }
 
             this.ballMoveRateY = -12
@@ -187,17 +191,18 @@ export class Canvas<T> extends Common {
 
         //winning condtion
         if (!(this.bricksArray.find((item: Brick) => item.getStatus == 1 ))) {
-            return { end: false, status: 1, level: this.gameState.getLevel, points: this.gameState.playerPoints }
+            return { end: false, status: 1, level: this.gameState.getLevel, points: this.gameState.playerPointsGet }
         }
 
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y)
         this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS)
 
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY })
-        return { end: true, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPoints }
+        return { end: true, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPointsGet }
     }
 
     public setListenerMovePaddle(): void {
+
         window.addEventListener("keydown", (event: KeyboardEvent) => {
             const keyCode: number = event.keyCode
             if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
@@ -207,8 +212,10 @@ export class Canvas<T> extends Common {
                 this.keyPressedRight = true
             }
         })
+
         window.addEventListener("keyup", (event: KeyboardEvent) => {
             const keyCode: number = event.keyCode
+
             if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
                 this.keyPressedLeft = false
             }
@@ -216,6 +223,7 @@ export class Canvas<T> extends Common {
                 this.keyPressedRight = false
             }
         })
+
     }
 
     private drawPaddle(): void {
@@ -223,23 +231,32 @@ export class Canvas<T> extends Common {
         paddle.drawPaddle(this.gameState.paddle_positions)
     }
 
-    private addBricksToArray(brick_x: number, brick_y: number, special: Specialbrick | null, brickData: BrickPoints): void {
-        const brick: Brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, special, 1, brick_x, brick_y, brickData)
+    private addBricksToArray(brick_x: number, brick_y: number, specialBrick: boolean, brickData: BrickPoints): void {
+        const brick: Brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, specialBrick, 1, brick_x, brick_y, brickData)
         this.bricksArray.push(brick)
-        console.log(brick)
+        if(brick.brickStateGet.specialBrick){
+            console.log(brick)
+        }
     }
 
-    private initBricks(special: Specialbrick | null, BrickPoints: BrickPoints[]): void {
+    private initBricks(SpecialBrickIndex: number = -100, BrickPoints: BrickPoints[]): void {
+        let count = 0
         for (let i = 0; i < this.rowsCount; i++) {
             for (let j = 0; j < this.columnsCount; j++) {
-                this.addBricksToArray(j, i, special, BrickPoints[i])
+                count++
+                if (SpecialBrickIndex === count){
+                    this.addBricksToArray(j, i, true, BrickPoints[i])
+                } else {
+                    this.addBricksToArray(j, i, false, BrickPoints[i])
+                }
             }
         }
+
     }
 
     private drawBricks() {
         for (let i = 0; i < this.bricksArray.length; i++) {
-            this.bricksArray[i].drawBrick(this.image, i)
+            this.bricksArray[i].drawBrick(this.image)
         }
     }
 
@@ -254,20 +271,32 @@ export class Canvas<T> extends Common {
     }
 
     private handleKeyPress(): void {
+
         const paddle_x: number = this.gameState.paddle_positions.paddle_x
-        if (this.keyPressedLeft && paddle_x > 0) {
+
+        if (this.keyPressedLeft && paddle_x > 0) 
+        {
             this.gameState.paddle_positions.paddle_x -= 15
         }
-        if (this.keyPressedRight && paddle_x + PADDLE_WIDTH < window.innerWidth) {
+        if (this.keyPressedRight && paddle_x + PADDLE_WIDTH < window.innerWidth) 
+        {
             this.gameState.paddle_positions.paddle_x += 15
         }
     }
 
-    public draw(): StatusOfEnd {
-        this.handleKeyPress()
+
+    private setInitCanvasSize(): void{
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
+    }
+
+
+    public draw(): StatusOfEnd {
+
+        this.handleKeyPress()
+        this.setInitCanvasSize()
         this.clearCanvas()
+
         return this.drawGame()
 
     }

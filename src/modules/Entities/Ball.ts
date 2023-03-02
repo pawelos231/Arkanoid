@@ -12,6 +12,16 @@ export class Ball {
     get radiusOfBallGetter(): number {
         return this.radius
     }
+    get BallPositionGetter(): Ball_Pos {
+        return this.ballPosition
+    }
+
+    private initBallPos(): Ball_Pos {
+        //to fix
+        const ball_y: number = window.innerHeight - 100
+        const ball_x: number = window.innerWidth / 2
+        return { ball_y, ball_x }
+    }
 
     public drawBall(positions: Ball_Pos = { ... this.initBallPos() }): void {
 
@@ -21,11 +31,5 @@ export class Ball {
         this.ctx.fill();
     }
 
-    private initBallPos(): Ball_Pos {
-        //to fix
-        const ball_y: number = window.innerHeight - 100
-        const ball_x: number = window.innerWidth / 2
-        return { ball_y, ball_x }
-    }
 
 }

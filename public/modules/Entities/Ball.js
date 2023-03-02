@@ -7,16 +7,19 @@ export class Ball {
     get radiusOfBallGetter() {
         return this.radius;
     }
-    drawBall(positions = Object.assign({}, this.initBallPos())) {
-        this.ballPosition = positions;
-        this.ctx.arc(this.ballPosition.ball_x, this.ballPosition.ball_y, this.radius, 0, Math.PI * 2, false);
-        this.ctx.fillStyle = "#0095DD";
-        this.ctx.fill();
+    get BallPositionGetter() {
+        return this.ballPosition;
     }
     initBallPos() {
         //to fix
         const ball_y = window.innerHeight - 100;
         const ball_x = window.innerWidth / 2;
         return { ball_y, ball_x };
+    }
+    drawBall(positions = Object.assign({}, this.initBallPos())) {
+        this.ballPosition = positions;
+        this.ctx.arc(this.ballPosition.ball_x, this.ballPosition.ball_y, this.radius, 0, Math.PI * 2, false);
+        this.ctx.fillStyle = "#0095DD";
+        this.ctx.fill();
     }
 }

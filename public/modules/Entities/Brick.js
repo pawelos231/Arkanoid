@@ -1,9 +1,9 @@
 export class Brick {
-    constructor(width, height, ctx, special, status, brick_x, brick_y, brickPoints) {
+    constructor(width, height, ctx, specialBrick, status, brick_x, brick_y, brickPoints) {
         this.width = width;
         this.height = height;
         this.ctx = ctx;
-        this.brickState = { brick_x, brick_y, status, special };
+        this.brickState = { brick_x, brick_y, status, specialBrick };
         this.brickPoints = Object.assign({}, brickPoints);
     }
     set heightSetter(height) {
@@ -27,14 +27,10 @@ export class Brick {
     set timesToHitSet(times) {
         this.brickPoints.timesToHit = times;
     }
-    setColor(special, x, y, image, counter) {
-        if (special && special.randomBrick == counter) {
-            if (special.Position) {
-                this.brickPoints.points = 100;
-                this.brickPoints.timesToHit = 1;
-                special.Position.brick_x = this.brickState.brick_x;
-                special.Position.brick_y = this.brickState.brick_y;
-            }
+    setColor(specialBrick, x, y, image) {
+        if (specialBrick) {
+            this.brickPoints.points = 100;
+            this.brickPoints.timesToHit = 1;
             this.ctx.drawImage(image, x, y, this.width - 2, this.height - 2);
         }
         else {
@@ -42,10 +38,10 @@ export class Brick {
             this.ctx.fillRect(this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, this.width - 1, this.height - 1);
         }
     }
-    async drawBrick(image = null, counter) {
+    drawBrick(image = null) {
         if (this.brickState.status == 0)
             return;
-        this.setColor(this.brickState.special, this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, image, counter);
+        this.setColor(this.brickState.specialBrick, this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, image);
         this.ctx.strokeStyle = "white";
         this.ctx.strokeRect(this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, this.width, this.height);
     }
