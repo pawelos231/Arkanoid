@@ -21,3 +21,9 @@ export interface Ball_Pos {
     ball_y: number
 }
 
+export interface GameOverStatus {
+    level: number
+    points: number
+    end: boolean
+    status: number 
+}

@@ -2,43 +2,35 @@ import { Common } from "./Common";
 import { Brick } from './Entities/Brick'
 import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
-import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS } from "../constants/gameState";
+import {  PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS } from "../constants/gameState";
+import { GameOverStatus } from "../interfaces/gameStateInterface";
+import { Directions } from "../interfaces/HelperEnums";
 import { GameState } from "./gameState";
 import { media } from "./Media";
 import { BrickPoints } from "../interfaces/gameStateInterface";
 import { SpecialBrick } from "./SpecialBrickView";
-interface StatusOfEnd {
-    level: number
-    points: number
-    end: boolean
-    status: number //1 - win, 0 - loss
-}
 
-enum Directions {
-    LeftArrows = LEFT_ARROW,
-    LeftNormal = LEFT_NORMAL,
-    RigthArrows = RIGHT_ARROW,
-    RigthNormal = RIGHT_NORMAL,
-}
 
 const GAME_CANVAS = "game_canvas"
 
 export class Canvas<T> extends Common {
+
     private BRICK_HEIGHT: number = 0
     private BRICK_WIDTH: number = 0
     private ballMoveRateX: number = -12
     private ballMoveRateY: number = -12
-     rowsCount: number
-     columnsCount: number
-     counter: number
-     playerPoints: number
+    private rowsCount: number
+    private columnsCount: number
+    private hitCounter: number
+    private playerPoints: number
     private keyPressedLeft: boolean = false
     private keyPressedRight: boolean = false
+    private pointsToWin: number
     private ctx: CanvasRenderingContext2D;
     private canvas: HTMLCanvasElement;
-    gameState: GameState
-    bricksArray: Array<Brick>
-    image: T
+    private gameState: GameState
+    private bricksArray: Array<Brick>
+    private image: T
 
     constructor(level: number, pointsToWin: number, lives: number, image: T, rowsCount: number, columnsCount: number) {
         super(GAME_CANVAS)
@@ -49,8 +41,9 @@ export class Canvas<T> extends Common {
         this.rowsCount = rowsCount
         this.columnsCount = columnsCount
         this.playerPoints = 0
-        this.counter = 0
-        this.gameState = new GameState(level, pointsToWin, INIT_PADDLE_POS, lives, INIT_BALL_POS, this.counter, this.playerPoints)
+        this.hitCounter = 0
+        this.pointsToWin = pointsToWin
+        this.gameState = new GameState(level, lives, this.pointsToWin,  this.hitCounter, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS)
     }
 
     public get getGameState() {
@@ -157,7 +150,7 @@ export class Canvas<T> extends Common {
         }
     }
 
-    private drawBall(): StatusOfEnd {
+    private drawBall(): GameOverStatus {
         //change to fix resizeable
         const ball: Ball = new Ball(this.ctx, 25)
         const RADIUS: number = ball.radiusOfBallGetter
@@ -260,7 +253,7 @@ export class Canvas<T> extends Common {
         }
     }
 
-    private drawGame(): StatusOfEnd {
+    private drawGame(): GameOverStatus {
         this.drawPaddle()
         this.drawBricks()
         return this.drawBall()
@@ -291,7 +284,7 @@ export class Canvas<T> extends Common {
     }
 
 
-    public draw(): StatusOfEnd {
+    public draw(): GameOverStatus {
 
         this.handleKeyPress()
         this.setInitCanvasSize()

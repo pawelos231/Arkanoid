@@ -8,7 +8,7 @@ import { FETCH_LEVELS } from "../constants/api/Urls";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
 const LEVEL_SELECT = "levelSelect";
 //temporary data for levels
-const POINTS_TO_GET = 24;
+const POINTS_TO_GET = 10000000;
 const TEMP_SPECIAL_IMG = "http://localhost:1234/Krzysiu.a065cfe0.png";
 class LevelSelect extends Common {
     constructor() {

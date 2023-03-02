@@ -7,7 +7,8 @@ export class GameState {
     ball_positions: Ball_Pos
     counter: number
     private playerPoints: number
-    public constructor(level: number, pointsToWin: number, paddle_positions: Paddle_Pos, lives: number, ball_positions: Ball_Pos, counter: number, playerPoints: number) {
+    
+    public constructor(level: number, lives: number, pointsToWin: number, counter: number,playerPoints: number, paddle_positions: Paddle_Pos,ball_positions: Ball_Pos,  ) {
         this.level = level
         this.pointsToWin = pointsToWin
         this.paddle_positions = paddle_positions
