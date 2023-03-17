@@ -53,7 +53,28 @@ export class Canvas extends Common {
             }
         });
     }
-    drawBuffs() {
+    setListenerMovePaddle() {
+        window.addEventListener("keydown", (event) => {
+            const keyCode = event.keyCode;
+            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
+                this.keyPressedLeft = true;
+            }
+            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
+                this.keyPressedRight = true;
+            }
+        });
+        window.addEventListener("keyup", (event) => {
+            const keyCode = event.keyCode;
+            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
+                this.keyPressedLeft = false;
+            }
+            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
+                this.keyPressedRight = false;
+            }
+        });
+    }
+    upadateScore(index) {
+        this.gameState.playerPointsSet = this.bricksArray[index].brickPointsGet.points + this.getGameState.playerPointsGet;
     }
     isCollisonFromSide(i, ball_x, ball_y, RADIUS) {
         const brick_pos_x = this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH;
@@ -65,9 +86,6 @@ export class Canvas extends Common {
         const brick_pos_x = BRICK.brickStateGet.brick_x * this.BRICK_WIDTH;
         const brick_pos_y = BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT;
         return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS && brick_pos_y < ball_y + RADIUS && brick_pos_x < ball_x + RADIUS + 12.5 && brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5);
-    }
-    upadateScore(index) {
-        this.gameState.playerPointsSet = this.bricksArray[index].brickPointsGet.points + this.getGameState.playerPointsGet;
     }
     CheckCollisionWithBricks(ball_x, ball_y, RADIUS) {
         for (let i = 0; i < this.bricksArray.length; i++) {
@@ -100,6 +118,8 @@ export class Canvas extends Common {
             media.spawnSoundWhenHitPaddle();
             this.ballMoveRateY = -this.ballMoveRateY;
         }
+    }
+    drawBuffs() {
     }
     drawBall() {
         //change to fix resizeable
@@ -137,26 +157,6 @@ export class Canvas extends Common {
         this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS);
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY });
         return { end: true, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPointsGet };
-    }
-    setListenerMovePaddle() {
-        window.addEventListener("keydown", (event) => {
-            const keyCode = event.keyCode;
-            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
-                this.keyPressedLeft = true;
-            }
-            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
-                this.keyPressedRight = true;
-            }
-        });
-        window.addEventListener("keyup", (event) => {
-            const keyCode = event.keyCode;
-            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
-                this.keyPressedLeft = false;
-            }
-            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
-                this.keyPressedRight = false;
-            }
-        });
     }
     drawPaddle() {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);

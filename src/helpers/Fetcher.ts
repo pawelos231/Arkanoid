@@ -12,6 +12,10 @@ const MUST_PUT_VALID_VAL = "Musisz wprowadzić wartości !"
 const LOGIN_STATUS_MESSAGE = "LoginStatus"
 const START_THE_GAME = "startTheGame"
 
+interface formData {
+    [key: string]: FormDataEntryValue
+}
+
 export class Fetcher extends Common {
     private formElement: HTMLElement | null
     public constructor(formElement: HTMLElement | null) {
@@ -24,7 +28,7 @@ export class Fetcher extends Common {
         const LoginStatus: HTMLElement = this.bindElementByClass(LOGIN_STATUS_MESSAGE)
         const startGamePanel: HTMLElement = this.bindElementByClass(START_THE_GAME)
 
-        let obj: any = {}
+        let obj = {} as formData
 
         for (const [key, value] of form) {
             obj[key] = value

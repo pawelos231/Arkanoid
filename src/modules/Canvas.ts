@@ -77,9 +77,33 @@ export class Canvas<T> extends Common {
 
     }
 
+    public setListenerMovePaddle(): void {
 
-    private drawBuffs(): void {
+        window.addEventListener("keydown", (event: KeyboardEvent) => {
+            const keyCode: number = event.keyCode
+            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
+                this.keyPressedLeft = true
+            }
+            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
+                this.keyPressedRight = true
+            }
+        })
 
+        window.addEventListener("keyup", (event: KeyboardEvent) => {
+            const keyCode: number = event.keyCode
+
+            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
+                this.keyPressedLeft = false
+            }
+            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
+                this.keyPressedRight = false
+            }
+        })
+
+    }
+
+    private upadateScore(index: number){
+        this.gameState.playerPointsSet = this.bricksArray[index].brickPointsGet.points + this.getGameState.playerPointsGet
     }
 
     private isCollisonFromSide(i: number, ball_x: number, ball_y: number, RADIUS: number): boolean {
@@ -88,20 +112,17 @@ export class Canvas<T> extends Common {
         return ((brick_pos_x + this.BRICK_WIDTH <= ball_x - RADIUS && brick_pos_x + this.BRICK_WIDTH >= ball_x - RADIUS - 12) || (brick_pos_x <= ball_x + RADIUS && brick_pos_x >= ball_x + RADIUS + 10) && ball_y - RADIUS > brick_pos_y + this.BRICK_HEIGHT && brick_pos_y < brick_pos_y + RADIUS)
     }
 
+
     private isCollision(i: number, ball_x: number, ball_y: number, RADIUS: number): boolean {
         const BRICK = this.bricksArray[i]
         const brick_pos_x: number = BRICK.brickStateGet.brick_x * this.BRICK_WIDTH
         const brick_pos_y: number = BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT
 
-
-
         return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS && brick_pos_y < ball_y + RADIUS && brick_pos_x < ball_x + RADIUS + 12.5 && brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5) 
            
     }
 
-    private upadateScore(index: number){
-        this.gameState.playerPointsSet = this.bricksArray[index].brickPointsGet.points + this.getGameState.playerPointsGet
-    }
+
 
     private CheckCollisionWithBricks(ball_x: number, ball_y: number, RADIUS: number) {
         for (let i = 0; i < this.bricksArray.length; i++) {
@@ -149,7 +170,9 @@ export class Canvas<T> extends Common {
             this.ballMoveRateY = -this.ballMoveRateY
         }
     }
+    private drawBuffs(): void {
 
+    }
     private drawBall(): GameOverStatus {
         //change to fix resizeable
         const ball: Ball = new Ball(this.ctx, 25)
@@ -194,30 +217,6 @@ export class Canvas<T> extends Common {
         return { end: true, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPointsGet }
     }
 
-    public setListenerMovePaddle(): void {
-
-        window.addEventListener("keydown", (event: KeyboardEvent) => {
-            const keyCode: number = event.keyCode
-            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
-                this.keyPressedLeft = true
-            }
-            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
-                this.keyPressedRight = true
-            }
-        })
-
-        window.addEventListener("keyup", (event: KeyboardEvent) => {
-            const keyCode: number = event.keyCode
-
-            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
-                this.keyPressedLeft = false
-            }
-            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
-                this.keyPressedRight = false
-            }
-        })
-
-    }
 
     private drawPaddle(): void {
         const paddle: Paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx)

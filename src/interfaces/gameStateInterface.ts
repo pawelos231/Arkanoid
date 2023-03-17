@@ -14,6 +14,7 @@ export interface BrickPoints {
     color: string
     timesToHit: number
     points: number
+    buffDropRate: number
 }
 
 export interface Ball_Pos {
