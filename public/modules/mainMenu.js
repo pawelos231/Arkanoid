@@ -112,12 +112,12 @@ class Menu extends Common {
         const creatorOfViews = new ViewsCreator("paginateSongs");
         const createViewForSongs = creatorOfViews.createViewForSongs.bind(creatorOfViews);
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music, createViewForSongs, "paginateSongResults");
+            settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music);
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSounds, MediaEnum.Sounds, createViewForSongs, "paginateSongResults");
+                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSongs, "paginateSongResults", MediaEnum.Sounds);
             });
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music, createViewForSongs, "paginateSongResults");
+                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music);
             });
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {

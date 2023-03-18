@@ -2,16 +2,17 @@ import { Common } from "./Common";
 import { Logger } from "../interfaces/HelperEnums";
 import { Sounds } from "../data/temporarySoundsData";
 import { Songs } from "../data/temporarySongsData";
+import { SettingsInterface } from "../interfaces/classesInterfaces";
 
-interface SettingsInterface {
-    PaginateResults: <T, F extends Function>(arg0: HTMLElement, arg1: number, arg2: T[], arg3: string, arg4: F, arg5: string) => void,
-}
 
 class Settings extends Common implements SettingsInterface {
     constructor() {
         super("levelSelect")
     }
-    public PaginateResults<T, F extends Function>(songsList: HTMLElement, ITEMS_PER_PAGE: number, mediaToLoad: T[], ListToPaginateId: string, createView: F, PaginationClass: string): void {
+    public PaginateResults<T, F extends Function, V = undefined>(MainList: HTMLElement, ITEMS_PER_PAGE: number, mediaToLoad: T[], createView: F, PaginationClass: string, ...ToggleEnums : (V extends string ? [string] : [undefined?])): void {
+
+        const CurrentEnum: string | undefined = ToggleEnums[0]
+
         const LEFT: HTMLElement = this.bindElementByClass(`${PaginationClass}> .left`)
         const RIGHT: HTMLElement = this.bindElementByClass(`${PaginationClass}> .right`)
         const PAGE: HTMLElement = this.bindElementByClass(`${PaginationClass}> .page`)
@@ -24,8 +25,8 @@ class Settings extends Common implements SettingsInterface {
 
         PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
 
-        createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Sounds[] & Songs[], ListToPaginateId)
-
+        createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
+        
         RIGHT.addEventListener("click", () => {
             currentPage++
             if (currentPage > PAGES - 1) {
@@ -35,11 +36,11 @@ class Settings extends Common implements SettingsInterface {
             }
             if (LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
 
-                createView(songsList, currentPage * ITEMS_PER_PAGE, LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId)
+                createView(MainList, currentPage * ITEMS_PER_PAGE, LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
 
             } else {
 
-                createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId)
+                createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
 
             }
 
@@ -53,7 +54,7 @@ class Settings extends Common implements SettingsInterface {
                 this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error)
                 return
             }
-            createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad as Songs[] & Sounds[], ListToPaginateId)
+            createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
             PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
         })
 

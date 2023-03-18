@@ -122,7 +122,7 @@ class Menu extends Common {
         })
     }
     private async OpenInfo(): Promise<void> {
-        
+
     }
 
     private async openSettings(): Promise<void> {
@@ -146,12 +146,12 @@ class Menu extends Common {
 
 
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults<Songs, ViewsSongFunc>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music, createViewForSongs, "paginateSongResults")
+            settings.PaginateResults<Songs, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music)
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults<Sounds, ViewsSongFunc>(songsList, ITEMS_PER_PAGE, tempTabOfSounds, MediaEnum.Sounds, createViewForSongs, "paginateSongResults")
+                settings.PaginateResults<Sounds, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSongs, "paginateSongResults",  MediaEnum.Sounds)
             })
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults<Songs, ViewsSongFunc>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music, createViewForSongs, "paginateSongResults")
+                settings.PaginateResults<Songs, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music)
             })
 
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)

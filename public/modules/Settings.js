@@ -4,7 +4,8 @@ class Settings extends Common {
     constructor() {
         super("levelSelect");
     }
-    PaginateResults(songsList, ITEMS_PER_PAGE, mediaToLoad, ListToPaginateId, createView, PaginationClass) {
+    PaginateResults(MainList, ITEMS_PER_PAGE, mediaToLoad, createView, PaginationClass, ...ToggleEnums) {
+        const CurrentEnum = ToggleEnums[0];
         const LEFT = this.bindElementByClass(`${PaginationClass}> .left`);
         const RIGHT = this.bindElementByClass(`${PaginationClass}> .right`);
         const PAGE = this.bindElementByClass(`${PaginationClass}> .page`);
@@ -14,7 +15,7 @@ class Settings extends Common {
         const PAGES = Math.ceil(LIST_LEN / ITEMS_PER_PAGE);
         let currentPage = 0;
         PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
-        createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, ListToPaginateId);
+        createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum);
         RIGHT.addEventListener("click", () => {
             currentPage++;
             if (currentPage > PAGES - 1) {
@@ -23,10 +24,10 @@ class Settings extends Common {
                 return;
             }
             if (LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
-                createView(songsList, currentPage * ITEMS_PER_PAGE, LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad, ListToPaginateId);
+                createView(MainList, currentPage * ITEMS_PER_PAGE, LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad, CurrentEnum);
             }
             else {
-                createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, ListToPaginateId);
+                createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum);
             }
             PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
         });
@@ -37,7 +38,7 @@ class Settings extends Common {
                 this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error);
                 return;
             }
-            createView(songsList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, ListToPaginateId);
+            createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum);
             PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
         });
     }
