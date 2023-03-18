@@ -8,6 +8,7 @@ import { tempTabOfSongs } from '../data/temporarySongsData.js';
 import { tempTabOfSounds } from '../data/temporarySoundsData.js';
 import { MediaEnum } from '../interfaces/HelperEnums.js';
 import { GET_STATS_URL } from '../constants/api/Urls.js';
+import { ViewsCreator } from '../helpers/viewCreator.js';
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -94,6 +95,8 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(startGamePanel, true);
         });
     }
+    async OpenInfo() {
+    }
     async openSettings() {
         const OpenSettings = this.bindElementByClass(OPEN_SETTINGS);
         const OpenedSettingsPage = this.bindElementByClass(OPENED_SETTINGS_PAGE);
@@ -106,13 +109,15 @@ class Menu extends Common {
         const MUSIC = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW);
         //TODO have those files on server to give user choice what to play in backgground
         const ITEMS_PER_PAGE = 5;
+        const creatorOfViews = new ViewsCreator("paginateSongs");
+        const createViewForSongs = creatorOfViews.createViewForSongs.bind(creatorOfViews);
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music);
+            settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music, createViewForSongs, "paginateSongResults");
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSounds, MediaEnum.Sounds);
+                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSounds, MediaEnum.Sounds, createViewForSongs, "paginateSongResults");
             });
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music);
+                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music, createViewForSongs, "paginateSongResults");
             });
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {

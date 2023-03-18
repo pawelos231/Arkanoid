@@ -17,3 +17,11 @@ export enum Directions {
     RigthArrows = RIGHT_ARROW,
     RigthNormal = RIGHT_NORMAL,
 }
+
+export enum BuffTypes {
+    PaddleSpeed = 1,
+    AddLive = 2,
+    SpeedBuff = 3,
+    InvincibilityBuff = 4,
+    DestroyerBuff = 5
+}

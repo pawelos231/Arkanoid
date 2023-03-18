@@ -8,6 +8,8 @@ import { Songs, tempTabOfSongs } from '../data/temporarySongsData.js'
 import { Sounds, tempTabOfSounds } from '../data/temporarySoundsData.js'
 import { MediaEnum } from '../interfaces/HelperEnums.js'
 import { GET_STATS_URL } from '../constants/api/Urls.js'
+import { ViewsCreator } from '../helpers/viewCreator.js'
+import { ViewsSongFunc } from '../interfaces/PaginationInterfaces.js'
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować"
 const I_WANT_TO_LOGIN = "Chce się zalogować"
@@ -119,7 +121,9 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         })
     }
-
+    private async OpenInfo(): Promise<void> {
+        
+    }
 
     private async openSettings(): Promise<void> {
         const OpenSettings: HTMLElement = this.bindElementByClass(OPEN_SETTINGS)
@@ -134,13 +138,20 @@ class Menu extends Common {
 
         //TODO have those files on server to give user choice what to play in backgground
         const ITEMS_PER_PAGE = 5
+        const creatorOfViews: ViewsCreator = new ViewsCreator("paginateSongs")
+
+      
+
+        const createViewForSongs: ViewsSongFunc = creatorOfViews.createViewForSongs.bind(creatorOfViews)
+
+
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults<Songs>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music)
+            settings.PaginateResults<Songs, ViewsSongFunc>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music, createViewForSongs, "paginateSongResults")
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults<Sounds>(songsList, ITEMS_PER_PAGE, tempTabOfSounds, MediaEnum.Sounds)
+                settings.PaginateResults<Sounds, ViewsSongFunc>(songsList, ITEMS_PER_PAGE, tempTabOfSounds, MediaEnum.Sounds, createViewForSongs, "paginateSongResults")
             })
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults<Songs>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music)
+                settings.PaginateResults<Songs, ViewsSongFunc>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, MediaEnum.Music, createViewForSongs, "paginateSongResults")
             })
 
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)

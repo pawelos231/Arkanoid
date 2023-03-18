@@ -6,6 +6,7 @@ import { Fetcher } from "../helpers/Fetcher";
 import { GameOver } from "./GameOver";
 import { FETCH_LEVELS } from "../constants/api/Urls";
 import { LevelData } from "../interfaces/level";
+import { REFRESH_RATE_MS } from "../constants/gameState";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu"
 const LEVEL_SELECT = "levelSelect"
 //temporary data for levels
@@ -36,11 +37,11 @@ class LevelSelect extends Common {
           case 0:
             const gameOver: GameOver = new GameOver(points, status, 10, level)
             gameOver.ShowUserScreenOver()
-            console.log("przgrałeś")
+            console.log("przegrałeś")
             break;
         }
       }
-    }, 17)
+    }, REFRESH_RATE_MS)
   }
 
   private createLevel(item: Element, levelData: LevelData): void {
@@ -91,8 +92,10 @@ class LevelSelect extends Common {
   }
   
   public async handleOnClickLevel(): Promise<void> {
+
     const levelData: LevelData[] = JSON.parse(await this.fetchLevels())
     const levelSelect: HTMLElement = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU)
+    
     levelSelect.textContent = ""
 
     levelData.forEach((item: LevelData, i: number) => {

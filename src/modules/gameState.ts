@@ -6,9 +6,12 @@ export class GameState {
     lives: number
     ball_positions: Ball_Pos
     counter: number
+    ballMoveRateX: number
+    ballMoveRateY: number
     private playerPoints: number
+   
     
-    public constructor(level: number, lives: number, pointsToWin: number, counter: number,playerPoints: number, paddle_positions: Paddle_Pos,ball_positions: Ball_Pos,  ) {
+    public constructor(level: number, lives: number, pointsToWin: number, counter: number,playerPoints: number, paddle_positions: Paddle_Pos,ball_positions: Ball_Pos,  ballMoveRateX: number, ballMoveRateY: number) {
         this.level = level
         this.pointsToWin = pointsToWin
         this.paddle_positions = paddle_positions
@@ -16,8 +19,26 @@ export class GameState {
         this.counter = counter
         this.ball_positions = ball_positions
         this.playerPoints = playerPoints
+        this.ballMoveRateX = ballMoveRateX
+        this.ballMoveRateY = ballMoveRateY
     }
 
+    set BallMoveRateSet(rate: number) {
+        this.ballMoveRateX = rate
+        this.ballMoveRateY = rate
+    }
+    set BallMoveRateSetY(rate: number) {
+        this.ballMoveRateY = rate
+    }
+    set BallMoveRateSetX(rate: number) {
+        this.ballMoveRateX = rate
+    }
+    get BallMoveRateGetX(): number {
+        return this.ballMoveRateX
+    }
+    get BallMoveRateGetY(): number {
+        return this.ballMoveRateY
+    }
     set playerPointsSet(points: number){
         this.playerPoints = points
     }

@@ -17,3 +17,11 @@ export var Directions;
     Directions[Directions["RigthArrows"] = RIGHT_ARROW] = "RigthArrows";
     Directions[Directions["RigthNormal"] = RIGHT_NORMAL] = "RigthNormal";
 })(Directions || (Directions = {}));
+export var BuffTypes;
+(function (BuffTypes) {
+    BuffTypes[BuffTypes["PaddleSpeed"] = 1] = "PaddleSpeed";
+    BuffTypes[BuffTypes["AddLive"] = 2] = "AddLive";
+    BuffTypes[BuffTypes["SpeedBuff"] = 3] = "SpeedBuff";
+    BuffTypes[BuffTypes["InvincibilityBuff"] = 4] = "InvincibilityBuff";
+    BuffTypes[BuffTypes["DestroyerBuff"] = 5] = "DestroyerBuff";
+})(BuffTypes || (BuffTypes = {}));

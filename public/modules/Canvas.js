@@ -26,7 +26,7 @@ export class Canvas extends Common {
         this.playerPoints = 0;
         this.hitCounter = 0;
         this.pointsToWin = pointsToWin;
-        this.gameState = new GameState(level, lives, this.pointsToWin, this.hitCounter, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS);
+        this.gameState = new GameState(level, lives, this.pointsToWin, this.hitCounter, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS, this.ballMoveRateX, this.ballMoveRateY);
     }
     get getGameState() {
         return this.gameState;
@@ -94,14 +94,14 @@ export class Canvas extends Common {
                 continue;
             if (this.isCollision(i, ball_x, ball_y, RADIUS)) {
                 this.upadateScore(i);
-                this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.ballMoveRateX = -this.ballMoveRateX : null;
-                const Special = this.bricksArray[i].brickStateGet.specialBrick;
+                this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.gameState.BallMoveRateSetX = -this.getGameState.BallMoveRateGetX : null;
+                const IsSpecialBrick = this.bricksArray[i].brickStateGet.specialBrick;
                 const status = this.bricksArray[i].getStatus;
-                if (Special && status == 1) {
+                if (IsSpecialBrick && status == 1) {
                     const specialBrick = new SpecialBrick(this.image, "http://localhost:1234/cotomabyc.mp3");
                     specialBrick.displayViewOfSpecialBrick();
                 }
-                this.ballMoveRateY = -this.ballMoveRateY;
+                this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
                 let timesToHit = this.bricksArray[i].brickPointsGet.timesToHit;
                 timesToHit--;
                 this.bricksArray[i].timesToHitSet = timesToHit;
@@ -116,7 +116,7 @@ export class Canvas extends Common {
     CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y) {
         if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
             media.spawnSoundWhenHitPaddle();
-            this.ballMoveRateY = -this.ballMoveRateY;
+            this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
         }
     }
     drawBuffs() {
@@ -126,13 +126,13 @@ export class Canvas extends Common {
         const ball = new Ball(this.ctx, 25);
         const RADIUS = ball.radiusOfBallGetter;
         if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
-            this.ballMoveRateX = 12;
+            this.gameState.BallMoveRateSetX = 12;
         }
         if (this.gameState.ball_positions.ball_y - RADIUS < 0) {
-            this.ballMoveRateY = 12;
+            this.gameState.BallMoveRateSetY = 12;
         }
         if (this.gameState.ball_positions.ball_x + RADIUS > window.innerWidth) {
-            this.ballMoveRateX = -12;
+            this.gameState.BallMoveRateSetX = -12;
         }
         if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
             this.gameState.lives = this.gameState.lives - 1;
@@ -155,7 +155,7 @@ export class Canvas extends Common {
         }
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);
         this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS);
-        ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.ballMoveRateX, ball_y: this.gameState.ball_positions.ball_y += this.ballMoveRateY });
+        ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.gameState.BallMoveRateGetX, ball_y: this.gameState.ball_positions.ball_y += this.gameState.BallMoveRateGetY });
         return { end: true, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPointsGet };
     }
     drawPaddle() {
@@ -165,9 +165,6 @@ export class Canvas extends Common {
     addBricksToArray(brick_x, brick_y, specialBrick, brickData) {
         const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, specialBrick, 1, brick_x, brick_y, brickData);
         this.bricksArray.push(brick);
-        if (brick.brickStateGet.specialBrick) {
-            console.log(brick);
-        }
     }
     initBricks(SpecialBrickIndex = -100, BrickPoints) {
         let count = 0;
