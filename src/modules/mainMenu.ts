@@ -146,10 +146,13 @@ class Menu extends Common {
 
 
         OpenSettings.addEventListener("click", () => {
+            
             settings.PaginateResults<Songs, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music)
+
             SOUNDS.addEventListener("click", () => {
                 settings.PaginateResults<Sounds, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSongs, "paginateSongResults",  MediaEnum.Sounds)
             })
+
             MUSIC.addEventListener("click", () => {
                 settings.PaginateResults<Songs, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music)
             })

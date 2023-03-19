@@ -110,4 +110,4 @@ class Media {
         sound.loop = false
     } 
 }
-export const media = new Media()
+export const media: Media = new Media()

@@ -1,7 +1,5 @@
 import { Common } from "./Common";
 import { Logger } from "../interfaces/HelperEnums";
-import { Sounds } from "../data/temporarySoundsData";
-import { Songs } from "../data/temporarySongsData";
 import { SettingsInterface } from "../interfaces/classesInterfaces";
 
 
@@ -21,9 +19,13 @@ class Settings extends Common implements SettingsInterface {
             const CurrentEnum: string | undefined = ToggleEnums[0]
 
             const LEFT: HTMLElement = this.bindElementByClass(`${PaginationClass}> .left`)
+
             const RIGHT: HTMLElement = this.bindElementByClass(`${PaginationClass}> .right`)
+
             const PAGE: HTMLElement = this.bindElementByClass(`${PaginationClass}> .page`)
+
             const PAGINATION_ELEMENT: HTMLElement = this.bindElementByClass(PaginationClass)
+
             this.changeVisbilityOfGivenElement(PAGINATION_ELEMENT, true)
 
             const LIST_LEN: number = mediaToLoad.length
@@ -64,6 +66,7 @@ class Settings extends Common implements SettingsInterface {
                     return
                 }
                 createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
+
                 PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
             })
 
