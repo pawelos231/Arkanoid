@@ -27,18 +27,23 @@ export class GameState {
         this.ballMoveRateX = rate
         this.ballMoveRateY = rate
     }
+
     set BallMoveRateSetY(rate: number) {
         this.ballMoveRateY = rate
     }
+
     set BallMoveRateSetX(rate: number) {
         this.ballMoveRateX = rate
     }
+
     get BallMoveRateGetX(): number {
         return this.ballMoveRateX
     }
+
     get BallMoveRateGetY(): number {
         return this.ballMoveRateY
     }
+    
     set playerPointsSet(points: number){
         this.playerPoints = points
     }

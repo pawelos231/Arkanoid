@@ -10,6 +10,7 @@ export class Common {
         this.elementId = this.bindElementById(elementId)
         if (typeof elementId === "undefined" || elementId === null) return
     }
+
     protected bindElementById(elementToFindById: string): HTMLElement {
 
         const element: HTMLElement | null = document.getElementById(elementToFindById);
@@ -18,6 +19,7 @@ export class Common {
 
         return element
     }
+
     protected bindElementByClass(elementToFindByClass: string): HTMLElement {
 
         const element: HTMLElement | null = document.documentElement.querySelector("." + elementToFindByClass);
@@ -26,6 +28,7 @@ export class Common {
 
         return element
     }
+    
     protected changeVisbilityOfGivenElement(element: HTMLElement, flag: boolean): void {
         flag ?
             element?.classList.remove(HIDDEN) :

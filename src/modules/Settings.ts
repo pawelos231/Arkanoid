@@ -44,15 +44,11 @@ class Settings extends Common implements SettingsInterface {
                     return
                 }
                 if (LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
-
                     createView(MainList, currentPage * ITEMS_PER_PAGE, LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
-
                 } 
                 else 
                 {
-
                     createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
-
                 }
 
                 PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`

@@ -131,7 +131,9 @@ export class Canvas<T> extends Common {
             
             if (BRICK.brickStateGet.status == 0) continue
 
-            if (this.isCollision(i, ball_x, ball_y, RADIUS)) {
+            const IS_COLLISION: boolean = this.isCollision(i, ball_x, ball_y, RADIUS)
+
+            if (IS_COLLISION) {
 
                 this.upadateScore(i)
               
@@ -175,7 +177,40 @@ export class Canvas<T> extends Common {
 
     }
 
-    private drawBall(): GameOverStatus {
+
+    private CheckWin(): GameOverStatus {
+
+        if (this.gameState.lives == 0) {
+            return { 
+                end: false, 
+                status: 0, 
+                level: this.gameState.getLevel, 
+                points: this.gameState.playerPointsGet 
+            }
+        }
+
+        const WIN: boolean = !(this.bricksArray.find((item: Brick) => item.getStatus == 1 ))
+
+        if (WIN) {
+            return { 
+                end: false, 
+                status: 1, 
+                level: this.gameState.getLevel, 
+                points: this.gameState.playerPointsGet 
+            }
+        }
+        
+
+        return { 
+            end: true, 
+            status: 0, 
+            level: this.gameState.getLevel, 
+            points: this.gameState.playerPointsGet 
+        }
+    }
+
+
+    private drawBall(): void {
         //change to fix resizeable
         const ball: Ball = new Ball(this.ctx, 25)
         const RADIUS: number = ball.radiusOfBallGetter
@@ -191,9 +226,6 @@ export class Canvas<T> extends Common {
         }
         if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
             this.gameState.lives = this.gameState.lives - 1
-            if (this.gameState.lives == 0) {
-                return { end: false, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPointsGet }
-            }
 
             this.ballMoveRateY = -12
             this.gameState.ball_positions = {
@@ -207,17 +239,11 @@ export class Canvas<T> extends Common {
         const paddle_x: number = this.gameState.paddle_positions.paddle_x
         const paddle_y: number = this.gameState.paddle_positions.paddle_y
 
-        //winning condtion
-        if (!(this.bricksArray.find((item: Brick) => item.getStatus == 1 ))) {
-            return { end: false, status: 1, level: this.gameState.getLevel, points: this.gameState.playerPointsGet }
-        }
-
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y)
         this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS)
 
         ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.gameState.BallMoveRateGetX, ball_y: this.gameState.ball_positions.ball_y += this.gameState.BallMoveRateGetY })
         
-        return { end: true, status: 0, level: this.gameState.getLevel, points: this.gameState.playerPointsGet }
     }
 
 
@@ -255,7 +281,8 @@ export class Canvas<T> extends Common {
     private drawGame(): GameOverStatus {
         this.drawPaddle()
         this.drawBricks()
-        return this.drawBall()
+        this.drawBall()
+        return this.CheckWin()
     }
 
     private clearCanvas(): void {

@@ -37,12 +37,12 @@ const SOUND_VIEW_LAYER_SHOW = "Sound"
 const MUSIC_VIEW_LAYER_SHOW = "Music"
 
 class Menu extends Common {
+    private fetcher: Fetcher = new Fetcher(this.elementId)
+    private formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
 
     public constructor() {
         super(REGISTER_FORMS)
     }
-    private fetcher: Fetcher = new Fetcher(this.elementId)
-    private formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
 
 
     private switchBetweenRegisterAndLogin(): void {
@@ -121,6 +121,7 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         })
     }
+
     private async OpenInfo(): Promise<void> {
 
     }

@@ -22,7 +22,9 @@ class LevelSelect extends Common {
     return fetcher.FetchData<string>(FETCH_LEVELS)
   }
 
+
   private DrawOnCanvas<T>(canvas: Canvas<T>) {
+
     const interval = setInterval(() => {
       const {end, status,points,level } = canvas.draw()
       if (!end) {
@@ -42,7 +44,9 @@ class LevelSelect extends Common {
         }
       }
     }, REFRESH_RATE_MS)
+    
   }
+
 
   private createLevel(item: Element, levelData: LevelData): void {
     
@@ -84,7 +88,7 @@ class LevelSelect extends Common {
   }
 
   private createViewForLevels(levelData: LevelData, parentNode: HTMLElement): void
-  {
+{
     let div: HTMLDivElement = document.createElement("div")
     div.textContent = String(levelData.level)
     parentNode.appendChild(div)

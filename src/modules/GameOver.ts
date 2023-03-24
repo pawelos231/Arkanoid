@@ -16,18 +16,22 @@ export class GameOver extends Common implements GameOverInterface {
         super("GameOver")
         Object.freeze(this.LevelInfo = { points, status, elapsedTime, level })
     }
+
     public async SendUserLevelData(): Promise<void> {
         const fetcher: Fetcher = new Fetcher(null)
         fetcher.sendDataToBackend<DataSendGameOver>(SEND_STATS_ABOUT_GAME, this.LevelInfo)
     }
+
     public ShowUserScreenOver(): void {
         this.changeVisbilityOfGivenElement(this.elementId, true)
         this.createView()
 
     }
+
     public hideScreen(): void {
         this.changeVisbilityOfGivenElement(this.elementId, false)
     }
+
     private createView(): void {
         const innerElement: HTMLElement = this.bindElementByClass(INNER_GAME_OVER)
         if (this.LevelInfo.status == 1) {
@@ -41,4 +45,5 @@ export class GameOver extends Common implements GameOverInterface {
         this.LevelInfo.status == 1 ? innerElement.style.border = "2px solid green" : innerElement.style.border = "2px solid red"
 
     }
+    
 }
