@@ -9,6 +9,9 @@ import { GameState } from "./gameState";
 import { media } from "./Media";
 import { BrickPoints } from "../interfaces/gameStateInterface";
 import { SpecialBrick } from "./SpecialBrickView";
+import { Buff } from "./Entities/Buffs";
+import { BuffTypes } from "../interfaces/HelperEnums";
+import { generateRandomNumber } from "../helpers/randomNumber";
 
 
 const GAME_CANVAS = "game_canvas"
@@ -123,10 +126,15 @@ export class Canvas<T> extends Common {
     }
 
 
+    private generateBuff(BuffNumber: number): void {
+        
+        const BuffInstance: Buff = new Buff(BuffNumber)
+        BuffInstance.applyBuffEffects()
+    }
 
     private CheckCollisionWithBricks(ball_x: number, ball_y: number, RADIUS: number) {
         for (let i = 0; i < this.bricksArray.length; i++) {
-
+           
             const BRICK: Brick = this.bricksArray[i]
             
             if (BRICK.brickStateGet.status == 0) continue
@@ -134,6 +142,23 @@ export class Canvas<T> extends Common {
             const IS_COLLISION: boolean = this.isCollision(i, ball_x, ball_y, RADIUS)
 
             if (IS_COLLISION) {
+
+                
+                //TEMPORARY SOLUTION FOR BUFF DROP RATE
+                const BUFF_DROP_RATE = BRICK.brickPointsGet.buffDropRate * 100
+                const topOf: number = 100 / BUFF_DROP_RATE
+
+                if (BUFF_DROP_RATE == generateRandomNumber(topOf)){
+
+                    console.log("BUFF WYLECIAŁ")
+                    const randomBuffsCount: number = (((Object.keys(BuffTypes).length) / 2) - 1)
+                    const RANDOM_NUMBER: number = generateRandomNumber(randomBuffsCount)
+    
+                    const RANDOM_BUFF: number = Number(BuffTypes[BuffTypes[RANDOM_NUMBER] as any])
+                    this.generateBuff(RANDOM_BUFF)
+
+                }
+            
 
                 this.upadateScore(i)
               
@@ -173,9 +198,6 @@ export class Canvas<T> extends Common {
         }
     }
 
-    private drawBuffs(): void {
-
-    }
 
 
     private CheckWin(): GameOverStatus {
@@ -258,6 +280,7 @@ export class Canvas<T> extends Common {
     }
 
     private initBricks(SpecialBrickIndex: number = -100, BrickPoints: BrickPoints[]): void {
+
         let count: number = 0
         for (let i = 0; i < this.rowsCount; i++) {
             for (let j = 0; j < this.columnsCount; j++) {
@@ -269,6 +292,7 @@ export class Canvas<T> extends Common {
                 }
             }
         }
+
 
     }
 

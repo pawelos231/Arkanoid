@@ -19,9 +19,9 @@ export var Directions;
 })(Directions || (Directions = {}));
 export var BuffTypes;
 (function (BuffTypes) {
-    BuffTypes[BuffTypes["PaddleSpeed"] = 1] = "PaddleSpeed";
-    BuffTypes[BuffTypes["AddLive"] = 2] = "AddLive";
-    BuffTypes[BuffTypes["SpeedBuff"] = 3] = "SpeedBuff";
-    BuffTypes[BuffTypes["InvincibilityBuff"] = 4] = "InvincibilityBuff";
-    BuffTypes[BuffTypes["DestroyerBuff"] = 5] = "DestroyerBuff";
+    BuffTypes[BuffTypes["PaddleSpeed"] = 0] = "PaddleSpeed";
+    BuffTypes[BuffTypes["AddLive"] = 1] = "AddLive";
+    BuffTypes[BuffTypes["SpeedBuff"] = 2] = "SpeedBuff";
+    BuffTypes[BuffTypes["InvincibilityBuff"] = 3] = "InvincibilityBuff";
+    BuffTypes[BuffTypes["DestroyerBuff"] = 4] = "DestroyerBuff";
 })(BuffTypes || (BuffTypes = {}));

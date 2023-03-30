@@ -9,6 +9,7 @@ import { tempTabOfSounds } from '../data/temporarySoundsData.js';
 import { MediaEnum } from '../interfaces/HelperEnums.js';
 import { GET_STATS_URL } from '../constants/api/Urls.js';
 import { ViewsCreator } from '../helpers/viewCreator.js';
+import { StarsBackroundView } from '../scenes/MainMenuThree.js';
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -37,6 +38,24 @@ class Menu extends Common {
         super(REGISTER_FORMS);
         this.fetcher = new Fetcher(this.elementId);
         this.formElementRegister = this.bindElementByClass(FORM_TO_REGISTER);
+        this.StarsBackground = new StarsBackroundView(600, "Stars");
+    }
+    RegenerateBackground() {
+        if (this.StarsBackground) {
+            console.log(this.StarsBackground);
+            this.StarsBackground.Init();
+            setInterval(() => {
+                var _a;
+                (_a = this.StarsBackground) === null || _a === void 0 ? void 0 : _a.Tick.bind(this.StarsBackground)();
+            }, 6);
+        }
+        else {
+            console.log("obiekt został zniszczony");
+        }
+    }
+    destroyBackground() {
+        delete this.StarsBackground;
+        this.RegenerateBackground();
     }
     switchBetweenRegisterAndLogin() {
         const changeValueOfMenuToLogin = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER);
@@ -88,6 +107,7 @@ class Menu extends Common {
         StartGameButton.addEventListener("click", async () => {
             this.changeVisbilityOfGivenElement(LevelSelect, true);
             this.changeVisbilityOfGivenElement(startGamePanel, false);
+            this.destroyBackground();
             levelSelect.handleOnClickLevel();
         });
         BackToMenuPanel.addEventListener("click", () => {
@@ -133,6 +153,7 @@ class Menu extends Common {
     start() {
         this.switchBetweenRegisterAndLogin();
         this.switchStatsModalState();
+        this.RegenerateBackground();
         this.SendUserDataToBackend();
         this.StartGame();
         this.openSettings();

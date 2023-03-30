@@ -51,7 +51,9 @@ class LevelSelect extends Common {
   private createLevel(item: Element, levelData: LevelData): void {
     
     item.addEventListener("click", async () => {
-
+      const MenuCanvas = this.bindElementByClass("webgl")
+      this.changeVisbilityOfGivenElement(MenuCanvas, false)
+      
       const isSpecialLevel: number = Math.floor(Math.random() * 1)
       const {level, lives, numberOfColumns, numberOfRows, timer } = levelData
 

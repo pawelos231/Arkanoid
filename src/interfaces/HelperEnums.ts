@@ -19,9 +19,9 @@ export enum Directions {
 }
 
 export enum BuffTypes {
-    PaddleSpeed = 1,
-    AddLive = 2,
-    SpeedBuff = 3,
-    InvincibilityBuff = 4,
-    DestroyerBuff = 5
+    PaddleSpeed = 0,
+    AddLive = 1,
+    SpeedBuff = 2,
+    InvincibilityBuff = 3,
+    DestroyerBuff = 4
 }

@@ -7,6 +7,9 @@ import { Directions } from "../interfaces/HelperEnums";
 import { GameState } from "./gameState";
 import { media } from "./Media";
 import { SpecialBrick } from "./SpecialBrickView";
+import { Buff } from "./Entities/Buffs";
+import { BuffTypes } from "../interfaces/HelperEnums";
+import { generateRandomNumber } from "../helpers/randomNumber";
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor(level, pointsToWin, lives, image, rowsCount, columnsCount) {
@@ -87,6 +90,10 @@ export class Canvas extends Common {
         const brick_pos_y = BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT;
         return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS && brick_pos_y < ball_y + RADIUS && brick_pos_x < ball_x + RADIUS + 12.5 && brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5);
     }
+    generateBuff(BuffNumber) {
+        const BuffInstance = new Buff(BuffNumber);
+        BuffInstance.applyBuffEffects();
+    }
     CheckCollisionWithBricks(ball_x, ball_y, RADIUS) {
         for (let i = 0; i < this.bricksArray.length; i++) {
             const BRICK = this.bricksArray[i];
@@ -94,6 +101,16 @@ export class Canvas extends Common {
                 continue;
             const IS_COLLISION = this.isCollision(i, ball_x, ball_y, RADIUS);
             if (IS_COLLISION) {
+                //TEMPORARY SOLUTION FOR BUFF DROP RATE
+                const BUFF_DROP_RATE = BRICK.brickPointsGet.buffDropRate * 100;
+                const topOf = 100 / BUFF_DROP_RATE;
+                if (BUFF_DROP_RATE == generateRandomNumber(topOf)) {
+                    console.log("BUFF WYLECIAŁ");
+                    const randomBuffsCount = (((Object.keys(BuffTypes).length) / 2) - 1);
+                    const RANDOM_NUMBER = generateRandomNumber(randomBuffsCount);
+                    const RANDOM_BUFF = Number(BuffTypes[BuffTypes[RANDOM_NUMBER]]);
+                    this.generateBuff(RANDOM_BUFF);
+                }
                 this.upadateScore(i);
                 this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.gameState.BallMoveRateSetX = -this.getGameState.BallMoveRateGetX : null;
                 const IsSpecialBrick = this.bricksArray[i].brickStateGet.specialBrick;
@@ -119,8 +136,6 @@ export class Canvas extends Common {
             media.spawnSoundWhenHitPaddle();
             this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
         }
-    }
-    drawBuffs() {
     }
     CheckWin() {
         if (this.gameState.lives == 0) {

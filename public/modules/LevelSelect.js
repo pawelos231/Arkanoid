@@ -43,6 +43,8 @@ class LevelSelect extends Common {
     }
     createLevel(item, levelData) {
         item.addEventListener("click", async () => {
+            const MenuCanvas = this.bindElementByClass("webgl");
+            this.changeVisbilityOfGivenElement(MenuCanvas, false);
             const isSpecialLevel = Math.floor(Math.random() * 1);
             const { level, lives, numberOfColumns, numberOfRows, timer } = levelData;
             if (isSpecialLevel == 0) {
