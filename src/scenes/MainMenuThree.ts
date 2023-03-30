@@ -9,7 +9,6 @@ import { RenderPass } from "../../node_modules/three/examples/jsm/postprocessing
 import { UnrealBloomPass } from "../../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { Common } from "../modules/Common.js";
 
-const NUMBER_OF_STARS = 600;
 
 interface addParticleReturnFuncInterface {
   Particle: THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial>;
@@ -173,13 +172,15 @@ export class StarsBackroundView extends Common {
     this.resizeWindow()
   }
 
+
+
   Tick(){
-    console.log("tick")
+
     const elapsedTime: number = this.clock.getElapsedTime();
   
     this.arrOfParticles.forEach((item: addParticleReturnFuncInterface, i: number) => {
   
-      item.Particle.position.z = item.Particle.position.z + 0.2855;
+      item.Particle.position.z = item.Particle.position.z + 0.5855;
       item.material.emissive.r = 1 * Math.abs(item.Particle.position.z);
       item.material.emissive.g = 3.86 * Math.abs(1 / item.Particle.position.z);
       item.material.emissive.b = 3.86 * Math.abs(1 / item.Particle.position.z);

@@ -29,6 +29,7 @@ export class Canvas extends Common {
         this.playerPoints = 0;
         this.hitCounter = 0;
         this.pointsToWin = pointsToWin;
+        this.appliedBuffs = [];
         this.gameState = new GameState(level, lives, this.pointsToWin, this.hitCounter, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS, this.ballMoveRateX, this.ballMoveRateY);
     }
     get getGameState() {
@@ -41,7 +42,9 @@ export class Canvas extends Common {
         this.ctx = this.canvas.getContext("2d");
         this.BRICK_HEIGHT = window.innerHeight / 18;
         this.BRICK_WIDTH = window.innerWidth / this.columnsCount;
-        isSpecialLevel ? this.initBricks(randomBrickIndex, brickPoints) : this.initBricks(-100, brickPoints);
+        isSpecialLevel ?
+            this.initBricks(randomBrickIndex, brickPoints) :
+            this.initBricks(-100, brickPoints);
     }
     addEventOnResize() {
         window.addEventListener("resize", () => {
@@ -59,40 +62,68 @@ export class Canvas extends Common {
     setListenerMovePaddle() {
         window.addEventListener("keydown", (event) => {
             const keyCode = event.keyCode;
-            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
+            if (keyCode == Directions.LeftArrows
+                || keyCode == Directions.LeftNormal) {
                 this.keyPressedLeft = true;
             }
-            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
+            if (keyCode == Directions.RigthArrows
+                || keyCode == Directions.RigthNormal) {
                 this.keyPressedRight = true;
             }
         });
         window.addEventListener("keyup", (event) => {
             const keyCode = event.keyCode;
-            if (keyCode == Directions.LeftArrows || keyCode == Directions.LeftNormal) {
+            if (keyCode == Directions.LeftArrows
+                || keyCode == Directions.LeftNormal) {
                 this.keyPressedLeft = false;
             }
-            if (keyCode == Directions.RigthArrows || keyCode == Directions.RigthNormal) {
+            if (keyCode == Directions.RigthArrows
+                || keyCode == Directions.RigthNormal) {
                 this.keyPressedRight = false;
             }
         });
     }
     upadateScore(index) {
-        this.gameState.playerPointsSet = this.bricksArray[index].brickPointsGet.points + this.getGameState.playerPointsGet;
+        this.gameState.playerPointsSet =
+            this.bricksArray[index].brickPointsGet.points +
+                this.getGameState.playerPointsGet;
     }
     isCollisonFromSide(i, ball_x, ball_y, RADIUS) {
-        const brick_pos_x = this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH;
-        const brick_pos_y = this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT;
-        return ((brick_pos_x + this.BRICK_WIDTH <= ball_x - RADIUS && brick_pos_x + this.BRICK_WIDTH >= ball_x - RADIUS - 12) || (brick_pos_x <= ball_x + RADIUS && brick_pos_x >= ball_x + RADIUS + 10) && ball_y - RADIUS > brick_pos_y + this.BRICK_HEIGHT && brick_pos_y < brick_pos_y + RADIUS);
+        const brick_pos_x = this.bricksArray[i].brickStateGet.brick_x *
+            this.BRICK_WIDTH;
+        const brick_pos_y = this.bricksArray[i].brickStateGet.brick_y *
+            this.BRICK_HEIGHT;
+        return ((brick_pos_x + this.BRICK_WIDTH <= ball_x - RADIUS &&
+            brick_pos_x + this.BRICK_WIDTH >= ball_x - RADIUS - 12) ||
+            (brick_pos_x <= ball_x + RADIUS
+                && brick_pos_x >= ball_x + RADIUS + 10)
+                && ball_y - RADIUS > brick_pos_y + this.BRICK_HEIGHT
+                && brick_pos_y < brick_pos_y + RADIUS);
     }
     isCollision(i, ball_x, ball_y, RADIUS) {
         const BRICK = this.bricksArray[i];
         const brick_pos_x = BRICK.brickStateGet.brick_x * this.BRICK_WIDTH;
         const brick_pos_y = BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT;
-        return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS && brick_pos_y < ball_y + RADIUS && brick_pos_x < ball_x + RADIUS + 12.5 && brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5);
+        return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS &&
+            brick_pos_y < ball_y + RADIUS &&
+            brick_pos_x < ball_x + RADIUS + 12.5 &&
+            brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5);
     }
     generateBuff(BuffNumber) {
-        const BuffInstance = new Buff(BuffNumber);
+        const BuffInstance = new Buff(BuffNumber, this.bricksArray, this.appliedBuffs);
         BuffInstance.applyBuffEffects();
+    }
+    DropIfBuff(BRICK) {
+        const BUFF_DROP_RATE = BRICK.brickPointsGet.buffDropRate * 100;
+        const topOf = 100 / BUFF_DROP_RATE;
+        if (1) {
+            console.log("BUFF WYLECIAŁ");
+            const randomBuffsCount = (((Object.keys(BuffTypes).length) / 2));
+            const RANDOM_NUMBER = generateRandomNumber(randomBuffsCount);
+            const RANDOM_BUFF = Number(BuffTypes[BuffTypes[RANDOM_NUMBER]]);
+            console.log(RANDOM_BUFF);
+            this.generateBuff(RANDOM_BUFF);
+        }
     }
     CheckCollisionWithBricks(ball_x, ball_y, RADIUS) {
         for (let i = 0; i < this.bricksArray.length; i++) {
@@ -101,25 +132,19 @@ export class Canvas extends Common {
                 continue;
             const IS_COLLISION = this.isCollision(i, ball_x, ball_y, RADIUS);
             if (IS_COLLISION) {
-                //TEMPORARY SOLUTION FOR BUFF DROP RATE
-                const BUFF_DROP_RATE = BRICK.brickPointsGet.buffDropRate * 100;
-                const topOf = 100 / BUFF_DROP_RATE;
-                if (BUFF_DROP_RATE == generateRandomNumber(topOf)) {
-                    console.log("BUFF WYLECIAŁ");
-                    const randomBuffsCount = (((Object.keys(BuffTypes).length) / 2) - 1);
-                    const RANDOM_NUMBER = generateRandomNumber(randomBuffsCount);
-                    const RANDOM_BUFF = Number(BuffTypes[BuffTypes[RANDOM_NUMBER]]);
-                    this.generateBuff(RANDOM_BUFF);
-                }
+                const MoveRateX = this.getGameState.BallMoveRateGetX;
+                const MoveRateY = this.getGameState.BallMoveRateGetY;
+                this.DropIfBuff(BRICK);
                 this.upadateScore(i);
-                this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) ? this.gameState.BallMoveRateSetX = -this.getGameState.BallMoveRateGetX : null;
+                this.isCollisonFromSide(i, ball_x, ball_y, RADIUS)
+                    ? this.gameState.BallMoveRateSetX = -MoveRateX : null;
                 const IsSpecialBrick = this.bricksArray[i].brickStateGet.specialBrick;
                 const status = this.bricksArray[i].getStatus;
                 if (IsSpecialBrick && status == 1) {
                     const specialBrick = new SpecialBrick(this.image, "http://localhost:1234/cotomabyc.mp3");
                     specialBrick.displayViewOfSpecialBrick();
                 }
-                this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
+                this.gameState.BallMoveRateSetY = -MoveRateY;
                 let timesToHit = this.bricksArray[i].brickPointsGet.timesToHit;
                 timesToHit--;
                 this.bricksArray[i].timesToHitSet = timesToHit;
@@ -132,7 +157,9 @@ export class Canvas extends Common {
         }
     }
     CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y) {
-        if (ball_y >= paddle_y - PADDLE_HEIGHT && ball_x - RADIUS <= paddle_x + PADDLE_WIDTH && ball_x + RADIUS >= paddle_x) {
+        if (ball_y >= paddle_y - PADDLE_HEIGHT &&
+            ball_x - RADIUS <= paddle_x + PADDLE_WIDTH &&
+            ball_x + RADIUS >= paddle_x) {
             media.spawnSoundWhenHitPaddle();
             this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
         }
@@ -179,9 +206,13 @@ export class Canvas extends Common {
             this.gameState.lives = this.gameState.lives - 1;
             this.ballMoveRateY = -12;
             this.gameState.ball_positions = {
-                ball_x: window.innerWidth / 2, ball_y: window.innerHeight - 150
+                ball_x: window.innerWidth / 2,
+                ball_y: window.innerHeight - 150
             };
-            this.gameState.paddle_positions = { paddle_y: window.innerHeight - 40, paddle_x: window.innerWidth / 2 - 100 };
+            this.gameState.paddle_positions = {
+                paddle_y: window.innerHeight - 40,
+                paddle_x: window.innerWidth / 2 - 100
+            };
         }
         const ball_x = this.gameState.ball_positions.ball_x;
         const ball_y = this.gameState.ball_positions.ball_y;
@@ -189,7 +220,12 @@ export class Canvas extends Common {
         const paddle_y = this.gameState.paddle_positions.paddle_y;
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);
         this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS);
-        ball.drawBall({ ball_x: this.gameState.ball_positions.ball_x += this.gameState.BallMoveRateGetX, ball_y: this.gameState.ball_positions.ball_y += this.gameState.BallMoveRateGetY });
+        ball.drawBall({
+            ball_x: this.gameState.ball_positions.ball_x +=
+                this.gameState.BallMoveRateGetX,
+            ball_y: this.gameState.ball_positions.ball_y +=
+                this.gameState.BallMoveRateGetY
+        });
     }
     drawPaddle() {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
@@ -232,7 +268,8 @@ export class Canvas extends Common {
         if (this.keyPressedLeft && paddle_x > 0) {
             this.gameState.paddle_positions.paddle_x -= 15;
         }
-        if (this.keyPressedRight && paddle_x + PADDLE_WIDTH < window.innerWidth) {
+        if (this.keyPressedRight
+            && paddle_x + PADDLE_WIDTH < window.innerWidth) {
             this.gameState.paddle_positions.paddle_x += 15;
         }
     }

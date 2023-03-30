@@ -41,27 +41,28 @@ class Menu extends Common {
     private fetcher: Fetcher = new Fetcher(this.elementId)
     private formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
     private StarsBackground: StarsBackroundView | undefined = new StarsBackroundView(600, "Stars")
+    private cachedInstance: any
 
     public constructor() {
         super(REGISTER_FORMS)
       
     }
 
-    private RegenerateBackground(){
+    private GenerateBackground(){
         if(this.StarsBackground){
-            console.log(this.StarsBackground)
             this.StarsBackground.Init()
             setInterval(()=> {
                 this.StarsBackground?.Tick.bind(this.StarsBackground)()
-            }, 6)
+            }, 12)
         } else {
             console.log("obiekt został zniszczony")
         }
     }
     
     private destroyBackground(){
+        this.cachedInstance = this.StarsBackground
         delete this.StarsBackground
-        this.RegenerateBackground()
+        this.GenerateBackground()
     }
 
     private switchBetweenRegisterAndLogin(): void {
@@ -74,7 +75,9 @@ class Menu extends Common {
             this.changeVisbilityOfGivenElement(this.formElementRegister, flag)
             flag = !flag;
 
-            flag == true ? changeValueOfMenuToLogin.textContent = I_WANT_TO_REGISTER : changeValueOfMenuToLogin.textContent = I_WANT_TO_LOGIN
+            flag ? 
+            changeValueOfMenuToLogin.textContent = I_WANT_TO_REGISTER : changeValueOfMenuToLogin.textContent = I_WANT_TO_LOGIN
+
             this.changeVisbilityOfGivenElement(formElementLogin, flag)
         })
 
@@ -137,6 +140,8 @@ class Menu extends Common {
         })
 
         BackToMenuPanel.addEventListener("click", () => {
+            this.StarsBackground = this.cachedInstance
+         
             this.changeVisbilityOfGivenElement(LevelSelect, false)
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         })
@@ -147,6 +152,7 @@ class Menu extends Common {
     }
 
     private async openSettings(): Promise<void> {
+
         const OpenSettings: HTMLElement = this.bindElementByClass(OPEN_SETTINGS)
         const OpenedSettingsPage: HTMLElement = this.bindElementByClass(OPENED_SETTINGS_PAGE)
         const CloseSettings: HTMLElement = this.bindElementByClass(CLOSE_SETTINGS)
@@ -171,11 +177,22 @@ class Menu extends Common {
             settings.PaginateResults<Songs, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music)
 
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults<Sounds, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSongs, "paginateSongResults",  MediaEnum.Sounds)
+                settings.PaginateResults<Sounds, ViewsSongFunc, string>(
+                    songsList, 
+                    ITEMS_PER_PAGE, 
+                    tempTabOfSounds, 
+                    createViewForSongs, 
+                    "paginateSongResults",  
+                    MediaEnum.Sounds)
             })
 
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults<Songs, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music)
+                settings.PaginateResults<Songs, ViewsSongFunc, string>(songsList, 
+                ITEMS_PER_PAGE, 
+                tempTabOfSongs, 
+                createViewForSongs, 
+                "paginateSongResults", 
+                MediaEnum.Music)
             })
 
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
@@ -196,7 +213,7 @@ class Menu extends Common {
     public start(): void {
         this.switchBetweenRegisterAndLogin()
         this.switchStatsModalState();
-        this.RegenerateBackground()
+        this.GenerateBackground()
         this.SendUserDataToBackend();
         this.StartGame()
         this.openSettings()

@@ -40,22 +40,22 @@ class Menu extends Common {
         this.formElementRegister = this.bindElementByClass(FORM_TO_REGISTER);
         this.StarsBackground = new StarsBackroundView(600, "Stars");
     }
-    RegenerateBackground() {
+    GenerateBackground() {
         if (this.StarsBackground) {
-            console.log(this.StarsBackground);
             this.StarsBackground.Init();
             setInterval(() => {
                 var _a;
                 (_a = this.StarsBackground) === null || _a === void 0 ? void 0 : _a.Tick.bind(this.StarsBackground)();
-            }, 6);
+            }, 12);
         }
         else {
             console.log("obiekt został zniszczony");
         }
     }
     destroyBackground() {
+        this.cachedInstance = this.StarsBackground;
         delete this.StarsBackground;
-        this.RegenerateBackground();
+        this.GenerateBackground();
     }
     switchBetweenRegisterAndLogin() {
         const changeValueOfMenuToLogin = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER);
@@ -64,7 +64,8 @@ class Menu extends Common {
         changeValueOfMenuToLogin.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(this.formElementRegister, flag);
             flag = !flag;
-            flag == true ? changeValueOfMenuToLogin.textContent = I_WANT_TO_REGISTER : changeValueOfMenuToLogin.textContent = I_WANT_TO_LOGIN;
+            flag ?
+                changeValueOfMenuToLogin.textContent = I_WANT_TO_REGISTER : changeValueOfMenuToLogin.textContent = I_WANT_TO_LOGIN;
             this.changeVisbilityOfGivenElement(formElementLogin, flag);
         });
     }
@@ -111,6 +112,7 @@ class Menu extends Common {
             levelSelect.handleOnClickLevel();
         });
         BackToMenuPanel.addEventListener("click", () => {
+            this.StarsBackground = this.cachedInstance;
             this.changeVisbilityOfGivenElement(LevelSelect, false);
             this.changeVisbilityOfGivenElement(startGamePanel, true);
         });
@@ -153,7 +155,7 @@ class Menu extends Common {
     start() {
         this.switchBetweenRegisterAndLogin();
         this.switchStatsModalState();
-        this.RegenerateBackground();
+        this.GenerateBackground();
         this.SendUserDataToBackend();
         this.StartGame();
         this.openSettings();

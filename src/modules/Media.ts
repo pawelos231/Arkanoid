@@ -12,6 +12,7 @@ class Media {
     cachedSoundId: string = ""
 
     constructor(musicVolume: number = 0.5, soundVolume: number = 0.5, allowedMusic: boolean = true, allowedSound: boolean = true) {
+
         this.musicVolume = musicVolume;
         this.soundVolume = soundVolume;
         this.allowedMusic = allowedMusic
@@ -22,8 +23,8 @@ class Media {
 
         //do better error handling
         if (path.length == 0) return false
+        
         if (this.cachedSongId == path) return false
-
         else if (this.cachedSongId.length !== 0 && this.cachedSongId !== path) {
             this.backgroundMusic.pause()
             this.backgroundMusic = null
@@ -33,9 +34,11 @@ class Media {
             const backgroundAudio: HTMLAudioElement = await loader.loadSound(path)
             this.backgroundMusic = backgroundAudio
         }
+        
         this.cachedSongId = path
         return true
     }
+
 
     public async setSound(path: string = DEFAULT_SOUND): Promise<boolean> {
 
