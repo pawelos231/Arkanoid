@@ -2,7 +2,7 @@ import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL } from "../constants
 
 export enum Logger {
     Message = 0,
-    LoginError = 1,
+    Warn = 1,
     Error = 2,
 }
 
@@ -24,4 +24,10 @@ export enum BuffTypes {
     SpeedBuff = 2,
     InvincibilityBuff = 3,
     DestroyerBuff = 4
+}
+
+export enum StatusOfSong {
+    Succes = 2,
+    AlreadyPlaying = 1,
+    Error = 0
 }

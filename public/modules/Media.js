@@ -1,4 +1,5 @@
 import { loader } from "./Loader";
+import { StatusOfSong } from "../interfaces/HelperEnums";
 const DEFAULT_SOUND = "http://localhost:1234/hitPaddle.mp3";
 class Media {
     constructor(musicVolume = 0.5, soundVolume = 0.5, allowedMusic = true, allowedSound = true) {
@@ -12,9 +13,9 @@ class Media {
     async setBackroundMusic(path) {
         //do better error handling
         if (path.length == 0)
-            return false;
+            return { play: false, reason: StatusOfSong.Error };
         if (this.cachedSongId == path)
-            return false;
+            return { play: false, reason: StatusOfSong.AlreadyPlaying };
         else if (this.cachedSongId.length !== 0 && this.cachedSongId !== path) {
             this.backgroundMusic.pause();
             this.backgroundMusic = null;
@@ -26,13 +27,13 @@ class Media {
             this.backgroundMusic = backgroundAudio;
         }
         this.cachedSongId = path;
-        return true;
+        return { play: true, reason: StatusOfSong.Succes };
     }
     async setSound(path = DEFAULT_SOUND) {
         if (path.length == 0)
-            return false;
+            return { play: false, reason: StatusOfSong.Error };
         if (this.cachedSoundId === path)
-            return false;
+            return { play: false, reason: StatusOfSong.AlreadyPlaying };
         else if (this.cachedSoundId.length != 0 && this.cachedSoundId !== path) {
             this.sound.pause();
             this.sound = null;
@@ -44,7 +45,7 @@ class Media {
             this.sound = sound;
         }
         this.cachedSoundId = path;
-        return true;
+        return { play: true, reason: StatusOfSong.Succes };
     }
     playMusic() {
         this.backgroundMusic.loop = true;

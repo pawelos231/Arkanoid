@@ -33,6 +33,7 @@ const LIST_OF_SONGS = "listOfSongs > ul";
 const RESET_INPUT_SETTINGS = "resetInputsSettings";
 const SOUND_VIEW_LAYER_SHOW = "Sound";
 const MUSIC_VIEW_LAYER_SHOW = "Music";
+const INFO = "Info";
 class Menu extends Common {
     constructor() {
         super(REGISTER_FORMS);
@@ -118,6 +119,10 @@ class Menu extends Common {
         });
     }
     async OpenInfo() {
+        const OpenInfo = this.bindElementByClass(INFO);
+        OpenInfo.addEventListener("click", () => {
+            console.log("siema z info");
+        });
     }
     async openSettings() {
         const OpenSettings = this.bindElementByClass(OPEN_SETTINGS);
@@ -158,6 +163,7 @@ class Menu extends Common {
         this.GenerateBackground();
         this.SendUserDataToBackend();
         this.StartGame();
+        this.OpenInfo();
         this.openSettings();
     }
 }

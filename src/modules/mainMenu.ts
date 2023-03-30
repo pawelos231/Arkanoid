@@ -36,6 +36,7 @@ const LIST_OF_SONGS = "listOfSongs > ul"
 const RESET_INPUT_SETTINGS = "resetInputsSettings"
 const SOUND_VIEW_LAYER_SHOW = "Sound"
 const MUSIC_VIEW_LAYER_SHOW = "Music"
+const INFO = "Info"
 
 class Menu extends Common {
     private fetcher: Fetcher = new Fetcher(this.elementId)
@@ -149,18 +150,31 @@ class Menu extends Common {
 
     private async OpenInfo(): Promise<void> {
 
+        const OpenInfo: HTMLElement = this.bindElementByClass(INFO)
+        OpenInfo.addEventListener("click", ()=> {
+           console.log("siema z info") 
+        })
+
     }
 
     private async openSettings(): Promise<void> {
 
         const OpenSettings: HTMLElement = this.bindElementByClass(OPEN_SETTINGS)
+
         const OpenedSettingsPage: HTMLElement = this.bindElementByClass(OPENED_SETTINGS_PAGE)
+
         const CloseSettings: HTMLElement = this.bindElementByClass(CLOSE_SETTINGS)
+
         const changeVolumeOfMusic: HTMLElement = this.bindElementByClass(MUSIC_RANGE)
+
         const changeVolumeOfSound: HTMLElement = this.bindElementByClass(SOUND_RANGE)
+
         const resetInputsSettings: HTMLElement = this.bindElementByClass(RESET_INPUT_SETTINGS)
+
         const songsList: HTMLElement = this.bindElementByClass(LIST_OF_SONGS)
+
         const SOUNDS: HTMLElement = this.bindElementByClass(SOUND_VIEW_LAYER_SHOW)
+
         const MUSIC: HTMLElement = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW)
 
         //TODO have those files on server to give user choice what to play in backgground
@@ -216,6 +230,7 @@ class Menu extends Common {
         this.GenerateBackground()
         this.SendUserDataToBackend();
         this.StartGame()
+        this.OpenInfo()
         this.openSettings()
     }
 

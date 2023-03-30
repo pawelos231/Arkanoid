@@ -49,9 +49,14 @@ export class Common {
         const messageNode: HTMLElement = this.bindElementByClass("MESSAGE")
         if (Logger.Error == status) {
             messageNode.style.color = "red"
-        } else if (status == Logger.Message) {
+        }
+        if (status == Logger.Message) {
             messageNode.style.color = "green"
         }
+        if (status == Logger.Warn){
+            messageNode.style.color = "orange"
+        }
+
 
         this.changeVisbilityOfGivenElement(messageNode, true)
         setTimeout(() => {

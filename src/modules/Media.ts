@@ -1,5 +1,12 @@
 import { loader } from "./Loader"
+import { StatusOfSong } from "../interfaces/HelperEnums"
 const DEFAULT_SOUND = "http://localhost:1234/hitPaddle.mp3"
+
+interface ReturnType {
+    reason: number
+    play: boolean
+}
+
 class Media {
     musicVolume: number
     soundVolume: number
@@ -19,12 +26,13 @@ class Media {
         this.allowedSound = allowedSound
     }
 
-    public async setBackroundMusic(path: string): Promise<boolean> {
+    public async setBackroundMusic(path: string): Promise<ReturnType> {
 
         //do better error handling
-        if (path.length == 0) return false
-        
-        if (this.cachedSongId == path) return false
+        if (path.length == 0) return {play: false, reason: StatusOfSong.Error}
+
+        if (this.cachedSongId == path) return {play: false, reason: StatusOfSong.AlreadyPlaying}
+
         else if (this.cachedSongId.length !== 0 && this.cachedSongId !== path) {
             this.backgroundMusic.pause()
             this.backgroundMusic = null
@@ -36,14 +44,14 @@ class Media {
         }
         
         this.cachedSongId = path
-        return true
+        return {play: true, reason: StatusOfSong.Succes}
     }
 
 
-    public async setSound(path: string = DEFAULT_SOUND): Promise<boolean> {
+    public async setSound(path: string = DEFAULT_SOUND): Promise<ReturnType> {
 
-        if (path.length == 0) return false
-        if (this.cachedSoundId === path) return false
+        if (path.length == 0) return {play: false, reason: StatusOfSong.Error}
+        if (this.cachedSoundId === path) return {play: false, reason: StatusOfSong.AlreadyPlaying}
 
         else if (this.cachedSoundId.length != 0 && this.cachedSoundId !== path) {
             this.sound.pause()
@@ -56,7 +64,7 @@ class Media {
         }
 
         this.cachedSoundId = path
-        return true
+        return {play: true, reason: StatusOfSong.Succes}
     }
 
     public playMusic(): void {

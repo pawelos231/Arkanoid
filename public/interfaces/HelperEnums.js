@@ -2,7 +2,7 @@ import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL } from "../constants
 export var Logger;
 (function (Logger) {
     Logger[Logger["Message"] = 0] = "Message";
-    Logger[Logger["LoginError"] = 1] = "LoginError";
+    Logger[Logger["Warn"] = 1] = "Warn";
     Logger[Logger["Error"] = 2] = "Error";
 })(Logger || (Logger = {}));
 export var MediaEnum;
@@ -25,3 +25,9 @@ export var BuffTypes;
     BuffTypes[BuffTypes["InvincibilityBuff"] = 3] = "InvincibilityBuff";
     BuffTypes[BuffTypes["DestroyerBuff"] = 4] = "DestroyerBuff";
 })(BuffTypes || (BuffTypes = {}));
+export var StatusOfSong;
+(function (StatusOfSong) {
+    StatusOfSong[StatusOfSong["Succes"] = 2] = "Succes";
+    StatusOfSong[StatusOfSong["AlreadyPlaying"] = 1] = "AlreadyPlaying";
+    StatusOfSong[StatusOfSong["Error"] = 0] = "Error";
+})(StatusOfSong || (StatusOfSong = {}));
