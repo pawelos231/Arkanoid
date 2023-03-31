@@ -3,13 +3,14 @@ import { Validator } from '../helpers/PasswordInputValidation.js';
 import { Fetcher } from '../helpers/Fetcher.js';
 import { media } from './Media.js';
 import { levelSelect } from './LevelSelect.js';
-import { settings } from './Settings.js';
+import { paginator } from './Settings.js';
 import { tempTabOfSongs } from '../data/temporarySongsData.js';
 import { tempTabOfSounds } from '../data/temporarySoundsData.js';
 import { MediaEnum } from '../interfaces/HelperEnums.js';
 import { GET_STATS_URL } from '../constants/api/Urls.js';
 import { ViewsCreator } from '../helpers/viewCreator.js';
 import { StarsBackroundView } from '../scenes/MainMenuThree.js';
+import { tabOfBuffs } from '../data/BuffsData.js';
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -34,6 +35,9 @@ const RESET_INPUT_SETTINGS = "resetInputsSettings";
 const SOUND_VIEW_LAYER_SHOW = "Sound";
 const MUSIC_VIEW_LAYER_SHOW = "Music";
 const INFO = "Info";
+const OPENED_INFO = "OpenedInfo";
+const CLOSE_INFO = "closeInfo";
+const LIST_OF_BUFFS = "listOfBuffs > ul";
 class Menu extends Common {
     constructor() {
         super(REGISTER_FORMS);
@@ -120,8 +124,18 @@ class Menu extends Common {
     }
     async OpenInfo() {
         const OpenInfo = this.bindElementByClass(INFO);
+        const OpenedInfoPage = this.bindElementByClass(OPENED_INFO);
+        const closeInfo = this.bindElementByClass(CLOSE_INFO);
+        const ListOfBuffs = this.bindElementByClass(LIST_OF_BUFFS);
+        const ITEMS_PER_PAGE = 5;
         OpenInfo.addEventListener("click", () => {
-            console.log("siema z info");
+            const creatorOfViews = new ViewsCreator("paginateBuffs");
+            const createViewForBuffs = creatorOfViews.createViewForBuffs.bind(creatorOfViews);
+            this.changeVisbilityOfGivenElement(OpenedInfoPage, true);
+            paginator.PaginateResults(ListOfBuffs, ITEMS_PER_PAGE, tabOfBuffs, createViewForBuffs, "paginateBuffs");
+            closeInfo.addEventListener("click", () => {
+                this.changeVisbilityOfGivenElement(OpenedInfoPage, false);
+            });
         });
     }
     async openSettings() {
@@ -139,12 +153,12 @@ class Menu extends Common {
         const creatorOfViews = new ViewsCreator("paginateSongs");
         const createViewForSongs = creatorOfViews.createViewForSongs.bind(creatorOfViews);
         OpenSettings.addEventListener("click", () => {
-            settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music);
+            paginator.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music);
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSongs, "paginateSongResults", MediaEnum.Sounds);
+                paginator.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSongs, "paginateSongResults", MediaEnum.Sounds);
             });
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music);
+                paginator.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music);
             });
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {

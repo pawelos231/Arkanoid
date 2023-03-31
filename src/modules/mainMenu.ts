@@ -3,7 +3,7 @@ import { Validator } from '../helpers/PasswordInputValidation.js'
 import { Fetcher } from '../helpers/Fetcher.js'
 import { media } from './Media.js'
 import { levelSelect } from './LevelSelect.js'
-import { settings } from './Settings.js'
+import { paginator } from './Settings.js'
 import { Songs, tempTabOfSongs } from '../data/temporarySongsData.js'
 import { Sounds, tempTabOfSounds } from '../data/temporarySoundsData.js'
 import { MediaEnum } from '../interfaces/HelperEnums.js'
@@ -11,6 +11,9 @@ import { GET_STATS_URL } from '../constants/api/Urls.js'
 import { ViewsCreator } from '../helpers/viewCreator.js'
 import { ViewsSongFunc } from '../interfaces/PaginationInterfaces.js'
 import { StarsBackroundView } from '../scenes/MainMenuThree.js'
+import { ViewPaginatedBuffs } from '../interfaces/PaginationInterfaces.js'
+import { tabOfBuffs } from '../data/BuffsData.js'
+import { Buffs } from '../data/BuffsData.js'
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować"
 const I_WANT_TO_LOGIN = "Chce się zalogować"
@@ -37,6 +40,9 @@ const RESET_INPUT_SETTINGS = "resetInputsSettings"
 const SOUND_VIEW_LAYER_SHOW = "Sound"
 const MUSIC_VIEW_LAYER_SHOW = "Music"
 const INFO = "Info"
+const OPENED_INFO = "OpenedInfo"
+const CLOSE_INFO = "closeInfo"
+const LIST_OF_BUFFS = "listOfBuffs > ul"
 
 class Menu extends Common {
     private fetcher: Fetcher = new Fetcher(this.elementId)
@@ -151,8 +157,35 @@ class Menu extends Common {
     private async OpenInfo(): Promise<void> {
 
         const OpenInfo: HTMLElement = this.bindElementByClass(INFO)
+
+        const OpenedInfoPage: HTMLElement = this.bindElementByClass(OPENED_INFO)
+
+        const closeInfo: HTMLElement = this.bindElementByClass(CLOSE_INFO)
+
+        const ListOfBuffs: HTMLElement = this.bindElementByClass(LIST_OF_BUFFS)
+
+        const ITEMS_PER_PAGE = 5
+
         OpenInfo.addEventListener("click", ()=> {
-           console.log("siema z info") 
+
+
+           const creatorOfViews: ViewsCreator = new ViewsCreator("paginateBuffs")
+
+           const createViewForBuffs: ViewPaginatedBuffs = 
+           creatorOfViews.createViewForBuffs.bind(creatorOfViews)
+
+           this.changeVisbilityOfGivenElement(OpenedInfoPage, true)
+
+           paginator.PaginateResults<Buffs, ViewPaginatedBuffs>(
+            ListOfBuffs, 
+            ITEMS_PER_PAGE, 
+            tabOfBuffs, 
+            createViewForBuffs, 
+            "paginateBuffs")
+
+           closeInfo.addEventListener("click", ()=>{
+                this.changeVisbilityOfGivenElement(OpenedInfoPage, false)
+           })
         })
 
     }
@@ -188,10 +221,10 @@ class Menu extends Common {
 
         OpenSettings.addEventListener("click", () => {
             
-            settings.PaginateResults<Songs, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music)
+            paginator.PaginateResults<Songs, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music)
 
             SOUNDS.addEventListener("click", () => {
-                settings.PaginateResults<Sounds, ViewsSongFunc, string>(
+                paginator.PaginateResults<Sounds, ViewsSongFunc, string>(
                     songsList, 
                     ITEMS_PER_PAGE, 
                     tempTabOfSounds, 
@@ -201,7 +234,7 @@ class Menu extends Common {
             })
 
             MUSIC.addEventListener("click", () => {
-                settings.PaginateResults<Songs, ViewsSongFunc, string>(songsList, 
+                paginator.PaginateResults<Songs, ViewsSongFunc, string>(songsList, 
                 ITEMS_PER_PAGE, 
                 tempTabOfSongs, 
                 createViewForSongs, 

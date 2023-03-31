@@ -12,3 +12,14 @@ export interface SettingsInterface {
         arg3: string, 
         ...arg5: (V extends string ? [string] : [undefined?])) => void,
 }
+
+
+export interface BuffsInterface {
+    WrapperIfBuffIsActive: (arg0: () => void) => void,
+    applyDestroyerBuff: () => void,
+    applyAddLivesBuff:() => void,
+    applySpeedBuff:()=> void,
+    applyInvincibiltyBuff: () => void,
+    applyPaddleSpeedBuff: () => void
+    applyBuffEffects: () => void
+}

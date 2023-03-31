@@ -200,8 +200,6 @@ export class Canvas<T> extends Common {
 
         if (1){
 
-            console.log("BUFF WYLECIAŁ")
-
             const randomBuffsCount: number = 
             (((Object.keys(BuffTypes).length) / 2))
           

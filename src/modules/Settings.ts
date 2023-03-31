@@ -3,7 +3,7 @@ import { Logger } from "../interfaces/HelperEnums";
 import { SettingsInterface } from "../interfaces/classesInterfaces";
 
 
-class Settings extends Common implements SettingsInterface {
+class Paginator extends Common implements SettingsInterface {
     constructor() {
         super("levelSelect")
     }
@@ -15,7 +15,7 @@ class Settings extends Common implements SettingsInterface {
      PaginationClass: string, 
      ...ToggleEnums : (V extends string ? [string] : [undefined?])): void 
         {
-
+            console.log("siema")
             const CurrentEnum: string | undefined = ToggleEnums[0]
 
             const LEFT: HTMLElement = this.bindElementByClass(`${PaginationClass}> .left`)
@@ -70,4 +70,4 @@ class Settings extends Common implements SettingsInterface {
 
 }
 
-export const settings: Settings = new Settings()
+export const paginator: Paginator = new Paginator()

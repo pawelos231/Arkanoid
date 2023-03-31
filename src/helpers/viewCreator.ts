@@ -6,6 +6,7 @@ import { media } from "../modules/Media"
 import { Common } from "../modules/Common"
 import { tempTabOfSongs } from "../data/temporarySongsData"
 import { StatusOfSong } from "../interfaces/HelperEnums"
+import { Buffs } from "../data/BuffsData"
 
 export class ViewsCreator extends Common {
     constructor(PaginatorId: string){
@@ -93,6 +94,31 @@ export class ViewsCreator extends Common {
             }
 
             songsList.appendChild(li)
+
+        }
+    }
+
+    createViewForBuffs(
+        BuffsList: HTMLElement, 
+        skipValue: number, 
+        itemsperPage: number, 
+        tempTabOfMusic: Buffs[]): void{
+
+        BuffsList.innerHTML = ""
+    
+        for (let i = skipValue; i < skipValue + itemsperPage; i++) {
+
+            const li: HTMLLIElement = document.createElement("li")
+            const img: HTMLImageElement = document.createElement("img")
+            const p: HTMLParagraphElement = document.createElement("p")
+
+
+            p.innerHTML = tempTabOfMusic[i].description
+            img.src = tempTabOfMusic[i].pathToImage
+            
+            li.appendChild(img)
+            li.appendChild(p)
+            BuffsList.appendChild(li)
 
         }
     }

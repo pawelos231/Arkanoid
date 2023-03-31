@@ -117,7 +117,6 @@ export class Canvas extends Common {
         const BUFF_DROP_RATE = BRICK.brickPointsGet.buffDropRate * 100;
         const topOf = 100 / BUFF_DROP_RATE;
         if (1) {
-            console.log("BUFF WYLECIAŁ");
             const randomBuffsCount = (((Object.keys(BuffTypes).length) / 2));
             const RANDOM_NUMBER = generateRandomNumber(randomBuffsCount);
             const RANDOM_BUFF = Number(BuffTypes[BuffTypes[RANDOM_NUMBER]]);

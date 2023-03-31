@@ -1,10 +1,11 @@
 import { Common } from "./Common";
 import { Logger } from "../interfaces/HelperEnums";
-class Settings extends Common {
+class Paginator extends Common {
     constructor() {
         super("levelSelect");
     }
     PaginateResults(MainList, ITEMS_PER_PAGE, mediaToLoad, createView, PaginationClass, ...ToggleEnums) {
+        console.log("siema");
         const CurrentEnum = ToggleEnums[0];
         const LEFT = this.bindElementByClass(`${PaginationClass}> .left`);
         const RIGHT = this.bindElementByClass(`${PaginationClass}> .right`);
@@ -43,4 +44,4 @@ class Settings extends Common {
         });
     }
 }
-export const settings = new Settings();
+export const paginator = new Paginator();

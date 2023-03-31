@@ -1,6 +1,9 @@
 import { BuffTypes } from "../../interfaces/HelperEnums";
 import { Brick } from "./Brick";
-export class Buff {
+import { BuffsInterface } from "../../interfaces/classesInterfaces";
+
+
+export class Buff implements BuffsInterface {
     BuffType: BuffTypes
     tabOfBricks: Array<Brick>
     cachedBrickArray: Array<Brick>
@@ -17,7 +20,8 @@ export class Buff {
             this.AppliedBuffs = AppliedBuffs
         }
         
-    WrapperIfBuffIsActive<T extends Function>(applyBuff: T): void{
+
+    WrapperIfBuffIsActive(applyBuff: () => void): void{
         if (!this.AppliedBuffs.find(item => item == this.BuffType)){
             this.AppliedBuffs.push(this.BuffType)
             applyBuff()
@@ -50,23 +54,23 @@ export class Buff {
     applyBuffEffects(){
         switch(this.BuffType){
             case BuffTypes.PaddleSpeed:{
-                this.WrapperIfBuffIsActive(this.applyPaddleSpeedBuff)
+                this.WrapperIfBuffIsActive(this.applyPaddleSpeedBuff.bind(this))
                 break;
             }
             case BuffTypes.AddLive:{
-                this.WrapperIfBuffIsActive(this.applyAddLivesBuff)
+                this.WrapperIfBuffIsActive(this.applyAddLivesBuff.bind(this))
                 break;
             }
             case BuffTypes.DestroyerBuff:{
-                this.WrapperIfBuffIsActive(this.applyDestroyerBuff)
+                this.WrapperIfBuffIsActive(this.applyDestroyerBuff.bind(this))
                 break;
             }
             case BuffTypes.SpeedBuff:{
-                this.WrapperIfBuffIsActive(this.applySpeedBuff)
+                this.WrapperIfBuffIsActive(this.applySpeedBuff.bind(this))
                 break;
             }
             case BuffTypes.InvincibilityBuff:{
-                this.WrapperIfBuffIsActive(this.applyInvincibiltyBuff)
+                this.WrapperIfBuffIsActive(this.applyInvincibiltyBuff.bind(this))
                 break;
             }
             default:
