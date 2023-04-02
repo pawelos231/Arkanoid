@@ -9,10 +9,14 @@ import { sealed } from "../decorators/seal";
 import { Logger } from "../interfaces/HelperEnums";
 const REGISTER_FORMS = "RegisterElement";
 let Common = class Common {
-    constructor(elementId) {
-        this.elementId = this.bindElementById(elementId);
-        if (typeof elementId === "undefined" || elementId === null)
-            return;
+    constructor(...elementId) {
+        if (elementId && elementId[0]) {
+            this.elementId =
+                this.bindElementById(elementId[0]);
+        }
+        else {
+            this.elementId = undefined;
+        }
     }
     bindElementById(elementToFindById) {
         const element = document.getElementById(elementToFindById);

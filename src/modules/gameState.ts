@@ -1,4 +1,5 @@
 import { Paddle_Pos, Ball_Pos } from "../interfaces/gameStateInterface"
+
 export class GameState {
     level: number
     pointsToWin: number
@@ -11,7 +12,16 @@ export class GameState {
     private playerPoints: number
    
     
-    public constructor(level: number, lives: number, pointsToWin: number, counter: number,playerPoints: number, paddle_positions: Paddle_Pos,ball_positions: Ball_Pos,  ballMoveRateX: number, ballMoveRateY: number) {
+    public constructor(level: number, 
+    lives: number, 
+    pointsToWin: number,
+    counter: number,
+    playerPoints: number, 
+    paddle_positions: Paddle_Pos,
+    ball_positions: Ball_Pos,  
+    ballMoveRateX: number, 
+    ballMoveRateY: number) {
+
         this.level = level
         this.pointsToWin = pointsToWin
         this.paddle_positions = paddle_positions
@@ -21,6 +31,7 @@ export class GameState {
         this.playerPoints = playerPoints
         this.ballMoveRateX = ballMoveRateX
         this.ballMoveRateY = ballMoveRateY
+
     }
 
     set BallMoveRateSet(rate: number) {

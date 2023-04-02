@@ -7,15 +7,15 @@ import { GameOver } from "./GameOver";
 import { FETCH_LEVELS } from "../constants/api/Urls";
 import { LevelData } from "../interfaces/level";
 import { REFRESH_RATE_MS } from "../constants/gameState";
+
+
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu"
-const LEVEL_SELECT = "levelSelect"
-//temporary data for levels
 const POINTS_TO_GET = 10000000
 const TEMP_SPECIAL_IMG = "http://localhost:1234/Krzysiu.a065cfe0.png"
 
 class LevelSelect extends Common {
   constructor() {
-    super(LEVEL_SELECT)
+    super()
   }
   public async fetchLevels() {
     const fetcher = new Fetcher(null)
@@ -51,19 +51,29 @@ class LevelSelect extends Common {
   private createLevel(item: Element, levelData: LevelData): void {
     
     item.addEventListener("click", async () => {
+
       const MenuCanvas = this.bindElementByClass("webgl")
+
       this.changeVisbilityOfGivenElement(MenuCanvas, false)
       
       const isSpecialLevel: number = Math.floor(Math.random() * 1)
+
       const {level, lives, numberOfColumns, numberOfRows, timer } = levelData
 
       if (isSpecialLevel == 0) {
 
-        const randomBrick: number = Math.floor(Math.random() * ((numberOfColumns-1) * (numberOfRows - 1)))
+        const randomBrick: number = 
+        Math.floor(Math.random() * ((numberOfColumns-1) * (numberOfRows - 1)))
 
         const image: HTMLImageElement = await loader.loadImage(TEMP_SPECIAL_IMG)
 
-        const canvas: Canvas<HTMLImageElement> = new Canvas<HTMLImageElement>(level, POINTS_TO_GET, lives, image, numberOfRows, numberOfColumns)
+        const canvas: Canvas<HTMLImageElement> = 
+        new Canvas<HTMLImageElement>(level, 
+          POINTS_TO_GET, 
+          lives, 
+          image, 
+          numberOfRows, 
+          numberOfColumns)
 
         canvas.configureCanvas(tabOfBrickData(), true, randomBrick)
 
@@ -75,7 +85,13 @@ class LevelSelect extends Common {
 
 
       else {
-        const canvas: Canvas<null> = new Canvas<null>(level, POINTS_TO_GET, lives, null, numberOfRows, numberOfColumns)
+        const canvas: Canvas<null> = 
+        new Canvas<null>(level, 
+          POINTS_TO_GET, 
+          lives, 
+          null, 
+          numberOfRows, 
+          numberOfColumns)
 
         canvas.configureCanvas(tabOfBrickData(), false)
 
@@ -89,18 +105,26 @@ class LevelSelect extends Common {
     })
   }
 
-  private createViewForLevels(levelData: LevelData, parentNode: HTMLElement): void
-{
+  private createViewForLevels(
+    levelData: LevelData, 
+    parentNode: HTMLElement): void {
+
     let div: HTMLDivElement = document.createElement("div")
+
     div.textContent = String(levelData.level)
+
     parentNode.appendChild(div)
+
     this.createLevel(div as Element, levelData)
+
   }
   
   public async handleOnClickLevel(): Promise<void> {
 
     const levelData: LevelData[] = JSON.parse(await this.fetchLevels())
-    const levelSelect: HTMLElement = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU)
+
+    const levelSelect: HTMLElement = 
+    this.bindElementByClass(MAIN_LEVEL_SELECT_MENU)
     
     levelSelect.textContent = ""
 

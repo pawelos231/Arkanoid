@@ -3,7 +3,7 @@ import { Validator } from '../helpers/PasswordInputValidation.js'
 import { Fetcher } from '../helpers/Fetcher.js'
 import { media } from './Media.js'
 import { levelSelect } from './LevelSelect.js'
-import { Paginator } from './Settings.js'
+import { Paginator } from './Paginator'
 import { Songs, tempTabOfSongs } from '../data/temporarySongsData.js'
 import { Sounds, tempTabOfSounds } from '../data/temporarySoundsData.js'
 import { MediaEnum } from '../interfaces/HelperEnums.js'
@@ -46,7 +46,7 @@ const LIST_OF_BUFFS = "listOfBuffs > ul"
 const PAGINATE_SONGS_RESULT_CLASS = "paginateSongResults"
 const PAGINATE_BUFFS_RESULT_CLASS = "paginateBuffs"
 
-class Menu extends Common {
+class Menu extends Common<string> {
     private fetcher: Fetcher = new Fetcher(this.elementId)
     private formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
     private StarsBackground: StarsBackroundView | undefined = new StarsBackroundView(600, "Stars")
@@ -172,7 +172,7 @@ class Menu extends Common {
 
         
 
-           const creatorOfViews: ViewsCreator = new ViewsCreator(PAGINATE_BUFFS_RESULT_CLASS)
+           const creatorOfViews: ViewsCreator = new ViewsCreator()
 
            const createViewForBuffs: ViewPaginatedBuffs = 
            creatorOfViews.createViewForBuffs.bind(creatorOfViews)
@@ -217,7 +217,7 @@ class Menu extends Common {
 
         //TODO have those files on server to give user choice what to play in backgground
         const ITEMS_PER_PAGE = 5
-        const creatorOfViews: ViewsCreator = new ViewsCreator("paginateSongs")
+        const creatorOfViews: ViewsCreator = new ViewsCreator()
 
       
 
@@ -248,7 +248,7 @@ class Menu extends Common {
             resetInputsSettings.addEventListener("click", () => {
                 media.resetValuesToDefault(changeVolumeOfMusic, changeVolumeOfSound)
             })
-            
+
             media.changeVolumeOfBackgroundMusic(changeVolumeOfMusic)
             media.changeVolumeOfSound(changeVolumeOfSound)
         })

@@ -1,7 +1,9 @@
 class Loader {
+    
     private IsUrlValid() {
 
     }
+
     public loadSound(soundUrl: string): Promise<HTMLAudioElement> {
         const audio: HTMLAudioElement = new Audio()
 

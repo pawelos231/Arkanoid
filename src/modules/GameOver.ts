@@ -9,7 +9,7 @@ interface DataSendGameOver {
     elapsedTime: number
     level: number
 }
-export class GameOver extends Common implements GameOverInterface {
+export class GameOver extends Common<string> implements GameOverInterface {
     LevelInfo: DataSendGameOver
 
     constructor(points: number, status: number, elapsedTime: number, level: number) {
@@ -39,10 +39,19 @@ export class GameOver extends Common implements GameOverInterface {
         } else if (this.LevelInfo.status == 0) {
             innerElement.innerHTML += `<h2 class="info">Przegrałeś !</h2>`
         }
-        innerElement.innerHTML += `<p class="statsInfo">Twoje statystyki</p>`
-        innerElement.innerHTML += `<ul> <li>Ilość punktów</li> <li>Poziom: ${this.LevelInfo.level}</li> <li>Zdobyte punkty: ${this.LevelInfo.points}</li><li>czas gry: ${this.LevelInfo.elapsedTime}</li></ul>`
 
-        this.LevelInfo.status == 1 ? innerElement.style.border = "2px solid green" : innerElement.style.border = "2px solid red"
+        innerElement.innerHTML += `<p class="statsInfo">Twoje statystyki</p>`
+        innerElement.innerHTML += 
+        `<ul> 
+            <li>Ilość punktów</li> 
+            <li>Poziom: ${this.LevelInfo.level}</li> 
+            <li>Zdobyte punkty: ${this.LevelInfo.points}</li>
+            <li>czas gry: ${this.LevelInfo.elapsedTime}</li>
+         </ul>`
+
+        this.LevelInfo.status == 1 ? 
+        innerElement.style.border = "2px solid green" : 
+        innerElement.style.border = "2px solid red"
 
     }
     

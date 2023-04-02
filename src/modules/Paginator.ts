@@ -23,7 +23,7 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
         createView: F,  
         PaginationClass: string) {
 
-            super("levelSelect")
+            super()
             
             this.createView = createView
             this.ITEMS_PER_PAGE = ITEMS_PER_PAGE
@@ -62,7 +62,8 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
     }
 
     public PaginateResults<V = undefined>(
-     ...ToggleCategoryEnums : (V extends string ? [string] : [undefined?])): void 
+     ...ToggleCategoryEnums : 
+     (V extends string ? [string] : [undefined?])): void 
         {
             this.CurrentEnum = ToggleCategoryEnums[0]
 
@@ -112,7 +113,9 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
                 this.currentPage--
                 if (this.currentPage < 0) {
                     this.currentPage++
-                    this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error)
+                    this.displayMessageAtTheTopOfTheScreen(
+                        "Strona musi być w rangu", 
+                        Logger.Error)
                     return
                 }
 

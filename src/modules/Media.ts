@@ -8,10 +8,10 @@ interface ReturnType {
 }
 
 class Media {
-    musicVolume: number
-    soundVolume: number
-    allowedMusic: boolean
-    allowedSound: boolean
+    private musicVolume: number
+    private soundVolume: number
+    private allowedMusic: boolean
+    private allowedSound: boolean
     backgroundMusic: any
     sound: any
     bricksound: any
@@ -33,17 +33,28 @@ class Media {
 
         if (this.cachedSongId == path) return {play: false, reason: StatusOfSong.AlreadyPlaying}
 
-        else if (this.cachedSongId.length !== 0 && this.cachedSongId !== path) {
+        else if (
+        this.cachedSongId.length !== 0 && 
+        this.cachedSongId !== path) {
+
             this.backgroundMusic.pause()
+
             this.backgroundMusic = null
-            const backgroundAudio: HTMLAudioElement = await loader.loadSound(path)
+
+            const backgroundAudio: HTMLAudioElement = 
+            await loader.loadSound(path)
+
             this.backgroundMusic = backgroundAudio
-        } else {
+        } 
+        else {
+
             const backgroundAudio: HTMLAudioElement = await loader.loadSound(path)
+
             this.backgroundMusic = backgroundAudio
         }
         
         this.cachedSongId = path
+
         return {play: true, reason: StatusOfSong.Succes}
     }
 
@@ -56,14 +67,19 @@ class Media {
         else if (this.cachedSoundId.length != 0 && this.cachedSoundId !== path) {
             this.sound.pause()
             this.sound = null
+
             const sound: HTMLAudioElement = await loader.loadSound(path)
             this.sound = sound
+            
         } else {
+
             const sound: HTMLAudioElement = await loader.loadSound(path)
             this.sound = sound
+
         }
 
         this.cachedSoundId = path
+
         return {play: true, reason: StatusOfSong.Succes}
     }
 
@@ -72,10 +88,13 @@ class Media {
         this.backgroundMusic.loop = true
         this.backgroundMusic.volume = this.musicVolume
         this.backgroundMusic.play()
+
     }
 
     public stopMusic(): void {
+
         this.backgroundMusic.pause()
+
     }
 
     public changeVolumeOfBackgroundMusic(musicElement: Element): void {
@@ -84,8 +103,10 @@ class Media {
         inputMusic.value = this.musicVolume * 100
 
         inputMusic.addEventListener("input", (e: any) => {
+
             const valueOfAnElement: number = e.target.value / 100
             this.backgroundMusic.volume = valueOfAnElement
+
         })
 
     }
@@ -96,8 +117,10 @@ class Media {
         inputMusic.value = this.soundVolume * 100
 
         inputMusic.addEventListener("input", (e: any) => {
+
             const valueOfAnElement: number = e.target.value / 100
             this.sound.volume = valueOfAnElement
+
         })
 
     }
@@ -108,10 +131,13 @@ class Media {
         this.allowedSound = true
         this.musicVolume = 0.5
         this.soundVolume = 0.5
+
         let inputMusic: any = music.children[0]
         inputMusic.value = this.musicVolume * 100
+
         let inputSound: any = sound.children[0]
         inputSound.value = this.soundVolume * 100
+        
         this.backgroundMusic.volume = this.musicVolume
         this.sound.volume = this.soundVolume
 

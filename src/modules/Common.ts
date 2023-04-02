@@ -3,12 +3,21 @@ import { sealed } from "../decorators/seal";
 import { Logger } from "../interfaces/HelperEnums";
 const REGISTER_FORMS = "RegisterElement"
 
+
+type CommonElementIdType<T> = (T extends string ? HTMLElement : undefined)
+
 @sealed
-export class Common {
-    protected elementId: HTMLElement;
-    protected constructor(elementId: string) {
-        this.elementId = this.bindElementById(elementId)
-        if (typeof elementId === "undefined" || elementId === null) return
+export class Common<T = undefined> {
+
+    protected elementId: CommonElementIdType<T>;
+    protected constructor(...elementId: (T extends string ? [string] : [undefined?])) { 
+        if(elementId && elementId[0]) {
+            this.elementId = 
+            this.bindElementById(elementId[0]) as CommonElementIdType<T>
+        }
+        else {
+            this.elementId = undefined as CommonElementIdType<T>
+        } 
     }
 
     protected bindElementById(elementToFindById: string): HTMLElement {

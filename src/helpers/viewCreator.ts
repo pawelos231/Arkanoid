@@ -9,8 +9,8 @@ import { StatusOfSong } from "../interfaces/HelperEnums"
 import { Buffs } from "../data/BuffsData"
 
 export class ViewsCreator extends Common {
-    constructor(PaginatorId: string){
-        super(PaginatorId)
+    constructor(){
+        super()
     }
 
     createViewForSongs(

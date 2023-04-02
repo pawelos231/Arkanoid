@@ -27,7 +27,15 @@ export class GameOver extends Common {
             innerElement.innerHTML += `<h2 class="info">Przegrałeś !</h2>`;
         }
         innerElement.innerHTML += `<p class="statsInfo">Twoje statystyki</p>`;
-        innerElement.innerHTML += `<ul> <li>Ilość punktów</li> <li>Poziom: ${this.LevelInfo.level}</li> <li>Zdobyte punkty: ${this.LevelInfo.points}</li><li>czas gry: ${this.LevelInfo.elapsedTime}</li></ul>`;
-        this.LevelInfo.status == 1 ? innerElement.style.border = "2px solid green" : innerElement.style.border = "2px solid red";
+        innerElement.innerHTML +=
+            `<ul> 
+            <li>Ilość punktów</li> 
+            <li>Poziom: ${this.LevelInfo.level}</li> 
+            <li>Zdobyte punkty: ${this.LevelInfo.points}</li>
+            <li>czas gry: ${this.LevelInfo.elapsedTime}</li>
+         </ul>`;
+        this.LevelInfo.status == 1 ?
+            innerElement.style.border = "2px solid green" :
+            innerElement.style.border = "2px solid red";
     }
 }

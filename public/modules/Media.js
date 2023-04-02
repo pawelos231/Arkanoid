@@ -16,7 +16,8 @@ class Media {
             return { play: false, reason: StatusOfSong.Error };
         if (this.cachedSongId == path)
             return { play: false, reason: StatusOfSong.AlreadyPlaying };
-        else if (this.cachedSongId.length !== 0 && this.cachedSongId !== path) {
+        else if (this.cachedSongId.length !== 0 &&
+            this.cachedSongId !== path) {
             this.backgroundMusic.pause();
             this.backgroundMusic = null;
             const backgroundAudio = await loader.loadSound(path);

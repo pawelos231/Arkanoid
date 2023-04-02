@@ -20,7 +20,7 @@ interface Sizes {
   height: number
 }
 
-export class StarsBackroundView extends Common {
+export class StarsBackroundView extends Common<string> {
 
   NUMBER_OF_STARS: number
   canvas: HTMLCanvasElement
@@ -33,7 +33,7 @@ export class StarsBackroundView extends Common {
   renderer: THREE.WebGLRenderer
   camera: THREE.PerspectiveCamera
   sizes: Sizes
-  arrOfParticles: addParticleReturnFuncInterface[] | any[]
+  arrOfParticles: addParticleReturnFuncInterface[] 
   clock: THREE.clock
   bloomComposer: any
 
@@ -53,7 +53,7 @@ export class StarsBackroundView extends Common {
       size: 0.005,
       color: "#0000ff",
     });
-    this.arrOfParticles = []
+    this.arrOfParticles = [] as addParticleReturnFuncInterface[]
     this.sphere = new THREE.Points(this.geometry, this.material);
     this.pointLight.position.x = 2;
     this.pointLight.position.y = 3;

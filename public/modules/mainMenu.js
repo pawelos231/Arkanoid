@@ -3,7 +3,7 @@ import { Validator } from '../helpers/PasswordInputValidation.js';
 import { Fetcher } from '../helpers/Fetcher.js';
 import { media } from './Media.js';
 import { levelSelect } from './LevelSelect.js';
-import { Paginator } from './Settings.js';
+import { Paginator } from './Paginator';
 import { tempTabOfSongs } from '../data/temporarySongsData.js';
 import { MediaEnum } from '../interfaces/HelperEnums.js';
 import { GET_STATS_URL } from '../constants/api/Urls.js';
@@ -130,7 +130,7 @@ class Menu extends Common {
         const ListOfBuffs = this.bindElementByClass(LIST_OF_BUFFS);
         const ITEMS_PER_PAGE = 5;
         OpenInfo.addEventListener("click", () => {
-            const creatorOfViews = new ViewsCreator(PAGINATE_BUFFS_RESULT_CLASS);
+            const creatorOfViews = new ViewsCreator();
             const createViewForBuffs = creatorOfViews.createViewForBuffs.bind(creatorOfViews);
             this.changeVisbilityOfGivenElement(OpenedInfoPage, true);
             const PaginatorInstance = new Paginator(ListOfBuffs, ITEMS_PER_PAGE, tabOfBuffs, createViewForBuffs, PAGINATE_BUFFS_RESULT_CLASS);
@@ -152,7 +152,7 @@ class Menu extends Common {
         const MUSIC = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW);
         //TODO have those files on server to give user choice what to play in backgground
         const ITEMS_PER_PAGE = 5;
-        const creatorOfViews = new ViewsCreator("paginateSongs");
+        const creatorOfViews = new ViewsCreator();
         const createViewForSongs = creatorOfViews.createViewForSongs.bind(creatorOfViews);
         OpenSettings.addEventListener("click", () => {
             const PaginatorInstance = new Paginator(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, PAGINATE_SONGS_RESULT_CLASS);
