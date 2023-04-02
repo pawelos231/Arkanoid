@@ -11,13 +11,11 @@ export class Common<T = undefined> {
 
     protected elementId: CommonElementIdType<T>;
     protected constructor(...elementId: (T extends string ? [string] : [undefined?])) { 
-        if(elementId && elementId[0]) {
+
+        (elementId && elementId[0]) ?  
             this.elementId = 
-            this.bindElementById(elementId[0]) as CommonElementIdType<T>
-        }
-        else {
-            this.elementId = undefined as CommonElementIdType<T>
-        } 
+            this.bindElementById(elementId[0]) as CommonElementIdType<T>:
+            this.elementId = undefined as CommonElementIdType<T>  
     }
 
     protected bindElementById(elementToFindById: string): HTMLElement {

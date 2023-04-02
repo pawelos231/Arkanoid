@@ -10,13 +10,10 @@ import { Logger } from "../interfaces/HelperEnums";
 const REGISTER_FORMS = "RegisterElement";
 let Common = class Common {
     constructor(...elementId) {
-        if (elementId && elementId[0]) {
+        (elementId && elementId[0]) ?
             this.elementId =
-                this.bindElementById(elementId[0]);
-        }
-        else {
+                this.bindElementById(elementId[0]) :
             this.elementId = undefined;
-        }
     }
     bindElementById(elementToFindById) {
         const element = document.getElementById(elementToFindById);

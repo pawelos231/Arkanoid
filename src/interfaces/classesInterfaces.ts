@@ -1,4 +1,4 @@
-import { PaginatorPages } from "./HelperEnums"
+
 
 export interface GameOverInterface {
     SendUserLevelData: () => void
@@ -7,7 +7,8 @@ export interface GameOverInterface {
 
 export interface PaginatorInterface<T, F extends Function> {
     PaginateResults: <V = undefined>(
-        ...ToggleCategoryEnums: (V extends string ? [string] : [undefined?])) => void,
+        ...ToggleCategoryEnums: 
+        (V extends string ? [string] : [undefined?])) => void,
 }
 
 
