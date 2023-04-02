@@ -31,3 +31,8 @@ export enum StatusOfSong {
     AlreadyPlaying = 1,
     Error = 0
 }
+
+export enum PaginatorPages {
+    LastNotFullPage = 0,
+    NormalPage = 1
+}

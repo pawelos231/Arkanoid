@@ -1,47 +1,66 @@
 import { Common } from "./Common";
 import { Logger } from "../interfaces/HelperEnums";
-class Paginator extends Common {
-    constructor() {
+import { PaginatorPages } from "../interfaces/HelperEnums";
+export class Paginator extends Common {
+    constructor(MainList, ITEMS_PER_PAGE, mediaToLoad, createView, PaginationClass) {
         super("levelSelect");
+        this.createView = createView;
+        this.ITEMS_PER_PAGE = ITEMS_PER_PAGE;
+        this.mediaToLoad = mediaToLoad;
+        this.PaginationClass = PaginationClass;
+        this.MainList = MainList;
+        this.currentPage = 0;
+        this.LIST_LEN = 0;
+        this.CurrentEnum = undefined;
     }
-    PaginateResults(MainList, ITEMS_PER_PAGE, mediaToLoad, createView, PaginationClass, ...ToggleEnums) {
-        console.log("siema");
-        const CurrentEnum = ToggleEnums[0];
-        const LEFT = this.bindElementByClass(`${PaginationClass}> .left`);
-        const RIGHT = this.bindElementByClass(`${PaginationClass}> .right`);
-        const PAGE = this.bindElementByClass(`${PaginationClass}> .page`);
-        const PAGINATION_ELEMENT = this.bindElementByClass(PaginationClass);
+    RenderProperVisualizer(caseValue) {
+        if (caseValue === PaginatorPages.LastNotFullPage) {
+            return this.createView(this.MainList, this.currentPage * this.ITEMS_PER_PAGE, this.LIST_LEN - this.currentPage * this.ITEMS_PER_PAGE, this.mediaToLoad, this.CurrentEnum);
+        }
+        else if (caseValue === PaginatorPages.NormalPage) {
+            return this.createView(this.MainList, this.currentPage * this.ITEMS_PER_PAGE, this.ITEMS_PER_PAGE, this.mediaToLoad, this.CurrentEnum);
+        }
+        else {
+            throw new Error("zła wartość przekazana jako warunek renderowania");
+        }
+    }
+    PaginateResults(...ToggleCategoryEnums) {
+        this.CurrentEnum = ToggleCategoryEnums[0];
+        const LEFT = this.bindElementByClass(`${this.PaginationClass}> .left`);
+        const RIGHT = this.bindElementByClass(`${this.PaginationClass}> .right`);
+        const PAGE = this.bindElementByClass(`${this.PaginationClass}> .page`);
+        const PAGINATION_ELEMENT = this.bindElementByClass(this.PaginationClass);
         this.changeVisbilityOfGivenElement(PAGINATION_ELEMENT, true);
-        const LIST_LEN = mediaToLoad.length;
-        const PAGES = Math.ceil(LIST_LEN / ITEMS_PER_PAGE);
-        let currentPage = 0;
-        PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
-        createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum);
+        this.LIST_LEN = this.mediaToLoad.length;
+        const PAGES = Math.ceil(this.LIST_LEN / this.ITEMS_PER_PAGE);
+        PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`;
+        this.RenderProperVisualizer(PaginatorPages.NormalPage);
         RIGHT.addEventListener("click", () => {
-            currentPage++;
-            if (currentPage > PAGES - 1) {
-                currentPage--;
+            this.currentPage++;
+            if (this.currentPage > PAGES - 1) {
+                this.currentPage--;
                 this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error);
                 return;
             }
-            if (LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
-                createView(MainList, currentPage * ITEMS_PER_PAGE, LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad, CurrentEnum);
+            if (this.LIST_LEN -
+                (this.currentPage * this.ITEMS_PER_PAGE) <
+                this.ITEMS_PER_PAGE) {
+                this.RenderProperVisualizer(PaginatorPages.LastNotFullPage);
             }
             else {
-                createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum);
+                this.RenderProperVisualizer(PaginatorPages.NormalPage);
             }
-            PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
+            PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`;
         });
         LEFT.addEventListener("click", () => {
-            currentPage--;
-            if (currentPage < 0) {
-                currentPage++;
+            this.currentPage--;
+            if (this.currentPage < 0) {
+                this.currentPage++;
                 this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error);
                 return;
             }
-            createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum);
-            PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`;
+            this.RenderProperVisualizer(PaginatorPages.NormalPage);
+            PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`;
         });
     }
 }
-export const paginator = new Paginator();

@@ -45,21 +45,28 @@ export class ViewsCreator extends Common {
 
                 li.addEventListener("click", async () => {
                     const BackroundSong = await media.setBackroundMusic(tempTabOfMusic[i].song)
-                    if (BackroundSong.play == true) {
-                        this.displayMessageAtTheTopOfTheScreen(`Ustawiono piosenkę o nazwie: ${tempTabOfMusic[i].name}`, Logger.Message)
+
+                    if (BackroundSong.play) {
+                        this.displayMessageAtTheTopOfTheScreen(
+                            `Ustawiono piosenkę o nazwie: ${tempTabOfMusic[i].name}`, 
+                            Logger.Message)
                     } 
                     else if(
-                    BackroundSong.play == false && 
+                    !BackroundSong.play && 
                     BackroundSong.reason == StatusOfSong.Error) 
                     {
-                        this.displayMessageAtTheTopOfTheScreen(`nie mozemy zagrać nuty: ${tempTabOfMusic[i].name}, coś poszło nie tak`, Logger.Error)
+                        this.displayMessageAtTheTopOfTheScreen(
+                            `nie mozemy zagrać nuty: ${tempTabOfMusic[i].name}, coś poszło nie tak`, 
+                            Logger.Error)
                         throw new Error("nie mozemy zagrać tej piosenki")
                     } 
                     else if(
-                    BackroundSong.play == false 
+                    !BackroundSong.play 
                     && BackroundSong.reason == StatusOfSong.AlreadyPlaying)
                     {
-                        this.displayMessageAtTheTopOfTheScreen(`Nuta ${tempTabOfMusic[i].name}, Juz bangla, wczytaj co innego`, Logger.Warn)
+                        this.displayMessageAtTheTopOfTheScreen(
+                            `Nuta ${tempTabOfMusic[i].name}, Juz bangla, wczytaj co innego`, 
+                            Logger.Warn)
                     }
     
                     media.playMusic()
@@ -72,25 +79,34 @@ export class ViewsCreator extends Common {
 
                     const Sound = await media.setSound(tempTabOfMusic[i].sound)
 
-                    if (Sound.play == true) {
-                        this.displayMessageAtTheTopOfTheScreen(`Ustawiono dźwięk o nazwie: ${tempTabOfSongs[i].name}`, Logger.Message)
+                    if (Sound.play) {
+                        this.displayMessageAtTheTopOfTheScreen(
+                            `Ustawiono dźwięk o nazwie: ${tempTabOfSongs[i].name}`, 
+                            Logger.Message)
                     } 
                     else if(
-                    Sound.play == false, 
-                    Sound.reason == StatusOfSong.Error) 
+                    Sound.play === false, 
+                    Sound.reason === StatusOfSong.Error) 
                     {
-                        this.displayMessageAtTheTopOfTheScreen(`nie wczytać dźwięku: ${tempTabOfMusic[i].name}, coś poszło nie tak`, Logger.Error)
+                        this.displayMessageAtTheTopOfTheScreen(
+                            `nie wczytać dźwięku: ${tempTabOfMusic[i].name}, coś poszło nie tak`, 
+                            Logger.Error)
+
                         throw new Error("nie mozemy wczytać tego dźwięku")
                     } 
                     else if(
-                    Sound.play == false, 
-                    Sound.reason == StatusOfSong.AlreadyPlaying)
+                    Sound.play === false, 
+                    Sound.reason === StatusOfSong.AlreadyPlaying)
                     {
-                            this.displayMessageAtTheTopOfTheScreen(`Dźwięk: ${tempTabOfMusic[i].name}, juz jest ustawiony, wczytaj jakiś inny`, Logger.Warn)
+                        this.displayMessageAtTheTopOfTheScreen(
+                            `Dźwięk: ${tempTabOfMusic[i].name}, juz jest ustawiony, wczytaj jakiś inny`, 
+                                Logger.Warn)
                     
                     }
                     media.spawnSoundWhenHitPaddle()
                 })
+            } else {
+                throw new Error("złe dane przekazane do funkcji")
             }
 
             songsList.appendChild(li)

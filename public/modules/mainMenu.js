@@ -3,9 +3,8 @@ import { Validator } from '../helpers/PasswordInputValidation.js';
 import { Fetcher } from '../helpers/Fetcher.js';
 import { media } from './Media.js';
 import { levelSelect } from './LevelSelect.js';
-import { paginator } from './Settings.js';
+import { Paginator } from './Settings.js';
 import { tempTabOfSongs } from '../data/temporarySongsData.js';
-import { tempTabOfSounds } from '../data/temporarySoundsData.js';
 import { MediaEnum } from '../interfaces/HelperEnums.js';
 import { GET_STATS_URL } from '../constants/api/Urls.js';
 import { ViewsCreator } from '../helpers/viewCreator.js';
@@ -38,6 +37,8 @@ const INFO = "Info";
 const OPENED_INFO = "OpenedInfo";
 const CLOSE_INFO = "closeInfo";
 const LIST_OF_BUFFS = "listOfBuffs > ul";
+const PAGINATE_SONGS_RESULT_CLASS = "paginateSongResults";
+const PAGINATE_BUFFS_RESULT_CLASS = "paginateBuffs";
 class Menu extends Common {
     constructor() {
         super(REGISTER_FORMS);
@@ -129,10 +130,11 @@ class Menu extends Common {
         const ListOfBuffs = this.bindElementByClass(LIST_OF_BUFFS);
         const ITEMS_PER_PAGE = 5;
         OpenInfo.addEventListener("click", () => {
-            const creatorOfViews = new ViewsCreator("paginateBuffs");
+            const creatorOfViews = new ViewsCreator(PAGINATE_BUFFS_RESULT_CLASS);
             const createViewForBuffs = creatorOfViews.createViewForBuffs.bind(creatorOfViews);
             this.changeVisbilityOfGivenElement(OpenedInfoPage, true);
-            paginator.PaginateResults(ListOfBuffs, ITEMS_PER_PAGE, tabOfBuffs, createViewForBuffs, "paginateBuffs");
+            const PaginatorInstance = new Paginator(ListOfBuffs, ITEMS_PER_PAGE, tabOfBuffs, createViewForBuffs, PAGINATE_BUFFS_RESULT_CLASS);
+            PaginatorInstance.PaginateResults();
             closeInfo.addEventListener("click", () => {
                 this.changeVisbilityOfGivenElement(OpenedInfoPage, false);
             });
@@ -153,12 +155,13 @@ class Menu extends Common {
         const creatorOfViews = new ViewsCreator("paginateSongs");
         const createViewForSongs = creatorOfViews.createViewForSongs.bind(creatorOfViews);
         OpenSettings.addEventListener("click", () => {
-            paginator.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music);
+            const PaginatorInstance = new Paginator(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, PAGINATE_SONGS_RESULT_CLASS);
+            PaginatorInstance.PaginateResults(MediaEnum.Music);
             SOUNDS.addEventListener("click", () => {
-                paginator.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSongs, "paginateSongResults", MediaEnum.Sounds);
+                PaginatorInstance.PaginateResults(MediaEnum.Sounds);
             });
             MUSIC.addEventListener("click", () => {
-                paginator.PaginateResults(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music);
+                PaginatorInstance.PaginateResults(MediaEnum.Music);
             });
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {

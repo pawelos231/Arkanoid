@@ -31,3 +31,8 @@ export var StatusOfSong;
     StatusOfSong[StatusOfSong["AlreadyPlaying"] = 1] = "AlreadyPlaying";
     StatusOfSong[StatusOfSong["Error"] = 0] = "Error";
 })(StatusOfSong || (StatusOfSong = {}));
+export var PaginatorPages;
+(function (PaginatorPages) {
+    PaginatorPages[PaginatorPages["LastNotFullPage"] = 0] = "LastNotFullPage";
+    PaginatorPages[PaginatorPages["NormalPage"] = 1] = "NormalPage";
+})(PaginatorPages || (PaginatorPages = {}));

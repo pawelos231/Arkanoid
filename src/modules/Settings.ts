@@ -1,73 +1,127 @@
 import { Common } from "./Common";
 import { Logger } from "../interfaces/HelperEnums";
-import { SettingsInterface } from "../interfaces/classesInterfaces";
+import { PaginatorInterface } from "../interfaces/classesInterfaces";
+import { PaginatorPages } from "../interfaces/HelperEnums";
 
 
-class Paginator extends Common implements SettingsInterface {
-    constructor() {
-        super("levelSelect")
+
+export class Paginator<T, F extends Function> extends Common implements PaginatorInterface<T, F> {
+
+    private readonly createView: F
+    private ITEMS_PER_PAGE: number
+    private readonly mediaToLoad: T[]
+    private PaginationClass: string
+    private readonly MainList: HTMLElement
+    private currentPage: number
+    private LIST_LEN: number
+    private CurrentEnum: unknown
+
+    constructor(
+        MainList: HTMLElement, 
+        ITEMS_PER_PAGE: number,  
+        mediaToLoad: T[], 
+        createView: F,  
+        PaginationClass: string) {
+
+            super("levelSelect")
+            
+            this.createView = createView
+            this.ITEMS_PER_PAGE = ITEMS_PER_PAGE
+            this.mediaToLoad = mediaToLoad
+            this.PaginationClass = PaginationClass
+            this.MainList = MainList
+            this.currentPage = 0
+            this.LIST_LEN = 0
+            this.CurrentEnum = undefined
+            
     }
-    public PaginateResults<T, F extends Function, V = undefined>(
-     MainList: HTMLElement, 
-     ITEMS_PER_PAGE: number, 
-     mediaToLoad: T[], 
-     createView: F, 
-     PaginationClass: string, 
-     ...ToggleEnums : (V extends string ? [string] : [undefined?])): void 
+
+    private RenderProperVisualizer(caseValue: PaginatorPages): F | any{
+
+        if(caseValue === PaginatorPages.LastNotFullPage){
+            return this.createView(
+                this.MainList, 
+                this.currentPage * this.ITEMS_PER_PAGE, 
+                this.LIST_LEN - this.currentPage * this.ITEMS_PER_PAGE, 
+                this.mediaToLoad, 
+                this.CurrentEnum)
+
+        } else if(caseValue === PaginatorPages.NormalPage){
+            return this.createView(
+                this.MainList, 
+                this.currentPage * this.ITEMS_PER_PAGE, 
+                this.ITEMS_PER_PAGE, 
+                this.mediaToLoad, 
+                this.CurrentEnum)
+        } 
+        else {
+            throw new Error("zła wartość przekazana jako warunek renderowania")
+        }
+    
+
+    }
+
+    public PaginateResults<V = undefined>(
+     ...ToggleCategoryEnums : (V extends string ? [string] : [undefined?])): void 
         {
-            console.log("siema")
-            const CurrentEnum: string | undefined = ToggleEnums[0]
+            this.CurrentEnum = ToggleCategoryEnums[0]
 
-            const LEFT: HTMLElement = this.bindElementByClass(`${PaginationClass}> .left`)
+            const LEFT: HTMLElement = this.bindElementByClass(`${this.PaginationClass}> .left`)
 
-            const RIGHT: HTMLElement = this.bindElementByClass(`${PaginationClass}> .right`)
+            const RIGHT: HTMLElement = this.bindElementByClass(`${this.PaginationClass}> .right`)
 
-            const PAGE: HTMLElement = this.bindElementByClass(`${PaginationClass}> .page`)
+            const PAGE: HTMLElement = this.bindElementByClass(`${this.PaginationClass}> .page`)
 
-            const PAGINATION_ELEMENT: HTMLElement = this.bindElementByClass(PaginationClass)
+            const PAGINATION_ELEMENT: HTMLElement = this.bindElementByClass(this.PaginationClass)
 
             this.changeVisbilityOfGivenElement(PAGINATION_ELEMENT, true)
 
-            const LIST_LEN: number = mediaToLoad.length
-            const PAGES: number = Math.ceil(LIST_LEN / ITEMS_PER_PAGE)
-            let currentPage: number = 0
+            this.LIST_LEN = this.mediaToLoad.length
+            const PAGES: number = Math.ceil(this.LIST_LEN / this.ITEMS_PER_PAGE)
+            
 
-            PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
+            PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
 
-            createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
+            this.RenderProperVisualizer(PaginatorPages.NormalPage)
         
             RIGHT.addEventListener("click", () => {
-                currentPage++
-                if (currentPage > PAGES - 1) {
-                    currentPage--
-                    this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error)
+                this.currentPage++
+
+                if (this.currentPage > PAGES - 1) {
+                    this.currentPage--
+                    this.displayMessageAtTheTopOfTheScreen(
+                        "Strona musi być w rangu", 
+                        Logger.Error)
                     return
                 }
-                if (LIST_LEN - (currentPage * ITEMS_PER_PAGE) < ITEMS_PER_PAGE) {
-                    createView(MainList, currentPage * ITEMS_PER_PAGE, LIST_LEN - currentPage * ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
+                
+                if (this.LIST_LEN - 
+                (this.currentPage * this.ITEMS_PER_PAGE) < 
+                this.ITEMS_PER_PAGE) {
+                    this.RenderProperVisualizer(PaginatorPages.LastNotFullPage)
                 } 
                 else 
                 {
-                    createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
+                    this.RenderProperVisualizer(PaginatorPages.NormalPage)
                 }
 
-                PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
+                PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
             })
 
             LEFT.addEventListener("click", () => {
-                currentPage--
-                if (currentPage < 0) {
-                    currentPage++
+                this.currentPage--
+                if (this.currentPage < 0) {
+                    this.currentPage++
                     this.displayMessageAtTheTopOfTheScreen("Strona musi być w rangu", Logger.Error)
                     return
                 }
-                createView(MainList, currentPage * ITEMS_PER_PAGE, ITEMS_PER_PAGE, mediaToLoad, CurrentEnum)
 
-                PAGE.innerHTML = `${currentPage + 1} z ${PAGES}`
+                this.RenderProperVisualizer(PaginatorPages.NormalPage)
+
+                PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
             })
 
         }
 
 }
 
-export const paginator: Paginator = new Paginator()

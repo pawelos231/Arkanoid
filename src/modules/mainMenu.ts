@@ -3,7 +3,7 @@ import { Validator } from '../helpers/PasswordInputValidation.js'
 import { Fetcher } from '../helpers/Fetcher.js'
 import { media } from './Media.js'
 import { levelSelect } from './LevelSelect.js'
-import { paginator } from './Settings.js'
+import { Paginator } from './Settings.js'
 import { Songs, tempTabOfSongs } from '../data/temporarySongsData.js'
 import { Sounds, tempTabOfSounds } from '../data/temporarySoundsData.js'
 import { MediaEnum } from '../interfaces/HelperEnums.js'
@@ -43,6 +43,8 @@ const INFO = "Info"
 const OPENED_INFO = "OpenedInfo"
 const CLOSE_INFO = "closeInfo"
 const LIST_OF_BUFFS = "listOfBuffs > ul"
+const PAGINATE_SONGS_RESULT_CLASS = "paginateSongResults"
+const PAGINATE_BUFFS_RESULT_CLASS = "paginateBuffs"
 
 class Menu extends Common {
     private fetcher: Fetcher = new Fetcher(this.elementId)
@@ -168,20 +170,23 @@ class Menu extends Common {
 
         OpenInfo.addEventListener("click", ()=> {
 
+        
 
-           const creatorOfViews: ViewsCreator = new ViewsCreator("paginateBuffs")
+           const creatorOfViews: ViewsCreator = new ViewsCreator(PAGINATE_BUFFS_RESULT_CLASS)
 
            const createViewForBuffs: ViewPaginatedBuffs = 
            creatorOfViews.createViewForBuffs.bind(creatorOfViews)
 
            this.changeVisbilityOfGivenElement(OpenedInfoPage, true)
 
-           paginator.PaginateResults<Buffs, ViewPaginatedBuffs>(
+           const PaginatorInstance = new Paginator<Buffs, ViewPaginatedBuffs>(
             ListOfBuffs, 
             ITEMS_PER_PAGE, 
             tabOfBuffs, 
             createViewForBuffs, 
-            "paginateBuffs")
+            PAGINATE_BUFFS_RESULT_CLASS)
+
+            PaginatorInstance.PaginateResults()
 
            closeInfo.addEventListener("click", ()=>{
                 this.changeVisbilityOfGivenElement(OpenedInfoPage, false)
@@ -221,31 +226,29 @@ class Menu extends Common {
 
         OpenSettings.addEventListener("click", () => {
             
-            paginator.PaginateResults<Songs, ViewsSongFunc, string>(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, "paginateSongResults", MediaEnum.Music)
-
-            SOUNDS.addEventListener("click", () => {
-                paginator.PaginateResults<Sounds, ViewsSongFunc, string>(
-                    songsList, 
-                    ITEMS_PER_PAGE, 
-                    tempTabOfSounds, 
-                    createViewForSongs, 
-                    "paginateSongResults",  
-                    MediaEnum.Sounds)
-            })
-
-            MUSIC.addEventListener("click", () => {
-                paginator.PaginateResults<Songs, ViewsSongFunc, string>(songsList, 
+            const PaginatorInstance = new Paginator<Songs, ViewsSongFunc>(
+                songsList, 
                 ITEMS_PER_PAGE, 
                 tempTabOfSongs, 
                 createViewForSongs, 
-                "paginateSongResults", 
-                MediaEnum.Music)
+                PAGINATE_SONGS_RESULT_CLASS)
+
+            PaginatorInstance.PaginateResults<string>(MediaEnum.Music)
+
+            SOUNDS.addEventListener("click", () => {
+                PaginatorInstance.PaginateResults<string>(MediaEnum.Sounds)
+            })
+
+            MUSIC.addEventListener("click", () => {
+                PaginatorInstance.PaginateResults<string>(MediaEnum.Music)
             })
 
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
+
             resetInputsSettings.addEventListener("click", () => {
                 media.resetValuesToDefault(changeVolumeOfMusic, changeVolumeOfSound)
             })
+            
             media.changeVolumeOfBackgroundMusic(changeVolumeOfMusic)
             media.changeVolumeOfSound(changeVolumeOfSound)
         })
