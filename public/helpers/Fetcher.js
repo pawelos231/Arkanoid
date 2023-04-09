@@ -11,7 +11,7 @@ const LOGIN_STATUS_MESSAGE = "LoginStatus";
 const START_THE_GAME = "startTheGame";
 export class Fetcher extends Common {
     constructor(formElement) {
-        super("form");
+        super();
         this.formElement = formElement;
     }
     async sendDataToBackendAuth(form, parentName) {
@@ -76,7 +76,7 @@ export class Fetcher extends Common {
             });
         });
     }
-    async FetchData(url) {
+    static async FetchData(url) {
         const data = await fetch(url, {
             method: GET
         })
@@ -84,7 +84,7 @@ export class Fetcher extends Common {
             .catch((err) => { throw new Error(err); });
         return data;
     }
-    async sendDataToBackend(url, data) {
+    static async sendDataToBackend(url, data) {
         await fetch(url, {
             body: JSON.stringify(data),
             method: POST

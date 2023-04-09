@@ -18,8 +18,7 @@ class LevelSelect extends Common {
     super()
   }
   public async fetchLevels() {
-    const fetcher = new Fetcher(null)
-    return fetcher.FetchData<string>(FETCH_LEVELS)
+    return Fetcher.FetchData<string>(FETCH_LEVELS)
   }
 
 

@@ -14,8 +14,7 @@ class LevelSelect extends Common {
         super();
     }
     async fetchLevels() {
-        const fetcher = new Fetcher(null);
-        return fetcher.FetchData(FETCH_LEVELS);
+        return Fetcher.FetchData(FETCH_LEVELS);
     }
     DrawOnCanvas(canvas) {
         const interval = setInterval(() => {

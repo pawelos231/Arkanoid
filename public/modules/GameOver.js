@@ -8,8 +8,7 @@ export class GameOver extends Common {
         Object.freeze(this.LevelInfo = { points, status, elapsedTime, level });
     }
     async SendUserLevelData() {
-        const fetcher = new Fetcher(null);
-        fetcher.sendDataToBackend(SEND_STATS_ABOUT_GAME, this.LevelInfo);
+        Fetcher.sendDataToBackend(SEND_STATS_ABOUT_GAME, this.LevelInfo);
     }
     ShowUserScreenOver() {
         this.changeVisbilityOfGivenElement(this.elementId, true);

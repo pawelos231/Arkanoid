@@ -1,7 +1,7 @@
 import { loader } from "./Loader";
 import { StatusOfSong } from "../interfaces/HelperEnums";
 const DEFAULT_SOUND = "http://localhost:1234/hitPaddle.mp3";
-class Media {
+export class Media {
     constructor(musicVolume = 0.5, soundVolume = 0.5, allowedMusic = true, allowedSound = true) {
         this.cachedSongId = "";
         this.cachedSoundId = "";
@@ -98,7 +98,7 @@ class Media {
         const sound = await loader.loadSound(this.cachedSoundId);
         sound.play();
     }
-    async spanwCustomSound(soundToLoad) {
+    static async spanwCustomSound(soundToLoad) {
         const sound = await loader.loadSound(soundToLoad);
         sound.play();
         sound.loop = false;

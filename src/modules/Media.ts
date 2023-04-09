@@ -7,7 +7,7 @@ interface ReturnType {
     play: boolean
 }
 
-class Media {
+export class Media {
     private musicVolume: number
     private soundVolume: number
     private allowedMusic: boolean
@@ -163,7 +163,7 @@ class Media {
         sound.play()
     }
 
-    public async spanwCustomSound(soundToLoad: string): Promise<void>{
+    public static async spanwCustomSound(soundToLoad: string): Promise<void>{
         const sound: HTMLAudioElement = await loader.loadSound(soundToLoad)
         sound.play()
         sound.loop = false

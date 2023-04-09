@@ -47,6 +47,7 @@ const PAGINATE_SONGS_RESULT_CLASS = "paginateSongResults"
 const PAGINATE_BUFFS_RESULT_CLASS = "paginateBuffs"
 
 class Menu extends Common<string> {
+    
     private fetcher: Fetcher = new Fetcher(this.elementId)
     private formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
     private StarsBackground: StarsBackroundView | undefined = new StarsBackroundView(600, "Stars")
@@ -103,7 +104,7 @@ class Menu extends Common<string> {
             this.changeVisbilityOfGivenElement(ModalElementStats, flag)
             flag = !flag
 
-            const fetchData: Promise<string[]> = this.fetcher.FetchData<string[]>(GET_STATS_URL)
+            const fetchData: Promise<string[]> = Fetcher.FetchData<string[]>(GET_STATS_URL)
 
             ResultsCheckBoard.children[0].textContent = "ładuje"
 

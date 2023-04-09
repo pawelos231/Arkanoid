@@ -83,7 +83,7 @@ class Menu extends Common {
         StatsElement.addEventListener("click", async () => {
             this.changeVisbilityOfGivenElement(ModalElementStats, flag);
             flag = !flag;
-            const fetchData = this.fetcher.FetchData(GET_STATS_URL);
+            const fetchData = Fetcher.FetchData(GET_STATS_URL);
             ResultsCheckBoard.children[0].textContent = "ładuje";
             const stats = await fetchData;
             ResultsCheckBoard.children[1].textContent = "";

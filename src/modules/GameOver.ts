@@ -12,14 +12,17 @@ interface DataSendGameOver {
 export class GameOver extends Common<string> implements GameOverInterface {
     LevelInfo: DataSendGameOver
 
-    constructor(points: number, status: number, elapsedTime: number, level: number) {
+    constructor(
+    points: number, 
+    status: number, 
+    elapsedTime: number, 
+    level: number) {
         super("GameOver")
         Object.freeze(this.LevelInfo = { points, status, elapsedTime, level })
     }
 
     public async SendUserLevelData(): Promise<void> {
-        const fetcher: Fetcher = new Fetcher(null)
-        fetcher.sendDataToBackend<DataSendGameOver>(SEND_STATS_ABOUT_GAME, this.LevelInfo)
+        Fetcher.sendDataToBackend<DataSendGameOver>(SEND_STATS_ABOUT_GAME, this.LevelInfo)
     }
 
     public ShowUserScreenOver(): void {

@@ -19,7 +19,7 @@ interface formData {
 export class Fetcher extends Common {
     private formElement: HTMLElement | null
     public constructor(formElement: HTMLElement | null) {
-        super("form")
+        super()
         this.formElement = formElement
     }
 
@@ -94,7 +94,7 @@ export class Fetcher extends Common {
         })
     }
 
-    public async FetchData<T>(url: string): Promise<T> {
+    public static async FetchData<T>(url: string): Promise<T> {
         const data: T = await fetch(url, {
             method: GET
         })
@@ -104,7 +104,7 @@ export class Fetcher extends Common {
         return data
     }
 
-    public async sendDataToBackend<T>(url: string, data: T): Promise<void> {
+    public static async sendDataToBackend<T>(url: string, data: T): Promise<void> {
         await fetch(url, {
             body: JSON.stringify(data),
             method: POST
