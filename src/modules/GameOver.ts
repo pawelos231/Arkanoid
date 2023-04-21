@@ -3,14 +3,11 @@ import { GameOverInterface } from "../interfaces/classesInterfaces"
 import { Fetcher } from "../helpers/Fetcher"
 import { SEND_STATS_ABOUT_GAME } from "../constants/api/Urls"
 const INNER_GAME_OVER = "innerGameOver"
-interface DataSendGameOver {
-    points: number
-    status: number
-    elapsedTime: number
-    level: number
-}
+import { IFinishedGame } from "../interfaces/gameStateInterface"
+
+
 export class GameOver extends Common<string> implements GameOverInterface {
-    LevelInfo: DataSendGameOver
+    LevelInfo: IFinishedGame
 
     constructor(
     points: number, 
@@ -22,7 +19,7 @@ export class GameOver extends Common<string> implements GameOverInterface {
     }
 
     public async SendUserLevelData(): Promise<void> {
-        Fetcher.sendDataToBackend<DataSendGameOver>(SEND_STATS_ABOUT_GAME, this.LevelInfo)
+        Fetcher.sendDataToBackend<IFinishedGame>(SEND_STATS_ABOUT_GAME, this.LevelInfo)
     }
 
     public ShowUserScreenOver(): void {

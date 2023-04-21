@@ -108,7 +108,9 @@ export class Fetcher extends Common {
         await fetch(url, {
             body: JSON.stringify(data),
             method: POST
-        }).then(res => res.json()).then(data => console.log(data))
+        })
+        .then((res: Response) => res.json())
+        .then((data: T) => console.log(data))
     }
 
 }

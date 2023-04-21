@@ -28,3 +28,10 @@ export interface GameOverStatus {
     end: boolean
     status: number 
 }
+
+export interface IFinishedGame {
+    points: number
+    status: number
+    elapsedTime: number
+    level: number
+}
