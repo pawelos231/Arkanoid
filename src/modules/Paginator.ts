@@ -36,7 +36,7 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
             
     }
 
-    private RenderProperVisualizer(caseValue: PaginatorPages): F | any{
+    private RenderProperVisualizer(caseValue: PaginatorPages): F | void{
 
         if(caseValue === PaginatorPages.LastNotFullPage){
             return this.createView(

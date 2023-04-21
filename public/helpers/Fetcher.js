@@ -17,13 +17,13 @@ export class Fetcher extends Common {
     async sendDataToBackendAuth(form, parentName) {
         const LoginStatus = this.bindElementByClass(LOGIN_STATUS_MESSAGE);
         const startGamePanel = this.bindElementByClass(START_THE_GAME);
-        let obj = {};
+        let FormObject = {};
         for (const [key, value] of form) {
-            obj[key] = value;
+            FormObject[key] = value;
         }
         await fetch(`${DEVELEPOMENT_URL}/${parentName}`, {
             method: POST,
-            body: JSON.stringify(obj)
+            body: JSON.stringify(FormObject)
         })
             .then((res) => res.json())
             .then((data) => {

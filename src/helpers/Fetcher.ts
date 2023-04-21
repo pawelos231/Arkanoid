@@ -2,7 +2,7 @@ import { Common } from "../modules/Common";
 import { Validator } from "./PasswordInputValidation";
 import { HIDDEN } from "../constants/classNames";
 import { DEVELEPOMENT_URL, POST, GET } from '../constants/Fetchers'
-import { responseData } from '../interfaces/LoginData'
+import { responseData } from '../interfaces/Fetchers'
 
 const PASSWORD_INPUT_ELEMENT = "password"
 const ELEMENT_DOES_NOT_EXIST = "element nie istnieje"
@@ -28,14 +28,14 @@ export class Fetcher extends Common {
         const LoginStatus: HTMLElement = this.bindElementByClass(LOGIN_STATUS_MESSAGE)
         const startGamePanel: HTMLElement = this.bindElementByClass(START_THE_GAME)
 
-        let obj = {} as formData
+        let FormObject = {} as formData
 
         for (const [key, value] of form) {
-            obj[key] = value
+            FormObject[key] = value
         }
         await fetch(`${DEVELEPOMENT_URL}/${parentName}`, {
             method: POST,
-            body: JSON.stringify(obj)
+            body: JSON.stringify(FormObject)
         })
             .then((res: Response) => res.json())
             .then((data: responseData) => {
@@ -110,4 +110,5 @@ export class Fetcher extends Common {
             method: POST
         }).then(res => res.json()).then(data => console.log(data))
     }
+
 }
