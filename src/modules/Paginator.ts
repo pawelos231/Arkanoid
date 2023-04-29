@@ -2,7 +2,7 @@ import { Common } from "./Common";
 import { Logger } from "../interfaces/HelperEnums";
 import { PaginatorInterface } from "../interfaces/classesInterfaces";
 import { PaginatorPages } from "../interfaces/HelperEnums";
-
+import { EventListener } from "../helpers/Events/EventListener";
 
 
 export class Paginator<T, F extends Function> extends Common implements PaginatorInterface<T, F> {
@@ -15,6 +15,11 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
     private currentPage: number
     private LIST_LEN: number
     private CurrentEnum: unknown
+    private EventListenerInstance: EventListener 
+    private RightIterator: HTMLElement | null
+    private LeftIterator: HTMLElement | null
+    private PAGES: number
+    private PAGE_CONTAINER: HTMLElement | null
 
     constructor(
         MainList: HTMLElement, 
@@ -33,6 +38,11 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
             this.currentPage = 0
             this.LIST_LEN = 0
             this.CurrentEnum = undefined
+            this.EventListenerInstance = new EventListener()
+            this.RightIterator = null
+            this.LeftIterator = null
+            this.PAGES = 0
+            this.PAGE_CONTAINER = null
             
     }
 
@@ -61,68 +71,100 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
 
     }
 
+
+
+    private incrementRight(PAGES: number, PAGE: HTMLElement) {
+        this.currentPage++
+        console.log(this.currentPage, this.CurrentEnum)
+        if (this.currentPage > PAGES - 1) {
+            this.currentPage--
+            this.displayMessageAtTheTopOfTheScreen(
+                "Strona musi być w rangu", 
+                Logger.Error)
+            return
+        }
+        
+        if (this.LIST_LEN - 
+        (this.currentPage * this.ITEMS_PER_PAGE) < 
+        this.ITEMS_PER_PAGE) {
+            this.RenderProperVisualizer(PaginatorPages.LastNotFullPage)
+        } 
+        else 
+        {
+            this.RenderProperVisualizer(PaginatorPages.NormalPage)
+        }
+
+        PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
+    }
+
+    private incrementLeft(PAGES: number, PAGE: HTMLElement){
+        this.currentPage--
+        console.log(this.currentPage, this.CurrentEnum)
+        if (this.currentPage < 0) {
+            this.currentPage++
+            this.displayMessageAtTheTopOfTheScreen(
+                "Strona musi być w rangu", 
+                Logger.Error)
+            return
+        }
+
+        this.RenderProperVisualizer(PaginatorPages.NormalPage)
+
+        PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
+    }
+
+
+    public cleanupListeneres(): void {
+        this.currentPage = 0
+
+        this.EventListenerInstance.removeListenersOnGivenNode(this.RightIterator as HTMLElement, "click")
+
+        this.EventListenerInstance.removeListenersOnGivenNode(this.LeftIterator as HTMLElement, "click")
+    }
+
     public PaginateResults<V = undefined>(
      ...ToggleCategoryEnums : 
-     (V extends string ? [string] : [undefined?])): void 
-        {
+     (V extends string ? [string] : [undefined?])) 
+        {   
+
+        
             this.CurrentEnum = ToggleCategoryEnums[0]
 
-            const LEFT: HTMLElement = this.bindElementByClass(`${this.PaginationClass}> .left`)
+            this.LeftIterator 
+            = this.bindElementByClass(`${this.PaginationClass}> .left`)
 
-            const RIGHT: HTMLElement = this.bindElementByClass(`${this.PaginationClass}> .right`)
+            this.RightIterator 
+            = this.bindElementByClass(`${this.PaginationClass}> .right`)
 
-            const PAGE: HTMLElement = this.bindElementByClass(`${this.PaginationClass}> .page`)
+            this.PAGE_CONTAINER 
+            = this.bindElementByClass(`${this.PaginationClass}> .page`)
 
-            const PAGINATION_ELEMENT: HTMLElement = this.bindElementByClass(this.PaginationClass)
+            const PAGINATION_ELEMENT: HTMLElement 
+            = this.bindElementByClass(this.PaginationClass)
 
             this.changeVisbilityOfGivenElement(PAGINATION_ELEMENT, true)
 
             this.LIST_LEN = this.mediaToLoad.length
-            const PAGES: number = Math.ceil(this.LIST_LEN / this.ITEMS_PER_PAGE)
+            this.PAGES = Math.ceil(this.LIST_LEN / this.ITEMS_PER_PAGE)
             
 
-            PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
+            this.PAGE_CONTAINER.innerHTML 
+            = `${this.currentPage + 1} z ${this.PAGES}`
 
             this.RenderProperVisualizer(PaginatorPages.NormalPage)
         
-            RIGHT.addEventListener("click", () => {
-                this.currentPage++
+            
+            const incrementRight = (): void => this.incrementRight(this.PAGES, this.PAGE_CONTAINER as HTMLElement)
 
-                if (this.currentPage > PAGES - 1) {
-                    this.currentPage--
-                    this.displayMessageAtTheTopOfTheScreen(
-                        "Strona musi być w rangu", 
-                        Logger.Error)
-                    return
-                }
+            const incrementLeft = (): void => this.incrementLeft(this.PAGES, this.PAGE_CONTAINER as HTMLElement)
+
+
+            this.EventListenerInstance.add(this.RightIterator, 
+                "click", incrementRight)
+            
+            this.EventListenerInstance.add(this.LeftIterator, 
+                "click", incrementLeft)
                 
-                if (this.LIST_LEN - 
-                (this.currentPage * this.ITEMS_PER_PAGE) < 
-                this.ITEMS_PER_PAGE) {
-                    this.RenderProperVisualizer(PaginatorPages.LastNotFullPage)
-                } 
-                else 
-                {
-                    this.RenderProperVisualizer(PaginatorPages.NormalPage)
-                }
-
-                PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
-            })
-
-            LEFT.addEventListener("click", () => {
-                this.currentPage--
-                if (this.currentPage < 0) {
-                    this.currentPage++
-                    this.displayMessageAtTheTopOfTheScreen(
-                        "Strona musi być w rangu", 
-                        Logger.Error)
-                    return
-                }
-
-                this.RenderProperVisualizer(PaginatorPages.NormalPage)
-
-                PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
-            })
 
         }
 

@@ -4,13 +4,13 @@ import { Logger } from "../interfaces/HelperEnums";
 const REGISTER_FORMS = "RegisterElement"
 
 
-type CommonElementIdType<T> = (T extends string ? HTMLElement : undefined)
+type CommonElementIdType<T extends boolean> = (T extends true ? HTMLElement : undefined)
 
 @sealed
-export class Common<T = undefined> {
+export class Common<T extends boolean = false> {
 
     protected elementId: CommonElementIdType<T>;
-    protected constructor(...elementId: (T extends string ? [string] : [undefined?])) { 
+    protected constructor(...elementId: (T extends true ? [string] : [undefined?])) { 
 
         (elementId && elementId[0]) ?  
             this.elementId = 

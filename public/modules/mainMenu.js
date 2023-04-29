@@ -5,6 +5,7 @@ import { media } from './Media.js';
 import { levelSelect } from './LevelSelect.js';
 import { Paginator } from './Paginator';
 import { tempTabOfSongs } from '../data/temporarySongsData.js';
+import { tempTabOfSounds } from '../data/temporarySoundsData.js';
 import { MediaEnum } from '../interfaces/HelperEnums.js';
 import { GET_STATS_URL } from '../constants/api/Urls.js';
 import { ViewsCreator } from '../helpers/viewCreator.js';
@@ -155,13 +156,15 @@ class Menu extends Common {
         const creatorOfViews = new ViewsCreator();
         const createViewForSongs = creatorOfViews.createViewForSongs.bind(creatorOfViews);
         OpenSettings.addEventListener("click", () => {
-            const PaginatorInstance = new Paginator(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, PAGINATE_SONGS_RESULT_CLASS);
-            PaginatorInstance.PaginateResults(MediaEnum.Music);
+            const SongsPaginator = new Paginator(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, PAGINATE_SONGS_RESULT_CLASS);
+            const SoundsPaginator = new Paginator(songsList, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSongs, PAGINATE_SONGS_RESULT_CLASS);
             SOUNDS.addEventListener("click", () => {
-                PaginatorInstance.PaginateResults(MediaEnum.Sounds);
+                SoundsPaginator.cleanupListeneres();
+                SoundsPaginator.PaginateResults(MediaEnum.Sounds);
             });
             MUSIC.addEventListener("click", () => {
-                PaginatorInstance.PaginateResults(MediaEnum.Music);
+                SongsPaginator.cleanupListeneres();
+                SongsPaginator.PaginateResults(MediaEnum.Music);
             });
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
             resetInputsSettings.addEventListener("click", () => {

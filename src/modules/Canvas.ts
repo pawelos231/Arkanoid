@@ -16,7 +16,7 @@ import { generateRandomNumber } from "../helpers/randomNumber";
 
 const GAME_CANVAS = "game_canvas"
 
-export class Canvas<T> extends Common<string> {
+export class Canvas<T> extends Common<true> {
 
     private BRICK_HEIGHT: number = 0
     private BRICK_WIDTH: number = 0

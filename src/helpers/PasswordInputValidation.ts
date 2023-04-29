@@ -1,7 +1,7 @@
 import { Common } from "../modules/Common"
 import { INVALID } from "../constants/classNames"
 
-export class Validator extends Common<string> {
+export class Validator extends Common<true> {
     input: string
     value: string | undefined
     constructor(input: string, value?: string) {

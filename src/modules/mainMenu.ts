@@ -46,7 +46,7 @@ const LIST_OF_BUFFS = "listOfBuffs > ul"
 const PAGINATE_SONGS_RESULT_CLASS = "paginateSongResults"
 const PAGINATE_BUFFS_RESULT_CLASS = "paginateBuffs"
 
-class Menu extends Common<string> {
+class Menu extends Common<true> {
     
     private fetcher: Fetcher = new Fetcher(this.elementId)
     private formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
@@ -227,21 +227,32 @@ class Menu extends Common<string> {
 
         OpenSettings.addEventListener("click", () => {
             
-            const PaginatorInstance = new Paginator<Songs, ViewsSongFunc>(
+            const SongsPaginator = new Paginator<Songs, ViewsSongFunc>(
                 songsList, 
                 ITEMS_PER_PAGE, 
                 tempTabOfSongs, 
                 createViewForSongs, 
                 PAGINATE_SONGS_RESULT_CLASS)
 
-            PaginatorInstance.PaginateResults<string>(MediaEnum.Music)
+            const SoundsPaginator = new Paginator<Sounds, ViewsSongFunc>(
+                songsList, 
+                ITEMS_PER_PAGE, 
+                tempTabOfSounds, 
+                createViewForSongs, 
+                PAGINATE_SONGS_RESULT_CLASS)
+
+            
 
             SOUNDS.addEventListener("click", () => {
-                PaginatorInstance.PaginateResults<string>(MediaEnum.Sounds)
+                SoundsPaginator.cleanupListeneres()
+                SoundsPaginator.PaginateResults<string>(MediaEnum.Sounds)
+               
             })
 
             MUSIC.addEventListener("click", () => {
-                PaginatorInstance.PaginateResults<string>(MediaEnum.Music)
+                SongsPaginator.cleanupListeneres()
+                SongsPaginator.PaginateResults<string>(MediaEnum.Music)
+               
             })
 
             this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)

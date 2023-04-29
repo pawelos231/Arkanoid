@@ -20,17 +20,18 @@ export class EventListener {
   }
 
 
-  public remove<T extends keyof HTMLElementEventMap>(element: HTMLElement,
-    event: T,
-    handler: EventHandler) {
+  public removeListenersOnGivenNode<T extends keyof HTMLElementEventMap>(element: HTMLElement,
+    event: T) {
 
 
     const handlers = this.listeners.get(element);
-    const index = handlers?.findIndex((h) => h === handler);
+    console.log(handlers)
 
-    if (handlers && index !== undefined && index >= 0) {
-      element.removeEventListener(event, handlers[index]);
-      handlers.splice(index, 1);
+    if (handlers) {
+      for (const handler of handlers) {
+        element.removeEventListener(event, handler);
+      }
+      this.listeners.delete(element);
     }
 
     if (handlers && handlers.length === 0) {

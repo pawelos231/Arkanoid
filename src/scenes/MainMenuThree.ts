@@ -20,7 +20,7 @@ interface Sizes {
   height: number
 }
 
-export class StarsBackroundView extends Common<string> {
+export class StarsBackroundView extends Common<true> {
 
   NUMBER_OF_STARS: number
   canvas: HTMLCanvasElement

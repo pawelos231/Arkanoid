@@ -6,7 +6,7 @@ const INNER_GAME_OVER = "innerGameOver"
 import { IFinishedGame } from "../interfaces/gameStateInterface"
 
 
-export class GameOver extends Common<string> implements GameOverInterface {
+export class GameOver extends Common<true> implements GameOverInterface {
     LevelInfo: IFinishedGame
 
     constructor(
