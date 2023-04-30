@@ -14,60 +14,53 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
     private readonly MainList: HTMLElement
     private currentPage: number
     private LIST_LEN: number
-    private CurrentEnum: unknown
     private EventListenerInstance: EventListener 
-    private RightIterator: HTMLElement | null
-    private LeftIterator: HTMLElement | null
     private PAGES: number
-    private PAGE_CONTAINER: HTMLElement | null
+    private RightIterator: HTMLElement
+    private LeftIterator: HTMLElement
 
-    constructor(
-        MainList: HTMLElement, 
+    constructor(MainList: HTMLElement,
+        RightIterator: HTMLElement,
+        LeftIterator: HTMLElement, 
         ITEMS_PER_PAGE: number,  
         mediaToLoad: T[], 
         createView: F,  
-        PaginationClass: string) {
+        PaginationClass: string,
+        EventListenerInstance: EventListener) {
 
             super()
-            
             this.createView = createView
-            this.ITEMS_PER_PAGE = ITEMS_PER_PAGE
             this.mediaToLoad = mediaToLoad
             this.PaginationClass = PaginationClass
             this.MainList = MainList
+            this.EventListenerInstance = EventListenerInstance
+            this.RightIterator = RightIterator
+            this.LeftIterator = LeftIterator
+            this.ITEMS_PER_PAGE = ITEMS_PER_PAGE
             this.currentPage = 0
             this.LIST_LEN = 0
-            this.CurrentEnum = undefined
-            this.EventListenerInstance = new EventListener()
-            this.RightIterator = null
-            this.LeftIterator = null
             this.PAGES = 0
-            this.PAGE_CONTAINER = null
             
     }
 
-    private RenderProperVisualizer(caseValue: PaginatorPages): F | void{
+    private PickProperVisualizer(): F {
 
-        if(caseValue === PaginatorPages.LastNotFullPage){
+    if (this.LIST_LEN - 
+        (this.currentPage * this.ITEMS_PER_PAGE) < 
+        this.ITEMS_PER_PAGE) {
             return this.createView(
                 this.MainList, 
                 this.currentPage * this.ITEMS_PER_PAGE, 
                 this.LIST_LEN - this.currentPage * this.ITEMS_PER_PAGE, 
-                this.mediaToLoad, 
-                this.CurrentEnum)
-
-        } else if(caseValue === PaginatorPages.NormalPage){
+                this.mediaToLoad)
+        } else {
             return this.createView(
                 this.MainList, 
                 this.currentPage * this.ITEMS_PER_PAGE, 
                 this.ITEMS_PER_PAGE, 
-                this.mediaToLoad, 
-                this.CurrentEnum)
-        } 
-        else {
-            throw new Error("zła wartość przekazana jako warunek renderowania")
+                this.mediaToLoad)
         }
-    
+
 
     }
 
@@ -75,7 +68,7 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
 
     private incrementRight(PAGES: number, PAGE: HTMLElement) {
         this.currentPage++
-        console.log(this.currentPage, this.CurrentEnum)
+        console.log(this.currentPage)
         if (this.currentPage > PAGES - 1) {
             this.currentPage--
             this.displayMessageAtTheTopOfTheScreen(
@@ -84,22 +77,14 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
             return
         }
         
-        if (this.LIST_LEN - 
-        (this.currentPage * this.ITEMS_PER_PAGE) < 
-        this.ITEMS_PER_PAGE) {
-            this.RenderProperVisualizer(PaginatorPages.LastNotFullPage)
-        } 
-        else 
-        {
-            this.RenderProperVisualizer(PaginatorPages.NormalPage)
-        }
+        this.PickProperVisualizer()
 
         PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
     }
 
     private incrementLeft(PAGES: number, PAGE: HTMLElement){
         this.currentPage--
-        console.log(this.currentPage, this.CurrentEnum)
+        console.log(this.currentPage)
         if (this.currentPage < 0) {
             this.currentPage++
             this.displayMessageAtTheTopOfTheScreen(
@@ -108,35 +93,23 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
             return
         }
 
-        this.RenderProperVisualizer(PaginatorPages.NormalPage)
+        this.PickProperVisualizer()
 
         PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
     }
 
 
     public cleanupListeneres(): void {
-        this.currentPage = 0
 
-        this.EventListenerInstance.removeListenersOnGivenNode(this.RightIterator as HTMLElement, "click")
+        this.EventListenerInstance.removeListenersOnGivenNode(this.RightIterator, "click")
 
-        this.EventListenerInstance.removeListenersOnGivenNode(this.LeftIterator as HTMLElement, "click")
+        this.EventListenerInstance.removeListenersOnGivenNode(this.LeftIterator, "click")
     }
 
-    public PaginateResults<V = undefined>(
-     ...ToggleCategoryEnums : 
-     (V extends string ? [string] : [undefined?])) 
-        {   
+    public PaginateResults() {   
 
-        
-            this.CurrentEnum = ToggleCategoryEnums[0]
 
-            this.LeftIterator 
-            = this.bindElementByClass(`${this.PaginationClass}> .left`)
-
-            this.RightIterator 
-            = this.bindElementByClass(`${this.PaginationClass}> .right`)
-
-            this.PAGE_CONTAINER 
+            const PAGE_NUMBER_CONTAINER 
             = this.bindElementByClass(`${this.PaginationClass}> .page`)
 
             const PAGINATION_ELEMENT: HTMLElement 
@@ -148,15 +121,15 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
             this.PAGES = Math.ceil(this.LIST_LEN / this.ITEMS_PER_PAGE)
             
 
-            this.PAGE_CONTAINER.innerHTML 
+            PAGE_NUMBER_CONTAINER.innerHTML 
             = `${this.currentPage + 1} z ${this.PAGES}`
 
-            this.RenderProperVisualizer(PaginatorPages.NormalPage)
+            this.PickProperVisualizer()
         
             
-            const incrementRight = (): void => this.incrementRight(this.PAGES, this.PAGE_CONTAINER as HTMLElement)
+            const incrementRight = (): void => this.incrementRight(this.PAGES, PAGE_NUMBER_CONTAINER as HTMLElement)
 
-            const incrementLeft = (): void => this.incrementLeft(this.PAGES, this.PAGE_CONTAINER as HTMLElement)
+            const incrementLeft = (): void => this.incrementLeft(this.PAGES, PAGE_NUMBER_CONTAINER as HTMLElement)
 
 
             this.EventListenerInstance.add(this.RightIterator, 

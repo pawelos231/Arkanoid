@@ -6,14 +6,13 @@ import { levelSelect } from './LevelSelect.js'
 import { Paginator } from './Paginator'
 import { Songs, tempTabOfSongs } from '../data/temporarySongsData.js'
 import { Sounds, tempTabOfSounds } from '../data/temporarySoundsData.js'
-import { MediaEnum } from '../interfaces/HelperEnums.js'
 import { GET_STATS_URL } from '../constants/api/Urls.js'
 import { ViewsCreator } from '../helpers/viewCreator.js'
-import { ViewsSongFunc } from '../interfaces/PaginationInterfaces.js'
+import { VisulizerFunc } from '../interfaces/PaginationInterfaces.js'
 import { StarsBackroundView } from '../scenes/MainMenuThree.js'
-import { ViewPaginatedBuffs } from '../interfaces/PaginationInterfaces.js'
 import { tabOfBuffs } from '../data/BuffsData.js'
 import { Buffs } from '../data/BuffsData.js'
+import { EventListener } from '../helpers/Events/EventListener'
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować"
 const I_WANT_TO_LOGIN = "Chce się zalogować"
@@ -52,6 +51,7 @@ class Menu extends Common<true> {
     private formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
     private StarsBackground: StarsBackroundView | undefined = new StarsBackroundView(600, "Stars")
     private cachedInstance: any
+    private EventListenerInstance: EventListener = new EventListener()
 
     public constructor() {
         super(REGISTER_FORMS)
@@ -73,6 +73,53 @@ class Menu extends Common<true> {
         this.cachedInstance = this.StarsBackground
         delete this.StarsBackground
         this.GenerateBackground()
+    }
+
+    
+    private declareHTMLSettingsELements(){
+        const OpenSettings = this.bindElementByClass(OPEN_SETTINGS)
+
+        const OpenedSettingsPage = this.bindElementByClass(OPENED_SETTINGS_PAGE)
+
+        const CloseSettings = this.bindElementByClass(CLOSE_SETTINGS)
+
+        const changeVolumeOfMusic = this.bindElementByClass(MUSIC_RANGE)
+
+        const changeVolumeOfSound = this.bindElementByClass(SOUND_RANGE)
+
+        const resetInputsSettings = this.bindElementByClass(RESET_INPUT_SETTINGS)
+
+        const songsList = this.bindElementByClass(LIST_OF_SONGS)
+
+        const SOUNDS = this.bindElementByClass(SOUND_VIEW_LAYER_SHOW)
+
+        const MUSIC = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW)
+        PAGINATE_SONGS_RESULT_CLASS
+
+        const LEFT_ITERATOR = this.bindElementByClass(`${PAGINATE_SONGS_RESULT_CLASS}> .left`)
+
+        const RIGHT_ITERATOR = this.bindElementByClass(`${PAGINATE_SONGS_RESULT_CLASS}> .right`)
+        
+
+        return {MUSIC, SOUNDS, songsList, resetInputsSettings, changeVolumeOfMusic, changeVolumeOfSound, CloseSettings, OpenedSettingsPage, OpenSettings, LEFT_ITERATOR, RIGHT_ITERATOR}
+    }
+
+    private declareHTMLInfoELements() {
+
+        const OpenInfo: HTMLElement = this.bindElementByClass(INFO)
+
+        const OpenedInfoPage: HTMLElement = this.bindElementByClass(OPENED_INFO)
+
+        const closeInfo: HTMLElement = this.bindElementByClass(CLOSE_INFO)
+
+        const ListOfBuffs: HTMLElement = this.bindElementByClass(LIST_OF_BUFFS)
+
+        const LEFT_ITERATOR = this.bindElementByClass(`${PAGINATE_BUFFS_RESULT_CLASS}> .left`)
+
+        const RIGHT_ITERATOR = this.bindElementByClass(`${PAGINATE_BUFFS_RESULT_CLASS}> .right`)
+
+        return {OpenInfo, closeInfo, ListOfBuffs, OpenedInfoPage, RIGHT_ITERATOR, LEFT_ITERATOR}
+
     }
 
     private switchBetweenRegisterAndLogin(): void {
@@ -128,6 +175,107 @@ class Menu extends Common<true> {
         this.fetcher.SendUserAuthData();
     }
 
+
+    private async OpenInfo(): Promise<void> {
+
+        const htmlInfoElements = this.declareHTMLInfoELements()
+
+        const ITEMS_PER_PAGE = 5
+
+        htmlInfoElements.OpenInfo.addEventListener("click", ()=> {
+
+           const creatorOfViews: ViewsCreator = new ViewsCreator()
+
+           const createViewForBuffs: VisulizerFunc<Buffs> = 
+           creatorOfViews.createViewForBuffs.bind(creatorOfViews)
+
+           this.changeVisbilityOfGivenElement(htmlInfoElements.OpenedInfoPage, true)
+
+           const PaginatorInstance = new Paginator<Buffs, VisulizerFunc<Buffs>>(
+            htmlInfoElements.ListOfBuffs,
+            htmlInfoElements.RIGHT_ITERATOR,
+            htmlInfoElements.LEFT_ITERATOR, 
+            ITEMS_PER_PAGE, 
+            tabOfBuffs, 
+            createViewForBuffs, 
+            PAGINATE_BUFFS_RESULT_CLASS, 
+            this.EventListenerInstance)
+
+            PaginatorInstance.PaginateResults()
+
+            htmlInfoElements.closeInfo.addEventListener("click", ()=>{
+                this.changeVisbilityOfGivenElement(htmlInfoElements.OpenedInfoPage, false)
+           })
+        })
+
+    }
+
+
+    private async openSettings(): Promise<void> {
+
+        const htmlElements = this.declareHTMLSettingsELements()
+
+        const ITEMS_PER_PAGE = 5
+        const creatorOfViews: ViewsCreator = new ViewsCreator()
+
+      
+
+        const createViewForSongs: VisulizerFunc<Songs> = creatorOfViews.createViewForSongs.bind(creatorOfViews)
+        const createViewForSounds: VisulizerFunc<Sounds> = creatorOfViews.createViewForSounds.bind(creatorOfViews)
+
+
+        htmlElements.OpenSettings.addEventListener("click", () => {
+            
+            const SongsPaginator = new Paginator<Songs, VisulizerFunc<Songs>>(
+                htmlElements.songsList,
+                htmlElements.RIGHT_ITERATOR,
+                htmlElements.LEFT_ITERATOR, 
+                ITEMS_PER_PAGE, 
+                tempTabOfSongs, 
+                createViewForSongs, 
+                PAGINATE_SONGS_RESULT_CLASS, 
+                this.EventListenerInstance)
+
+            const SoundsPaginator = new Paginator<Sounds, VisulizerFunc<Sounds>>(htmlElements.songsList,
+                htmlElements.RIGHT_ITERATOR,
+                htmlElements.LEFT_ITERATOR,  
+                ITEMS_PER_PAGE,
+                tempTabOfSounds, 
+                createViewForSounds, 
+                PAGINATE_SONGS_RESULT_CLASS, 
+                this.EventListenerInstance)
+
+            
+
+            htmlElements.SOUNDS.addEventListener("click", () => {
+                SoundsPaginator.cleanupListeneres()
+                SoundsPaginator.PaginateResults()
+               
+            })
+
+            htmlElements.MUSIC.addEventListener("click", () => {
+                SongsPaginator.cleanupListeneres()
+                SongsPaginator.PaginateResults()
+               
+            })
+
+            this.changeVisbilityOfGivenElement(htmlElements.OpenedSettingsPage, true)
+
+            htmlElements.resetInputsSettings.addEventListener("click", () => {
+                media.resetValuesToDefault(htmlElements.changeVolumeOfMusic, htmlElements.changeVolumeOfSound)
+            })
+
+            media.changeVolumeOfBackgroundMusic(htmlElements.changeVolumeOfMusic)
+            media.changeVolumeOfSound(htmlElements.changeVolumeOfSound)
+        })
+
+        htmlElements.CloseSettings.addEventListener("click", () => {
+            this.changeVisbilityOfGivenElement(htmlElements.OpenedSettingsPage, false)
+
+        })
+
+    }
+
     private async StartGame(): Promise<void> {
         media.setSound()
         const isLogged: null | string = localStorage.getItem("game")
@@ -155,121 +303,6 @@ class Menu extends Common<true> {
             this.changeVisbilityOfGivenElement(LevelSelect, false)
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         })
-    }
-
-    private async OpenInfo(): Promise<void> {
-
-        const OpenInfo: HTMLElement = this.bindElementByClass(INFO)
-
-        const OpenedInfoPage: HTMLElement = this.bindElementByClass(OPENED_INFO)
-
-        const closeInfo: HTMLElement = this.bindElementByClass(CLOSE_INFO)
-
-        const ListOfBuffs: HTMLElement = this.bindElementByClass(LIST_OF_BUFFS)
-
-        const ITEMS_PER_PAGE = 5
-
-        OpenInfo.addEventListener("click", ()=> {
-
-        
-
-           const creatorOfViews: ViewsCreator = new ViewsCreator()
-
-           const createViewForBuffs: ViewPaginatedBuffs = 
-           creatorOfViews.createViewForBuffs.bind(creatorOfViews)
-
-           this.changeVisbilityOfGivenElement(OpenedInfoPage, true)
-
-           const PaginatorInstance = new Paginator<Buffs, ViewPaginatedBuffs>(
-            ListOfBuffs, 
-            ITEMS_PER_PAGE, 
-            tabOfBuffs, 
-            createViewForBuffs, 
-            PAGINATE_BUFFS_RESULT_CLASS)
-
-            PaginatorInstance.PaginateResults()
-
-           closeInfo.addEventListener("click", ()=>{
-                this.changeVisbilityOfGivenElement(OpenedInfoPage, false)
-           })
-        })
-
-    }
-
-    private async openSettings(): Promise<void> {
-
-        const OpenSettings: HTMLElement = this.bindElementByClass(OPEN_SETTINGS)
-
-        const OpenedSettingsPage: HTMLElement = this.bindElementByClass(OPENED_SETTINGS_PAGE)
-
-        const CloseSettings: HTMLElement = this.bindElementByClass(CLOSE_SETTINGS)
-
-        const changeVolumeOfMusic: HTMLElement = this.bindElementByClass(MUSIC_RANGE)
-
-        const changeVolumeOfSound: HTMLElement = this.bindElementByClass(SOUND_RANGE)
-
-        const resetInputsSettings: HTMLElement = this.bindElementByClass(RESET_INPUT_SETTINGS)
-
-        const songsList: HTMLElement = this.bindElementByClass(LIST_OF_SONGS)
-
-        const SOUNDS: HTMLElement = this.bindElementByClass(SOUND_VIEW_LAYER_SHOW)
-
-        const MUSIC: HTMLElement = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW)
-
-        //TODO have those files on server to give user choice what to play in backgground
-        const ITEMS_PER_PAGE = 5
-        const creatorOfViews: ViewsCreator = new ViewsCreator()
-
-      
-
-        const createViewForSongs: ViewsSongFunc = creatorOfViews.createViewForSongs.bind(creatorOfViews)
-
-
-        OpenSettings.addEventListener("click", () => {
-            
-            const SongsPaginator = new Paginator<Songs, ViewsSongFunc>(
-                songsList, 
-                ITEMS_PER_PAGE, 
-                tempTabOfSongs, 
-                createViewForSongs, 
-                PAGINATE_SONGS_RESULT_CLASS)
-
-            const SoundsPaginator = new Paginator<Sounds, ViewsSongFunc>(
-                songsList, 
-                ITEMS_PER_PAGE, 
-                tempTabOfSounds, 
-                createViewForSongs, 
-                PAGINATE_SONGS_RESULT_CLASS)
-
-            
-
-            SOUNDS.addEventListener("click", () => {
-                SoundsPaginator.cleanupListeneres()
-                SoundsPaginator.PaginateResults<string>(MediaEnum.Sounds)
-               
-            })
-
-            MUSIC.addEventListener("click", () => {
-                SongsPaginator.cleanupListeneres()
-                SongsPaginator.PaginateResults<string>(MediaEnum.Music)
-               
-            })
-
-            this.changeVisbilityOfGivenElement(OpenedSettingsPage, true)
-
-            resetInputsSettings.addEventListener("click", () => {
-                media.resetValuesToDefault(changeVolumeOfMusic, changeVolumeOfSound)
-            })
-
-            media.changeVolumeOfBackgroundMusic(changeVolumeOfMusic)
-            media.changeVolumeOfSound(changeVolumeOfSound)
-        })
-
-        CloseSettings.addEventListener("click", () => {
-            this.changeVisbilityOfGivenElement(OpenedSettingsPage, false)
-
-        })
-
     }
 
     public start(): void {

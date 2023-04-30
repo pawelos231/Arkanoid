@@ -13,42 +13,37 @@ export class ViewsCreator extends Common {
         super()
     }
 
+
+  
     createViewForSongs(
         songsList: HTMLElement, 
         skipValue: number, 
         itemsperPage: number, 
-        tempTabOfMusic: Sounds[] & Songs[], 
-        ListToPaginateId: string): void{
+        SongsArray: Songs[]): void{
         songsList.innerHTML = ""
     
         for (let i = skipValue; i < skipValue + itemsperPage; i++) {
             const li: HTMLLIElement = document.createElement("li")
             const img: HTMLImageElement = document.createElement("img")
             const p: HTMLParagraphElement = document.createElement("p")
-            img.src = tempTabOfMusic[i].pathToImage
+            img.src = SongsArray[i].pathToImage
+            img.alt = `Piosenka o nazwie  ${SongsArray[i].song}`
+             
+          
 
-            if (ListToPaginateId == MediaEnum.Music) 
-            {
-                img.alt = `Piosenka o nazwie  ${tempTabOfMusic[i].song}`
-            } 
-            else if (ListToPaginateId == MediaEnum.Music) 
-            {
-                img.alt = `Dźwięk o nazwie  ${tempTabOfMusic[i].sound}`
-            }
-
-            p.innerHTML = tempTabOfMusic[i].description
+            p.innerHTML = SongsArray[i].description
 
             li.appendChild(img)
             li.appendChild(p)
 
-            if (ListToPaginateId == MediaEnum.Music) {
+  
 
                 li.addEventListener("click", async () => {
-                    const BackroundSong = await media.setBackroundMusic(tempTabOfMusic[i].song)
+                    const BackroundSong = await media.setBackroundMusic(SongsArray[i].song)
 
                     if (BackroundSong.play) {
                         this.displayMessageAtTheTopOfTheScreen(
-                            `Ustawiono piosenkę o nazwie: ${tempTabOfMusic[i].name}`, 
+                            `Ustawiono piosenkę o nazwie: ${SongsArray[i].name}`, 
                             Logger.Message)
                     } 
                     else if(
@@ -56,7 +51,7 @@ export class ViewsCreator extends Common {
                     BackroundSong.reason == StatusOfSong.Error) 
                     {
                         this.displayMessageAtTheTopOfTheScreen(
-                            `nie mozemy zagrać nuty: ${tempTabOfMusic[i].name}, coś poszło nie tak`, 
+                            `nie mozemy zagrać nuty: ${SongsArray[i].name}, coś poszło nie tak`, 
                             Logger.Error)
                         throw new Error("nie mozemy zagrać tej piosenki")
                     } 
@@ -65,20 +60,44 @@ export class ViewsCreator extends Common {
                     && BackroundSong.reason == StatusOfSong.AlreadyPlaying)
                     {
                         this.displayMessageAtTheTopOfTheScreen(
-                            `Nuta ${tempTabOfMusic[i].name}, Juz bangla, wczytaj co innego`, 
+                            `Nuta ${SongsArray[i].name}, Juz bangla, wczytaj co innego`, 
                             Logger.Warn)
                     }
     
                     media.playMusic()
                 })
 
-            } 
-            else if (ListToPaginateId == MediaEnum.Sounds) 
-            {
+           
+
+            songsList.appendChild(li)
+
+        }
+    }
+
+    createViewForSounds(soundsList: HTMLElement, 
+        skipValue: number, 
+        itemsperPage: number, 
+        SoundsArray: Sounds[]){
+
+            soundsList.innerHTML = ""
+            for (let i = skipValue; i < skipValue + itemsperPage; i++) {
+                const li: HTMLLIElement = document.createElement("li")
+                const img: HTMLImageElement = document.createElement("img")
+                const p: HTMLParagraphElement = document.createElement("p")
+                img.src = SoundsArray[i].pathToImage
+                img.alt = `Piosenka o nazwie  ${SoundsArray[i].sound}`
+                     
+                  
+        
+                p.innerHTML = SoundsArray[i].description
+        
+                li.appendChild(img)
+                li.appendChild(p)
+        
                 li.addEventListener("click", async () => {
-
-                    const Sound = await media.setSound(tempTabOfMusic[i].sound)
-
+        
+                    const Sound = await media.setSound(SoundsArray[i].sound)
+        
                     if (Sound.play) {
                         this.displayMessageAtTheTopOfTheScreen(
                             `Ustawiono dźwięk o nazwie: ${tempTabOfSongs[i].name}`, 
@@ -89,9 +108,9 @@ export class ViewsCreator extends Common {
                     Sound.reason === StatusOfSong.Error) 
                     {
                         this.displayMessageAtTheTopOfTheScreen(
-                            `nie wczytać dźwięku: ${tempTabOfMusic[i].name}, coś poszło nie tak`, 
+                            `nie wczytać dźwięku: ${SoundsArray[i].name}, coś poszło nie tak`, 
                             Logger.Error)
-
+        
                         throw new Error("nie mozemy wczytać tego dźwięku")
                     } 
                     else if(
@@ -99,19 +118,14 @@ export class ViewsCreator extends Common {
                     Sound.reason === StatusOfSong.AlreadyPlaying)
                     {
                         this.displayMessageAtTheTopOfTheScreen(
-                            `Dźwięk: ${tempTabOfMusic[i].name}, juz jest ustawiony, wczytaj jakiś inny`, 
+                            `Dźwięk: ${SoundsArray[i].name}, juz jest ustawiony, wczytaj jakiś inny`, 
                                 Logger.Warn)
                     
                     }
                     media.spawnSoundWhenHitPaddle()
                 })
-            } else {
-                throw new Error("złe dane przekazane do funkcji")
+                soundsList.appendChild(li)
             }
-
-            songsList.appendChild(li)
-
-        }
     }
 
     createViewForBuffs(

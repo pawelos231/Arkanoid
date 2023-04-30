@@ -6,11 +6,11 @@ import { levelSelect } from './LevelSelect.js';
 import { Paginator } from './Paginator';
 import { tempTabOfSongs } from '../data/temporarySongsData.js';
 import { tempTabOfSounds } from '../data/temporarySoundsData.js';
-import { MediaEnum } from '../interfaces/HelperEnums.js';
 import { GET_STATS_URL } from '../constants/api/Urls.js';
 import { ViewsCreator } from '../helpers/viewCreator.js';
 import { StarsBackroundView } from '../scenes/MainMenuThree.js';
 import { tabOfBuffs } from '../data/BuffsData.js';
+import { EventListener } from '../helpers/Events/EventListener';
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -46,6 +46,7 @@ class Menu extends Common {
         this.fetcher = new Fetcher(this.elementId);
         this.formElementRegister = this.bindElementByClass(FORM_TO_REGISTER);
         this.StarsBackground = new StarsBackroundView(600, "Stars");
+        this.EventListenerInstance = new EventListener();
     }
     GenerateBackground() {
         if (this.StarsBackground) {
@@ -63,6 +64,30 @@ class Menu extends Common {
         this.cachedInstance = this.StarsBackground;
         delete this.StarsBackground;
         this.GenerateBackground();
+    }
+    declareHTMLSettingsELements() {
+        const OpenSettings = this.bindElementByClass(OPEN_SETTINGS);
+        const OpenedSettingsPage = this.bindElementByClass(OPENED_SETTINGS_PAGE);
+        const CloseSettings = this.bindElementByClass(CLOSE_SETTINGS);
+        const changeVolumeOfMusic = this.bindElementByClass(MUSIC_RANGE);
+        const changeVolumeOfSound = this.bindElementByClass(SOUND_RANGE);
+        const resetInputsSettings = this.bindElementByClass(RESET_INPUT_SETTINGS);
+        const songsList = this.bindElementByClass(LIST_OF_SONGS);
+        const SOUNDS = this.bindElementByClass(SOUND_VIEW_LAYER_SHOW);
+        const MUSIC = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW);
+        PAGINATE_SONGS_RESULT_CLASS;
+        const LEFT_ITERATOR = this.bindElementByClass(`${PAGINATE_SONGS_RESULT_CLASS}> .left`);
+        const RIGHT_ITERATOR = this.bindElementByClass(`${PAGINATE_SONGS_RESULT_CLASS}> .right`);
+        return { MUSIC, SOUNDS, songsList, resetInputsSettings, changeVolumeOfMusic, changeVolumeOfSound, CloseSettings, OpenedSettingsPage, OpenSettings, LEFT_ITERATOR, RIGHT_ITERATOR };
+    }
+    declareHTMLInfoELements() {
+        const OpenInfo = this.bindElementByClass(INFO);
+        const OpenedInfoPage = this.bindElementByClass(OPENED_INFO);
+        const closeInfo = this.bindElementByClass(CLOSE_INFO);
+        const ListOfBuffs = this.bindElementByClass(LIST_OF_BUFFS);
+        const LEFT_ITERATOR = this.bindElementByClass(`${PAGINATE_BUFFS_RESULT_CLASS}> .left`);
+        const RIGHT_ITERATOR = this.bindElementByClass(`${PAGINATE_BUFFS_RESULT_CLASS}> .right`);
+        return { OpenInfo, closeInfo, ListOfBuffs, OpenedInfoPage, RIGHT_ITERATOR, LEFT_ITERATOR };
     }
     switchBetweenRegisterAndLogin() {
         const changeValueOfMenuToLogin = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER);
@@ -101,6 +126,48 @@ class Menu extends Common {
         validator.DisplayBadPassword();
         this.fetcher.SendUserAuthData();
     }
+    async OpenInfo() {
+        const htmlInfoElements = this.declareHTMLInfoELements();
+        const ITEMS_PER_PAGE = 5;
+        htmlInfoElements.OpenInfo.addEventListener("click", () => {
+            const creatorOfViews = new ViewsCreator();
+            const createViewForBuffs = creatorOfViews.createViewForBuffs.bind(creatorOfViews);
+            this.changeVisbilityOfGivenElement(htmlInfoElements.OpenedInfoPage, true);
+            const PaginatorInstance = new Paginator(htmlInfoElements.ListOfBuffs, htmlInfoElements.RIGHT_ITERATOR, htmlInfoElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tabOfBuffs, createViewForBuffs, PAGINATE_BUFFS_RESULT_CLASS, this.EventListenerInstance);
+            PaginatorInstance.PaginateResults();
+            htmlInfoElements.closeInfo.addEventListener("click", () => {
+                this.changeVisbilityOfGivenElement(htmlInfoElements.OpenedInfoPage, false);
+            });
+        });
+    }
+    async openSettings() {
+        const htmlElements = this.declareHTMLSettingsELements();
+        const ITEMS_PER_PAGE = 5;
+        const creatorOfViews = new ViewsCreator();
+        const createViewForSongs = creatorOfViews.createViewForSongs.bind(creatorOfViews);
+        const createViewForSounds = creatorOfViews.createViewForSounds.bind(creatorOfViews);
+        htmlElements.OpenSettings.addEventListener("click", () => {
+            const SongsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, PAGINATE_SONGS_RESULT_CLASS, this.EventListenerInstance);
+            const SoundsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSounds, PAGINATE_SONGS_RESULT_CLASS, this.EventListenerInstance);
+            htmlElements.SOUNDS.addEventListener("click", () => {
+                SoundsPaginator.cleanupListeneres();
+                SoundsPaginator.PaginateResults();
+            });
+            htmlElements.MUSIC.addEventListener("click", () => {
+                SongsPaginator.cleanupListeneres();
+                SongsPaginator.PaginateResults();
+            });
+            this.changeVisbilityOfGivenElement(htmlElements.OpenedSettingsPage, true);
+            htmlElements.resetInputsSettings.addEventListener("click", () => {
+                media.resetValuesToDefault(htmlElements.changeVolumeOfMusic, htmlElements.changeVolumeOfSound);
+            });
+            media.changeVolumeOfBackgroundMusic(htmlElements.changeVolumeOfMusic);
+            media.changeVolumeOfSound(htmlElements.changeVolumeOfSound);
+        });
+        htmlElements.CloseSettings.addEventListener("click", () => {
+            this.changeVisbilityOfGivenElement(htmlElements.OpenedSettingsPage, false);
+        });
+    }
     async StartGame() {
         media.setSound();
         const isLogged = localStorage.getItem("game");
@@ -122,59 +189,6 @@ class Menu extends Common {
             this.StarsBackground = this.cachedInstance;
             this.changeVisbilityOfGivenElement(LevelSelect, false);
             this.changeVisbilityOfGivenElement(startGamePanel, true);
-        });
-    }
-    async OpenInfo() {
-        const OpenInfo = this.bindElementByClass(INFO);
-        const OpenedInfoPage = this.bindElementByClass(OPENED_INFO);
-        const closeInfo = this.bindElementByClass(CLOSE_INFO);
-        const ListOfBuffs = this.bindElementByClass(LIST_OF_BUFFS);
-        const ITEMS_PER_PAGE = 5;
-        OpenInfo.addEventListener("click", () => {
-            const creatorOfViews = new ViewsCreator();
-            const createViewForBuffs = creatorOfViews.createViewForBuffs.bind(creatorOfViews);
-            this.changeVisbilityOfGivenElement(OpenedInfoPage, true);
-            const PaginatorInstance = new Paginator(ListOfBuffs, ITEMS_PER_PAGE, tabOfBuffs, createViewForBuffs, PAGINATE_BUFFS_RESULT_CLASS);
-            PaginatorInstance.PaginateResults();
-            closeInfo.addEventListener("click", () => {
-                this.changeVisbilityOfGivenElement(OpenedInfoPage, false);
-            });
-        });
-    }
-    async openSettings() {
-        const OpenSettings = this.bindElementByClass(OPEN_SETTINGS);
-        const OpenedSettingsPage = this.bindElementByClass(OPENED_SETTINGS_PAGE);
-        const CloseSettings = this.bindElementByClass(CLOSE_SETTINGS);
-        const changeVolumeOfMusic = this.bindElementByClass(MUSIC_RANGE);
-        const changeVolumeOfSound = this.bindElementByClass(SOUND_RANGE);
-        const resetInputsSettings = this.bindElementByClass(RESET_INPUT_SETTINGS);
-        const songsList = this.bindElementByClass(LIST_OF_SONGS);
-        const SOUNDS = this.bindElementByClass(SOUND_VIEW_LAYER_SHOW);
-        const MUSIC = this.bindElementByClass(MUSIC_VIEW_LAYER_SHOW);
-        //TODO have those files on server to give user choice what to play in backgground
-        const ITEMS_PER_PAGE = 5;
-        const creatorOfViews = new ViewsCreator();
-        const createViewForSongs = creatorOfViews.createViewForSongs.bind(creatorOfViews);
-        OpenSettings.addEventListener("click", () => {
-            const SongsPaginator = new Paginator(songsList, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, PAGINATE_SONGS_RESULT_CLASS);
-            const SoundsPaginator = new Paginator(songsList, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSongs, PAGINATE_SONGS_RESULT_CLASS);
-            SOUNDS.addEventListener("click", () => {
-                SoundsPaginator.cleanupListeneres();
-                SoundsPaginator.PaginateResults(MediaEnum.Sounds);
-            });
-            MUSIC.addEventListener("click", () => {
-                SongsPaginator.cleanupListeneres();
-                SongsPaginator.PaginateResults(MediaEnum.Music);
-            });
-            this.changeVisbilityOfGivenElement(OpenedSettingsPage, true);
-            resetInputsSettings.addEventListener("click", () => {
-                media.resetValuesToDefault(changeVolumeOfMusic, changeVolumeOfSound);
-            });
-            media.changeVolumeOfBackgroundMusic(changeVolumeOfMusic);
-            media.changeVolumeOfSound(changeVolumeOfSound);
-        });
-        CloseSettings.addEventListener("click", () => {
-            this.changeVisbilityOfGivenElement(OpenedSettingsPage, false);
         });
     }
     start() {
