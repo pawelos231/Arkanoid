@@ -5,10 +5,8 @@ export interface GameOverInterface {
     ShowUserScreenOver: () => void
 }
 
-export interface PaginatorInterface<T, F extends Function> {
-    PaginateResults: <V = undefined>(
-        ...ToggleCategoryEnums: 
-        (V extends string ? [string] : [undefined?])) => void,
+export interface PaginatorInterface<T> {
+    PaginateResults: () => void
 }
 
 

@@ -51,7 +51,7 @@ class Menu extends Common {
     GenerateBackground() {
         if (this.StarsBackground) {
             this.StarsBackground.Init();
-            setInterval(() => {
+            const interval = setInterval(() => {
                 var _a;
                 (_a = this.StarsBackground) === null || _a === void 0 ? void 0 : _a.Tick.bind(this.StarsBackground)();
             }, 12);
@@ -150,11 +150,9 @@ class Menu extends Common {
             const SongsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, PAGINATE_SONGS_RESULT_CLASS, this.EventListenerInstance);
             const SoundsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSounds, PAGINATE_SONGS_RESULT_CLASS, this.EventListenerInstance);
             htmlElements.SOUNDS.addEventListener("click", () => {
-                SoundsPaginator.cleanupListeneres();
                 SoundsPaginator.PaginateResults();
             });
             htmlElements.MUSIC.addEventListener("click", () => {
-                SongsPaginator.cleanupListeneres();
                 SongsPaginator.PaginateResults();
             });
             this.changeVisbilityOfGivenElement(htmlElements.OpenedSettingsPage, true);

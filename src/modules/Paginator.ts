@@ -1,20 +1,20 @@
 import { Common } from "./Common";
 import { Logger } from "../interfaces/HelperEnums";
 import { PaginatorInterface } from "../interfaces/classesInterfaces";
-import { PaginatorPages } from "../interfaces/HelperEnums";
+import { VisulizerFunc } from "../interfaces/PaginationInterfaces";
 import { EventListener } from "../helpers/Events/EventListener";
 
 
-export class Paginator<T, F extends Function> extends Common implements PaginatorInterface<T, F> {
+export class Paginator<T> extends Common implements PaginatorInterface<T> {
 
-    private readonly createView: F
-    private ITEMS_PER_PAGE: number
+    private readonly createView: VisulizerFunc<T>
     private readonly mediaToLoad: T[]
-    private PaginationClass: string
     private readonly MainList: HTMLElement
+    private readonly EventListenerInstance: EventListener 
+    private ITEMS_PER_PAGE: number
+    private PaginationClass: string
     private currentPage: number
     private LIST_LEN: number
-    private EventListenerInstance: EventListener 
     private PAGES: number
     private RightIterator: HTMLElement
     private LeftIterator: HTMLElement
@@ -24,7 +24,7 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
         LeftIterator: HTMLElement, 
         ITEMS_PER_PAGE: number,  
         mediaToLoad: T[], 
-        createView: F,  
+        createView: VisulizerFunc<T>,  
         PaginationClass: string,
         EventListenerInstance: EventListener) {
 
@@ -43,7 +43,7 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
             
     }
 
-    private PickProperVisualizer(): F {
+    private PickProperVisualizer(): void {
 
     if (this.LIST_LEN - 
         (this.currentPage * this.ITEMS_PER_PAGE) < 
@@ -99,15 +99,16 @@ export class Paginator<T, F extends Function> extends Common implements Paginato
     }
 
 
-    public cleanupListeneres(): void {
+    private cleanupListeneres(): void {
 
         this.EventListenerInstance.removeListenersOnGivenNode(this.RightIterator, "click")
 
         this.EventListenerInstance.removeListenersOnGivenNode(this.LeftIterator, "click")
     }
 
-    public PaginateResults() {   
-
+    public PaginateResults(): void {
+        
+            this.cleanupListeneres()        
 
             const PAGE_NUMBER_CONTAINER 
             = this.bindElementByClass(`${this.PaginationClass}> .page`)

@@ -61,7 +61,7 @@ class Menu extends Common<true> {
     private GenerateBackground(){
         if(this.StarsBackground){
             this.StarsBackground.Init()
-            setInterval(()=> {
+            const interval = setInterval(()=> {
                 this.StarsBackground?.Tick.bind(this.StarsBackground)()
             }, 12)
         } else {
@@ -191,7 +191,7 @@ class Menu extends Common<true> {
 
            this.changeVisbilityOfGivenElement(htmlInfoElements.OpenedInfoPage, true)
 
-           const PaginatorInstance = new Paginator<Buffs, VisulizerFunc<Buffs>>(
+           const PaginatorInstance = new Paginator<Buffs>(
             htmlInfoElements.ListOfBuffs,
             htmlInfoElements.RIGHT_ITERATOR,
             htmlInfoElements.LEFT_ITERATOR, 
@@ -226,7 +226,7 @@ class Menu extends Common<true> {
 
         htmlElements.OpenSettings.addEventListener("click", () => {
             
-            const SongsPaginator = new Paginator<Songs, VisulizerFunc<Songs>>(
+            const SongsPaginator = new Paginator<Songs>(
                 htmlElements.songsList,
                 htmlElements.RIGHT_ITERATOR,
                 htmlElements.LEFT_ITERATOR, 
@@ -236,7 +236,7 @@ class Menu extends Common<true> {
                 PAGINATE_SONGS_RESULT_CLASS, 
                 this.EventListenerInstance)
 
-            const SoundsPaginator = new Paginator<Sounds, VisulizerFunc<Sounds>>(htmlElements.songsList,
+            const SoundsPaginator = new Paginator<Sounds>(htmlElements.songsList,
                 htmlElements.RIGHT_ITERATOR,
                 htmlElements.LEFT_ITERATOR,  
                 ITEMS_PER_PAGE,
@@ -248,13 +248,11 @@ class Menu extends Common<true> {
             
 
             htmlElements.SOUNDS.addEventListener("click", () => {
-                SoundsPaginator.cleanupListeneres()
                 SoundsPaginator.PaginateResults()
                
             })
 
             htmlElements.MUSIC.addEventListener("click", () => {
-                SongsPaginator.cleanupListeneres()
                 SongsPaginator.PaginateResults()
                
             })
