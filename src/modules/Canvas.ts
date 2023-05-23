@@ -198,6 +198,7 @@ export class Canvas<T> extends Common<true> {
         const topOf: number = 100 / BUFF_DROP_RATE
 
 
+        //declare some buff dropping condtion here
         if (1){
 
             const randomBuffsCount: number = 

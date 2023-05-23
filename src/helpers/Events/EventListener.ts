@@ -1,5 +1,7 @@
 import { Common } from "../../modules/Common";
 
+
+
 type EventHandler = (this: HTMLElement, event: Event) => void;
 
 export class EventListener extends Common {
@@ -20,6 +22,9 @@ export class EventListener extends Common {
     element.addEventListener(event, closureHandler);
   }
 
+  public removeListener(){
+    //implement removing single listener 
+  }
 
   public removeListenersOnGivenNode<T extends keyof HTMLElementEventMap>(element: HTMLElement,event: T) {
 
@@ -30,7 +35,6 @@ export class EventListener extends Common {
 
     if (handlers) {
       for (const handler of handlers) {
-        console.log("usuwam")
         element.removeEventListener(event, handler
         );
       }

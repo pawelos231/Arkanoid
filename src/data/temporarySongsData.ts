@@ -68,7 +68,7 @@ export const tempTabOfSongs: Songs[] = [{
 { 
     name: "krzysiu gej", 
     song: "", 
-    pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png", 
+    pathToImage: "http://localhost:3002/music/SongsImages/pawelos.png", 
     description: "nie ma opisu bo krzysiu to gej" 
 },
 ]

@@ -1,2 +1,2 @@
 "use strict";
-//na później
+//for later usage

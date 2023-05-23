@@ -1,1 +1,1 @@
-//na później
+//for later usage

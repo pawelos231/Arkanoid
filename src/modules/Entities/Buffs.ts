@@ -21,7 +21,7 @@ export class Buff implements BuffsInterface {
         }
         
 
-    WrapperIfBuffIsActive(applyBuff: () => void): void{
+    WrapperIfBuffIsActive<F extends Function>(applyBuff: F): void{
         if (!this.AppliedBuffs.find(item => item == this.BuffType)){
             this.AppliedBuffs.push(this.BuffType)
             applyBuff()
@@ -29,6 +29,7 @@ export class Buff implements BuffsInterface {
     }
     
     applyDestroyerBuff(): void{
+        console.log("enabled destroyer buff")
         this.tabOfBricks.forEach((item: Brick) => {
             item.brickPointsGet.timesToHit = 1
         })

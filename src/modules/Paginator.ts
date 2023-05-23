@@ -68,7 +68,6 @@ export class Paginator<T> extends Common implements PaginatorInterface<T> {
 
     private incrementRight(PAGES: number, PAGE: HTMLElement) {
         this.currentPage++
-        console.log(this.currentPage)
         if (this.currentPage > PAGES - 1) {
             this.currentPage--
             this.displayMessageAtTheTopOfTheScreen(
@@ -78,13 +77,11 @@ export class Paginator<T> extends Common implements PaginatorInterface<T> {
         }
         
         this.PickProperVisualizer()
-
         PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
     }
 
     private incrementLeft(PAGES: number, PAGE: HTMLElement){
         this.currentPage--
-        console.log(this.currentPage)
         if (this.currentPage < 0) {
             this.currentPage++
             this.displayMessageAtTheTopOfTheScreen(
@@ -94,7 +91,6 @@ export class Paginator<T> extends Common implements PaginatorInterface<T> {
         }
 
         this.PickProperVisualizer()
-
         PAGE.innerHTML = `${this.currentPage + 1} z ${PAGES}`
     }
 
