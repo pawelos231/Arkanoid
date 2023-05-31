@@ -48,4 +48,6 @@ export interface Particle {
     velocityY: number;
     size: number;
     color: string;
+    lifespan: number
+    createdAt: number
 }

@@ -9,7 +9,7 @@ import { Buff_Pos, Particle } from "../../interfaces/gameStateInterface";
 
 
 export class Buff implements BuffsInterface {
-    BuffType: BuffTypes
+    private BuffType: BuffTypes
     private tabOfBricks: Array<Brick>
     private cachedBrickArray: Array<Brick>
     private AppliedBuffs: number[]
@@ -20,6 +20,8 @@ export class Buff implements BuffsInterface {
     private ball_radius = 20
     private ctx: CanvasRenderingContext2D
     private particles: Particle[] = []
+    private particleCount: number = 5
+    private createdAt = Date.now()
 
     constructor(
         BuffType: BuffTypes, 
@@ -40,12 +42,12 @@ export class Buff implements BuffsInterface {
         }
         
 
-    WrapperIfBuffIsActive<F extends Function>(applyBuff: F): F | false{
+    public WrapperIfBuffIsActive<F extends Function>(applyBuff: F): F | false{
 
-        const timer = setTimeout(() => {
-            this.clearBuffs()
-        }, 100)
-        
+        setTimeout(() => {
+            this.clearBuffsEffects()
+        }, this.time)
+
         if (!this.AppliedBuffs.find(item => item == this.BuffType)){
             this.AppliedBuffs.push(this.BuffType)
             return applyBuff()
@@ -53,7 +55,7 @@ export class Buff implements BuffsInterface {
         return false
     }
     
-    applyDestroyerBuff(): void{
+    private applyDestroyerBuff(): void{
 
         console.log("enabled destroyer buff")
         Media.spanwCustomSound(DESTROYER_BUFF_SOUND)
@@ -64,23 +66,23 @@ export class Buff implements BuffsInterface {
 
     }
 
-    applyAddLivesBuff(): void{
+    private applyAddLivesBuff(): void{
         console.log("add live")
     }
 
-    applySpeedBuff(): void{
+    private applySpeedBuff(): void{
         console.log("apply speed")
     }
 
-    applyInvincibiltyBuff(): void{
+    private applyInvincibiltyBuff(): void{
         console.log("apply invincibility")
     }
 
-    applyPaddleSpeedBuff(): void{
+    private applyPaddleSpeedBuff(): void{
         console.log("apply paddle speed")
     }
 
-    applyBuffEffects(){
+    public applyBuffEffects(): void{
         switch(this.BuffType){
             case BuffTypes.PaddleSpeed:{
                 this.WrapperIfBuffIsActive(this.applyPaddleSpeedBuff.bind(this))
@@ -107,15 +109,14 @@ export class Buff implements BuffsInterface {
         }
     }
 
-    clearBuffs(): void{
-        console.log("cleanup")
-        this.ctx.clearRect(260, 260, 80, 80);
+
+    private clearBuffsEffects(): void{
+        console.log("wyczyszczono efekty buffa", this.BuffType)
         this.tabOfBricks = this.cachedBrickArray
-        console.log(this.tabOfBricks)
     }
 
-    drawParicles(){
-        const particleCount = 5;
+    private drawParicles(): void{
+        const particleCount = this.particleCount;
         for (let i = 0; i < particleCount; i++) {
             const particle: Particle = {
               x: this.buff_x,
@@ -124,12 +125,14 @@ export class Buff implements BuffsInterface {
               velocityY: Math.random() * 2 - 1,
               size: Math.random() * 3 + 1,
               color: `hsl(${Math.random() * 60 + 10}, 100%, 50%)`,
+              lifespan: Math.random() * 1000,
+              createdAt: Date.now(),
             };
             this.particles.push(particle);
           }
         
 
-        this.particles.forEach((particle) => {
+        this.particles.forEach((particle, index) => {
 
             particle.x += particle.velocityX;
             particle.y += particle.velocityY;
@@ -137,16 +140,20 @@ export class Buff implements BuffsInterface {
             this.ctx.beginPath();
             this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
             this.ctx.fillStyle = particle.color;
-            this.ctx.globalCompositeOperation = "lighter"; 
+            this.ctx.globalCompositeOperation = "source-over"; 
             this.ctx.fill();
             this.ctx.closePath();
         
-            this.ctx.globalCompositeOperation = "source-over";
+            this.ctx.globalCompositeOperation = "source-atop";
+            const elapsedTime = Date.now() - particle.createdAt;
+            if (elapsedTime > particle.lifespan) {
+                this.particles.splice(index, 1);
+            }
         });
 
     }
 
-    drawBuff(){
+    private drawBuffFunc(): void{
         this.buff_y += this.buffVelocity
 
         const Buff = findProperBuff(this.BuffType)
@@ -162,9 +169,19 @@ export class Buff implements BuffsInterface {
 
         this.drawParicles()
 
-        
-
-
         this.ctx.restore(); // Restore the canvas state
+
+    }
+
+    public drawBuff(): void{
+        this.drawBuffFunc()
+    }
+
+    get createdAtVal(){
+        return this.createdAt
+    }
+
+    get timeToLive(){
+        return this.time
     }
 }

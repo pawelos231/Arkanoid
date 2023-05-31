@@ -276,6 +276,13 @@ export class Canvas extends Common {
         this.drawBall();
         if (this.drawBuffFlag) {
             for (const [key, value] of this.Buffs) {
+                const createdAt = value.createdAtVal;
+                const elapsedTime = Date.now() - createdAt;
+                if (elapsedTime > value.timeToLive) {
+                    console.log("ye");
+                    this.Buffs.delete(key);
+                    continue;
+                }
                 this.drawBuff(key);
             }
         }

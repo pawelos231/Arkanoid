@@ -11,11 +11,7 @@ export interface PaginatorInterface<T> {
 
 
 export interface BuffsInterface {
-    WrapperIfBuffIsActive: (arg0: () => void) => void,
-    applyDestroyerBuff: () => void,
-    applyAddLivesBuff:() => void,
-    applySpeedBuff:()=> void,
-    applyInvincibiltyBuff: () => void,
-    applyPaddleSpeedBuff: () => void
+    WrapperIfBuffIsActive: <T extends Function>(arg0: T) => void,
     applyBuffEffects: () => void
+    drawBuff: () => void
 }
