@@ -98,8 +98,8 @@ export class Media {
         const sound = await loader.loadSound(this.cachedSoundId);
         sound.play();
     }
-    static async spanwCustomSound(soundToLoad) {
-        const sound = await loader.loadSound(soundToLoad);
+    static async spanwCustomSound(soundString) {
+        const sound = await loader.loadSound(soundString);
         sound.play();
         sound.loop = false;
     }

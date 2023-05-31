@@ -163,8 +163,8 @@ export class Media {
         sound.play()
     }
 
-    public static async spanwCustomSound(soundToLoad: string): Promise<void>{
-        const sound: HTMLAudioElement = await loader.loadSound(soundToLoad)
+    public static async spanwCustomSound(soundString: string): Promise<void>{
+        const sound: HTMLAudioElement = await loader.loadSound(soundString)
         sound.play()
         sound.loop = false
     } 

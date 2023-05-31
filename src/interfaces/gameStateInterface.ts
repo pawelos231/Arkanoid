@@ -35,3 +35,17 @@ export interface IFinishedGame {
     elapsedTime: number
     level: number
 }
+
+export interface Buff_Pos {
+    buff_x: number;
+    buff_y: number; 
+}
+
+export interface Particle {
+    x: number;
+    y: number;
+    velocityX: number;
+    velocityY: number;
+    size: number;
+    color: string;
+}

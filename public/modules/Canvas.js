@@ -20,6 +20,8 @@ export class Canvas extends Common {
         this.ballMoveRateY = -12;
         this.keyPressedLeft = false;
         this.keyPressedRight = false;
+        this.drawBuffFlag = false;
+        this.Buffs = new Map();
         this.canvas = null;
         this.ctx = null;
         this.bricksArray = [];
@@ -109,32 +111,46 @@ export class Canvas extends Common {
             brick_pos_x < ball_x + RADIUS + 12.5 &&
             brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5);
     }
-    generateBuff(BuffNumber) {
-        const BuffInstance = new Buff(BuffNumber, this.bricksArray, this.appliedBuffs);
-        BuffInstance.applyBuffEffects();
+    drawBuff(BuffId) {
+        var _a;
+        (_a = this.Buffs.get(BuffId)) === null || _a === void 0 ? void 0 : _a.drawBuff();
     }
-    DropIfBuff(BRICK) {
+    applyBuffEffects(BuffId) {
+        var _a;
+        (_a = this.Buffs.get(BuffId)) === null || _a === void 0 ? void 0 : _a.applyBuffEffects();
+    }
+    selectRandomBuff() {
+        const randomBuffsCount = (((Object.keys(BuffTypes).length) / 2));
+        const RANDOM_NUMBER = generateRandomNumber(randomBuffsCount);
+        const RANDOM_BUFF = Number(BuffTypes[BuffTypes[RANDOM_NUMBER]]);
+        return RANDOM_BUFF;
+    }
+    DropBuff(BRICK) {
         const BUFF_DROP_RATE = BRICK.brickPointsGet.buffDropRate * 100;
         const topOf = 100 / BUFF_DROP_RATE;
         //declare some buff dropping condtion here
         if (1) {
-            const randomBuffsCount = (((Object.keys(BuffTypes).length) / 2));
-            const RANDOM_NUMBER = generateRandomNumber(randomBuffsCount);
-            const RANDOM_BUFF = Number(BuffTypes[BuffTypes[RANDOM_NUMBER]]);
-            console.log(RANDOM_BUFF);
-            this.generateBuff(RANDOM_BUFF);
+            const buffDropPosition = {
+                buff_x: (BRICK.brickStateGet.brick_x * this.BRICK_WIDTH) + 110,
+                buff_y: BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT
+            };
+            const randomBuff = this.selectRandomBuff();
+            const BuffInstance = new Buff(randomBuff, this.bricksArray, this.appliedBuffs, 5000, this.ctx, buffDropPosition);
+            this.Buffs.set(randomBuff, BuffInstance);
+            this.applyBuffEffects(randomBuff);
+            this.drawBuffFlag = true;
         }
     }
     CheckCollisionWithBricks(ball_x, ball_y, RADIUS) {
         for (let i = 0; i < this.bricksArray.length; i++) {
             const BRICK = this.bricksArray[i];
-            if (BRICK.brickStateGet.status == 0)
+            if (BRICK.brickStateGet.status === 0)
                 continue;
             const IS_COLLISION = this.isCollision(i, ball_x, ball_y, RADIUS);
             if (IS_COLLISION) {
                 const MoveRateX = this.getGameState.BallMoveRateGetX;
                 const MoveRateY = this.getGameState.BallMoveRateGetY;
-                this.DropIfBuff(BRICK);
+                this.DropBuff(BRICK);
                 this.upadateScore(i);
                 this.isCollisonFromSide(i, ball_x, ball_y, RADIUS)
                     ? this.gameState.BallMoveRateSetX = -MoveRateX : null;
@@ -258,6 +274,11 @@ export class Canvas extends Common {
         this.drawPaddle();
         this.drawBricks();
         this.drawBall();
+        if (this.drawBuffFlag) {
+            for (const [key, value] of this.Buffs) {
+                this.drawBuff(key);
+            }
+        }
         return this.CheckWin();
     }
     clearCanvas() {

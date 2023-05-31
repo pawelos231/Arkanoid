@@ -31,7 +31,7 @@ export const tabOfBrickData = () => {
             buffDropRate: 0.02
         },
         {
-            color: "##CAD982",
+            color: "#CAD982",
             timesToHit: 1,
             points: 10,
             buffDropRate: 0.05

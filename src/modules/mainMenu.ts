@@ -11,7 +11,7 @@ import { ViewsCreator } from '../helpers/viewCreator.js'
 import { VisulizerFunc } from '../interfaces/PaginationInterfaces.js'
 import { StarsBackroundView } from '../scenes/MainMenuThree.js'
 import { tabOfBuffs } from '../data/BuffsData.js'
-import { Buffs } from '../data/BuffsData.js'
+import { Buff } from '../data/BuffsData.js'
 import { EventListener } from '../helpers/Events/EventListener'
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować"
@@ -186,12 +186,12 @@ class Menu extends Common<true> {
 
            const creatorOfViews: ViewsCreator = new ViewsCreator()
 
-           const createViewForBuffs: VisulizerFunc<Buffs> = 
+           const createViewForBuffs: VisulizerFunc<Buff> = 
            creatorOfViews.createViewForBuffs.bind(creatorOfViews)
 
            this.changeVisbilityOfGivenElement(htmlInfoElements.OpenedInfoPage, true)
 
-           const PaginatorInstance = new Paginator<Buffs>(
+           const PaginatorInstance = new Paginator<Buff>(
             htmlInfoElements.ListOfBuffs,
             htmlInfoElements.RIGHT_ITERATOR,
             htmlInfoElements.LEFT_ITERATOR, 

@@ -12,6 +12,7 @@ import { SpecialBrick } from "./SpecialBrickView";
 import { Buff } from "./Entities/Buffs";
 import { BuffTypes } from "../interfaces/HelperEnums";
 import { generateRandomNumber } from "../helpers/randomNumber";
+import { Buff_Pos } from "../interfaces/gameStateInterface";
 
 
 const GAME_CANVAS = "game_canvas"
@@ -35,6 +36,8 @@ export class Canvas<T> extends Common<true> {
     private bricksArray: Array<Brick>
     private image: T
     private appliedBuffs: number[]
+    private drawBuffFlag: boolean = false
+    private Buffs = new Map<BuffTypes, Buff>()
 
     constructor(level: number, pointsToWin: number, lives: number, image: T, rowsCount: number, columnsCount: number) {
         super(GAME_CANVAS)
@@ -185,14 +188,29 @@ export class Canvas<T> extends Common<true> {
     }
 
 
-    private generateBuff(BuffNumber: number): void {
-        
-        const BuffInstance: Buff = new Buff(BuffNumber, this.bricksArray, this.appliedBuffs)
-        BuffInstance.applyBuffEffects()
+    private drawBuff(BuffId: BuffTypes): void {
+        this.Buffs.get(BuffId)?.drawBuff()
+    }
+
+    private applyBuffEffects(BuffId: BuffTypes) {
+        this.Buffs.get(BuffId)?.applyBuffEffects()
+    }
+ 
+    
+    private selectRandomBuff(){
+        const randomBuffsCount: number = 
+        (((Object.keys(BuffTypes).length) / 2))
+      
+
+        const RANDOM_NUMBER: number = generateRandomNumber(randomBuffsCount)
+        const RANDOM_BUFF: number = 
+        Number(BuffTypes[BuffTypes[RANDOM_NUMBER] as any])
+
+        return RANDOM_BUFF
     }
 
 
-    private DropIfBuff(BRICK: Brick){
+    private DropBuff(BRICK: Brick){
         
         const BUFF_DROP_RATE = BRICK.brickPointsGet.buffDropRate * 100
         const topOf: number = 100 / BUFF_DROP_RATE
@@ -201,18 +219,21 @@ export class Canvas<T> extends Common<true> {
         //declare some buff dropping condtion here
         if (1){
 
-            const randomBuffsCount: number = 
-            (((Object.keys(BuffTypes).length) / 2))
-          
 
-            const RANDOM_NUMBER: number = generateRandomNumber(randomBuffsCount)
+            const buffDropPosition: Buff_Pos = {
+            buff_x: (BRICK.brickStateGet.brick_x * this.BRICK_WIDTH) + 110,
+            buff_y: BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT
+        }
 
-            const RANDOM_BUFF: number = 
-            Number(BuffTypes[BuffTypes[RANDOM_NUMBER] as any])
-            console.log(RANDOM_BUFF)
 
-            this.generateBuff(RANDOM_BUFF)
+            const randomBuff = this.selectRandomBuff()
 
+            const BuffInstance: Buff =
+            new Buff(randomBuff, this.bricksArray, this.appliedBuffs, 5000, this.ctx, buffDropPosition)
+
+            this.Buffs.set(randomBuff, BuffInstance)
+            this.applyBuffEffects(randomBuff)
+            this.drawBuffFlag = true
         }
     }
 
@@ -226,7 +247,7 @@ export class Canvas<T> extends Common<true> {
            
             const BRICK: Brick = this.bricksArray[i]
             
-            if (BRICK.brickStateGet.status == 0) continue
+            if (BRICK.brickStateGet.status === 0) continue
 
             const IS_COLLISION: boolean = this.isCollision(i, ball_x, ball_y, RADIUS)
 
@@ -235,7 +256,7 @@ export class Canvas<T> extends Common<true> {
                 const MoveRateX: number = this.getGameState.BallMoveRateGetX
                 const MoveRateY: number = this.getGameState.BallMoveRateGetY
 
-                this.DropIfBuff(BRICK)
+                this.DropBuff(BRICK)
     
                 this.upadateScore(i)
               
@@ -294,7 +315,6 @@ export class Canvas<T> extends Common<true> {
 
 
     private CheckWin(): GameOverStatus {
-
         if (this.gameState.lives == 0) {
             return { 
                 end: false, 
@@ -424,7 +444,7 @@ export class Canvas<T> extends Common<true> {
 
     }
 
-
+    
     private drawBricks() {
         for (let i = 0; i < this.bricksArray.length; i++) {
             this.bricksArray[i].drawBrick(this.image)
@@ -436,6 +456,11 @@ export class Canvas<T> extends Common<true> {
         this.drawPaddle()
         this.drawBricks()
         this.drawBall()
+        if(this.drawBuffFlag) {
+            for(const [key, value] of this.Buffs) {
+                this.drawBuff(key)
+            }
+        }
         return this.CheckWin()
     }
 
