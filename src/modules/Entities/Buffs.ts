@@ -45,20 +45,20 @@ export class Buff implements BuffsInterface {
     public WrapperIfBuffIsActive<F extends Function>(applyBuff: F): F | false{
 
         setTimeout(() => {
-            this.clearBuffsEffects()
+            //this.clearBuffsEffects()
             this.AppliedBuffs = []
         }, this.time - 4500)
-
+        console.log(this.AppliedBuffs)
         if (!this.AppliedBuffs.find(item => item == this.BuffType)){
             this.AppliedBuffs.push(this.BuffType)
             return applyBuff()
+        } else {
         }
         return false
     }
     
     private applyDestroyerBuff(): void{
 
-        console.log("enabled destroyer buff")
         Media.spanwCustomSound(DESTROYER_BUFF_SOUND)
         
         this.tabOfBricks.forEach((item: Brick) => {
@@ -189,5 +189,8 @@ export class Buff implements BuffsInterface {
 
     get timeToLive(){
         return this.time
+    }
+    get buff_y_Pos(){
+        return this.buff_y
     }
 }

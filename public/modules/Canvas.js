@@ -112,12 +112,20 @@ export class Canvas extends Common {
             brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5);
     }
     drawBuff(BuffId) {
-        var _a;
-        (_a = this.Buffs.get(BuffId)) === null || _a === void 0 ? void 0 : _a.drawBuff();
+        const BuffArray = this.Buffs.get(BuffId);
+        if (!BuffArray) {
+            console.log("COŚ JEST NIE TAK", this.Buffs);
+            return;
+        }
+        for (const value of BuffArray) {
+            value.drawBuff();
+        }
     }
     applyBuffEffects(BuffId) {
-        var _a;
-        (_a = this.Buffs.get(BuffId)) === null || _a === void 0 ? void 0 : _a.applyBuffEffects();
+        const BuffArray = this.Buffs.get(BuffId);
+        for (const value of BuffArray) {
+            value.applyBuffEffects();
+        }
     }
     selectRandomBuff() {
         const randomBuffsCount = (((Object.keys(BuffTypes).length) / 2));
@@ -135,8 +143,15 @@ export class Canvas extends Common {
                 buff_y: BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT
             };
             const randomBuff = this.selectRandomBuff();
-            const BuffInstance = new Buff(randomBuff, this.bricksArray, this.appliedBuffs, 5000, this.ctx, buffDropPosition);
-            this.Buffs.set(randomBuff, BuffInstance);
+            const BuffInstance = new Buff(randomBuff, JSON.parse(JSON.stringify(this.bricksArray)), this.appliedBuffs, 5000, this.ctx, buffDropPosition);
+            const buffsArray = this.Buffs.get(randomBuff);
+            if (!buffsArray) {
+                this.Buffs.set(randomBuff, [BuffInstance]);
+            }
+            else {
+                this.Buffs.set(randomBuff, [...buffsArray, BuffInstance]);
+            }
+            console.log(this.Buffs);
             this.applyBuffEffects(randomBuff);
             this.drawBuffFlag = true;
         }
@@ -276,14 +291,16 @@ export class Canvas extends Common {
         this.drawBall();
         if (this.drawBuffFlag) {
             for (const [key, value] of this.Buffs) {
-                const createdAt = value.createdAtVal;
-                const elapsedTime = Date.now() - createdAt;
-                if (elapsedTime > value.timeToLive) {
-                    console.log("ye");
-                    this.Buffs.delete(key);
-                    continue;
+                for (const buff of value) {
+                    const createdAt = buff.createdAtVal;
+                    const elapsedTime = Date.now() - createdAt;
+                    this.drawBuff(key);
+                    if (elapsedTime > buff.timeToLive || buff.buff_y_Pos > window.innerHeight) {
+                        console.log("ye");
+                        this.Buffs.delete(key);
+                        continue;
+                    }
                 }
-                this.drawBuff(key);
             }
         }
         return this.CheckWin();

@@ -37,7 +37,7 @@ export class Canvas<T> extends Common<true> {
     private image: T
     private appliedBuffs: number[]
     private drawBuffFlag: boolean = false
-    private Buffs = new Map<BuffTypes, Buff>()
+    private Buffs = new Map<BuffTypes, Buff[]>()
 
     constructor(level: number, pointsToWin: number, lives: number, image: T, rowsCount: number, columnsCount: number) {
         super(GAME_CANVAS)
@@ -189,11 +189,23 @@ export class Canvas<T> extends Common<true> {
 
 
     private drawBuff(BuffId: BuffTypes): void {
-        this.Buffs.get(BuffId)?.drawBuff()
+        const BuffArray = this.Buffs.get(BuffId)! 
+        if(!BuffArray){
+            console.log("COŚ JEST NIE TAK", this.Buffs)
+            return
+        }
+        for(const value of BuffArray){
+            value.drawBuff()
+        }
     }
 
     private applyBuffEffects(BuffId: BuffTypes) {
-        this.Buffs.get(BuffId)?.applyBuffEffects()
+
+        const BuffArray = this.Buffs.get(BuffId)!
+
+        for(const value of BuffArray){
+            value.applyBuffEffects()
+        }
     }
  
     
@@ -229,9 +241,19 @@ export class Canvas<T> extends Common<true> {
             const randomBuff = this.selectRandomBuff()
 
             const BuffInstance: Buff =
-            new Buff(randomBuff, this.bricksArray, this.appliedBuffs, 5000, this.ctx, buffDropPosition)
+            new Buff(randomBuff, JSON.parse(JSON.stringify(this.bricksArray)), this.appliedBuffs, 5000, this.ctx, buffDropPosition)
 
-            this.Buffs.set(randomBuff, BuffInstance)
+
+            const buffsArray  = this.Buffs.get(randomBuff)
+
+            if(!buffsArray){
+                this.Buffs.set(randomBuff, [BuffInstance])
+            } else {
+                this.Buffs.set(randomBuff, [...buffsArray, BuffInstance])
+            }
+            
+            console.log(this.Buffs)
+
             this.applyBuffEffects(randomBuff)
             this.drawBuffFlag = true
         }
@@ -434,6 +456,7 @@ export class Canvas<T> extends Common<true> {
         for (let i = 0; i < this.rowsCount; i++) {
             for (let j = 0; j < this.columnsCount; j++) {
                 count++
+                
                 if (SpecialBrickIndex === count){
                     this.addBricksToArray(j, i, true, BrickPoints[i])
                 } else {
@@ -458,14 +481,19 @@ export class Canvas<T> extends Common<true> {
         this.drawBall()
         if(this.drawBuffFlag) {
             for(const [key, value] of this.Buffs) {
-                const createdAt = value.createdAtVal
-                const elapsedTime = Date.now() - createdAt
-                if(elapsedTime > value.timeToLive) {
-                    console.log("ye")
-                    this.Buffs.delete(key)
-                    continue
-                }
-                this.drawBuff(key)
+                for(const buff of value){
+                    const createdAt = buff.createdAtVal
+                    const elapsedTime = Date.now() - createdAt
+
+
+                    this.drawBuff(key)
+
+                    if(elapsedTime > buff.timeToLive || buff.buff_y_Pos > window.innerHeight) {
+                        console.log("ye")
+                        this.Buffs.delete(key)
+                        continue
+                    }
+                    }
             }
         }
         return this.CheckWin()
