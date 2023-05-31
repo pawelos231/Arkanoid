@@ -46,7 +46,8 @@ export class Buff implements BuffsInterface {
 
         setTimeout(() => {
             this.clearBuffsEffects()
-        }, this.time)
+            this.AppliedBuffs = []
+        }, this.time - 4500)
 
         if (!this.AppliedBuffs.find(item => item == this.BuffType)){
             this.AppliedBuffs.push(this.BuffType)
@@ -111,8 +112,13 @@ export class Buff implements BuffsInterface {
 
 
     private clearBuffsEffects(): void{
-        console.log("wyczyszczono efekty buffa", this.BuffType)
-        this.tabOfBricks = this.cachedBrickArray
+        if(this.BuffType == BuffTypes.DestroyerBuff){
+            console.log("wyczyszczono efekty buffa", this.BuffType)
+            console.log(this.tabOfBricks)
+            this.tabOfBricks = this.cachedBrickArray
+            console.log(this.tabOfBricks)
+            console.log("cached", this.cachedBrickArray)
+        }
     }
 
     private drawParicles(): void{
