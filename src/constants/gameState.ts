@@ -16,4 +16,8 @@ export let BRICK_WIDTH: number = window.innerWidth / 8
 
 export const REFRESH_RATE_MS = 17
 
-export const DESTROYER_BUFF_SOUND = "http://localhost:1234/gowno.mp3"
+export const DESTROYER_BUFF_SOUND = "http://localhost:1234/destroyer.mp3"
+export const ADD_LIVE_BUFF_SOUND = "http://localhost:1234/addLive.mp3"
+export const PADDLE_SPEED_BUFF_SOUND = "http://localhost:1234/paddleSpeed.mp3"
+export const SPEED_BUFF_SOUND = "http://localhost:1234/speedBuff.mp3"
+export const INVINCIBILITY_BUFF_SOUND = "http://localhost:1234/Invincibility.mp3"

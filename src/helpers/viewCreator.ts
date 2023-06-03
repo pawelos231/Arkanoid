@@ -6,7 +6,7 @@ import { media } from "../modules/Media"
 import { Common } from "../modules/Common"
 import { tempTabOfSongs } from "../data/temporarySongsData"
 import { StatusOfSong } from "../interfaces/HelperEnums"
-import { Buffs } from "../data/BuffsData"
+import { Buff } from "../data/BuffsData"
 
 export class ViewsCreator extends Common {
     constructor(){
@@ -132,7 +132,7 @@ export class ViewsCreator extends Common {
         BuffsList: HTMLElement, 
         skipValue: number, 
         itemsperPage: number, 
-        tempTabOfMusic: Buffs[]): void{
+        buffs: Buff[]): void{
 
         BuffsList.innerHTML = ""
     
@@ -143,8 +143,8 @@ export class ViewsCreator extends Common {
             const p: HTMLParagraphElement = document.createElement("p")
 
 
-            p.innerHTML = tempTabOfMusic[i].description
-            img.src = tempTabOfMusic[i].pathToImage
+            p.innerHTML = buffs[i].description
+            img.src = buffs[i].pathToImage
             
             li.appendChild(img)
             li.appendChild(p)

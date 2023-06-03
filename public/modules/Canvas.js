@@ -7,7 +7,7 @@ import { Directions } from "../interfaces/HelperEnums";
 import { GameState } from "./gameState";
 import { media } from "./Media";
 import { SpecialBrick } from "./SpecialBrickView";
-import { Buff } from "./Entities/Buffs";
+import { Buff } from "./Entities/Buff";
 import { BuffTypes } from "../interfaces/HelperEnums";
 import { generateRandomNumber } from "../helpers/randomNumber";
 const GAME_CANVAS = "game_canvas";
@@ -137,7 +137,7 @@ export class Canvas extends Common {
         const BUFF_DROP_RATE = BRICK.brickPointsGet.buffDropRate * 100;
         const topOf = 100 / BUFF_DROP_RATE;
         //declare some buff dropping condtion here
-        if (1) {
+        if (Math.floor(Math.random() * 10) == 2) {
             const buffDropPosition = {
                 buff_x: (BRICK.brickStateGet.brick_x * this.BRICK_WIDTH) + 110,
                 buff_y: BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT
@@ -292,11 +292,9 @@ export class Canvas extends Common {
         if (this.drawBuffFlag) {
             for (const [key, value] of this.Buffs) {
                 for (const buff of value) {
-                    const createdAt = buff.createdAtVal;
-                    const elapsedTime = Date.now() - createdAt;
                     this.drawBuff(key);
-                    if (elapsedTime > buff.timeToLive || buff.buff_y_Pos > window.innerHeight) {
-                        console.log("ye");
+                    if (buff.buff_y_Pos - 100 > window.innerHeight) {
+                        console.log("usunięto buff");
                         this.Buffs.delete(key);
                         continue;
                     }

@@ -9,7 +9,7 @@ import { GameState } from "./gameState";
 import { media } from "./Media";
 import { BrickPoints } from "../interfaces/gameStateInterface";
 import { SpecialBrick } from "./SpecialBrickView";
-import { Buff } from "./Entities/Buffs";
+import { Buff } from "./Entities/Buff";
 import { BuffTypes } from "../interfaces/HelperEnums";
 import { generateRandomNumber } from "../helpers/randomNumber";
 import { Buff_Pos } from "../interfaces/gameStateInterface";
@@ -190,13 +190,16 @@ export class Canvas<T> extends Common<true> {
 
     private drawBuff(BuffId: BuffTypes): void {
         const BuffArray = this.Buffs.get(BuffId)! 
+
         if(!BuffArray){
             console.log("COŚ JEST NIE TAK", this.Buffs)
             return
         }
+
         for(const value of BuffArray){
             value.drawBuff()
         }
+
     }
 
     private applyBuffEffects(BuffId: BuffTypes) {
@@ -229,7 +232,7 @@ export class Canvas<T> extends Common<true> {
 
 
         //declare some buff dropping condtion here
-        if (1){
+        if (Math.floor(Math.random() * 10) == 2){
 
 
             const buffDropPosition: Buff_Pos = {
@@ -479,23 +482,22 @@ export class Canvas<T> extends Common<true> {
         this.drawPaddle()
         this.drawBricks()
         this.drawBall()
+
         if(this.drawBuffFlag) {
             for(const [key, value] of this.Buffs) {
                 for(const buff of value){
-                    const createdAt = buff.createdAtVal
-                    const elapsedTime = Date.now() - createdAt
-
 
                     this.drawBuff(key)
 
-                    if(elapsedTime > buff.timeToLive || buff.buff_y_Pos > window.innerHeight) {
-                        console.log("ye")
+                    if(buff.buff_y_Pos - 100 > window.innerHeight) {
+                        console.log("usunięto buff")
                         this.Buffs.delete(key)
                         continue
                     }
-                    }
+                }
             }
         }
+
         return this.CheckWin()
     }
 

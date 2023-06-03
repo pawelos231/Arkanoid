@@ -2,13 +2,14 @@ import { BuffTypes } from "../../interfaces/HelperEnums";
 import { Brick } from "./Brick";
 import { BuffsInterface } from "../../interfaces/classesInterfaces";
 import { Media } from "../Media";
-import { DESTROYER_BUFF_SOUND } from "../../constants/gameState";
+import { DESTROYER_BUFF_SOUND, INVINCIBILITY_BUFF_SOUND, SPEED_BUFF_SOUND, PADDLE_SPEED_BUFF_SOUND, ADD_LIVE_BUFF_SOUND  } from "../../constants/gameState";
 import { findProperBuff } from "../../data/BuffsData";
 import { Buff_Pos, Particle } from "../../interfaces/gameStateInterface";
 
 
 
 export class Buff implements BuffsInterface {
+
     private BuffType: BuffTypes
     private tabOfBricks: Array<Brick>
     private cachedBrickArray: Array<Brick>
@@ -45,15 +46,16 @@ export class Buff implements BuffsInterface {
     public WrapperIfBuffIsActive<F extends Function>(applyBuff: F): F | false{
 
         setTimeout(() => {
-            //this.clearBuffsEffects()
             this.AppliedBuffs = []
         }, this.time - 4500)
+
         console.log(this.AppliedBuffs)
+        
         if (!this.AppliedBuffs.find(item => item == this.BuffType)){
             this.AppliedBuffs.push(this.BuffType)
             return applyBuff()
-        } else {
         }
+
         return false
     }
     
@@ -68,19 +70,23 @@ export class Buff implements BuffsInterface {
     }
 
     private applyAddLivesBuff(): void{
-        console.log("add live")
+        Media.spanwCustomSound(ADD_LIVE_BUFF_SOUND)
+        console.log("apply ADD LIVE")
     }
 
     private applySpeedBuff(): void{
-        console.log("apply speed")
+        Media.spanwCustomSound(SPEED_BUFF_SOUND)
+        console.log("apply SPEED")
     }
 
     private applyInvincibiltyBuff(): void{
-        console.log("apply invincibility")
+        Media.spanwCustomSound(INVINCIBILITY_BUFF_SOUND)
+        console.log("apply INVINCIBILITY")
     }
 
     private applyPaddleSpeedBuff(): void{
-        console.log("apply paddle speed")
+        Media.spanwCustomSound(PADDLE_SPEED_BUFF_SOUND)
+        console.log("apply PADDLE SPEED")
     }
 
     public applyBuffEffects(): void{
@@ -115,7 +121,9 @@ export class Buff implements BuffsInterface {
         if(this.BuffType == BuffTypes.DestroyerBuff){
             console.log("wyczyszczono efekty buffa", this.BuffType)
             console.log(this.tabOfBricks)
+
             this.tabOfBricks = this.cachedBrickArray
+
             console.log(this.tabOfBricks)
             console.log("cached", this.cachedBrickArray)
         }
@@ -124,6 +132,7 @@ export class Buff implements BuffsInterface {
     private drawParicles(): void{
         const particleCount = this.particleCount;
         for (let i = 0; i < particleCount; i++) {
+
             const particle: Particle = {
               x: this.buff_x,
               y: this.buff_y,
@@ -136,6 +145,7 @@ export class Buff implements BuffsInterface {
             };
             this.particles.push(particle);
           }
+
         
 
         this.particles.forEach((particle, index) => {
