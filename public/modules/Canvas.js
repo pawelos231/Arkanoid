@@ -10,6 +10,7 @@ import { SpecialBrick } from "./SpecialBrickView";
 import { Buff } from "./Entities/Buff";
 import { BuffTypes } from "../interfaces/HelperEnums";
 import { generateRandomNumber } from "../helpers/randomNumber";
+import { SPECIAL_BRICK_1 } from "../constants/gameState";
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor(level, pointsToWin, lives, image, rowsCount, columnsCount) {
@@ -112,20 +113,12 @@ export class Canvas extends Common {
             brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5);
     }
     drawBuff(BuffId) {
-        const BuffArray = this.Buffs.get(BuffId);
-        if (!BuffArray) {
-            console.log("COŚ JEST NIE TAK", this.Buffs);
-            return;
-        }
-        for (const value of BuffArray) {
-            value.drawBuff();
-        }
+        const buff = this.Buffs.get(BuffId);
+        buff.drawBuff();
     }
     applyBuffEffects(BuffId) {
-        const BuffArray = this.Buffs.get(BuffId);
-        for (const value of BuffArray) {
-            value.applyBuffEffects();
-        }
+        const buff = this.Buffs.get(BuffId);
+        buff.applyBuffEffects();
     }
     selectRandomBuff() {
         const randomBuffsCount = (((Object.keys(BuffTypes).length) / 2));
@@ -134,9 +127,8 @@ export class Canvas extends Common {
         return RANDOM_BUFF;
     }
     DropBuff(BRICK) {
-        const BUFF_DROP_RATE = BRICK.brickPointsGet.buffDropRate * 100;
-        const topOf = 100 / BUFF_DROP_RATE;
         //declare some buff dropping condtion here
+        //1 IN 10 CHANCE
         if (Math.floor(Math.random() * 10) == 2) {
             const buffDropPosition = {
                 buff_x: (BRICK.brickStateGet.brick_x * this.BRICK_WIDTH) + 110,
@@ -144,15 +136,9 @@ export class Canvas extends Common {
             };
             const randomBuff = this.selectRandomBuff();
             const BuffInstance = new Buff(randomBuff, JSON.parse(JSON.stringify(this.bricksArray)), this.appliedBuffs, 5000, this.ctx, buffDropPosition);
-            const buffsArray = this.Buffs.get(randomBuff);
-            if (!buffsArray) {
-                this.Buffs.set(randomBuff, [BuffInstance]);
-            }
-            else {
-                this.Buffs.set(randomBuff, [...buffsArray, BuffInstance]);
-            }
-            console.log(this.Buffs);
-            this.applyBuffEffects(randomBuff);
+            const key = `${randomBuff};${BuffInstance.createdAtVal}`;
+            this.Buffs.set(key, BuffInstance);
+            this.applyBuffEffects(key);
             this.drawBuffFlag = true;
         }
     }
@@ -172,7 +158,7 @@ export class Canvas extends Common {
                 const IsSpecialBrick = this.bricksArray[i].brickStateGet.specialBrick;
                 const status = this.bricksArray[i].getStatus;
                 if (IsSpecialBrick && status == 1) {
-                    const specialBrick = new SpecialBrick(this.image, "http://localhost:1234/cotomabyc.mp3");
+                    const specialBrick = new SpecialBrick(this.image, SPECIAL_BRICK_1);
                     specialBrick.displayViewOfSpecialBrick();
                 }
                 this.gameState.BallMoveRateSetY = -MoveRateY;
@@ -280,6 +266,19 @@ export class Canvas extends Common {
             }
         }
     }
+    drawBuffOuter() {
+        if (this.Buffs.size === 0)
+            return;
+        if (this.drawBuffFlag) {
+            for (const [key, buff] of this.Buffs) {
+                this.drawBuff(key);
+                if (buff.buff_y_Pos - 100 > window.innerHeight) {
+                    this.Buffs.delete(key);
+                    continue;
+                }
+            }
+        }
+    }
     drawBricks() {
         for (let i = 0; i < this.bricksArray.length; i++) {
             this.bricksArray[i].drawBrick(this.image);
@@ -289,18 +288,7 @@ export class Canvas extends Common {
         this.drawPaddle();
         this.drawBricks();
         this.drawBall();
-        if (this.drawBuffFlag) {
-            for (const [key, value] of this.Buffs) {
-                for (const buff of value) {
-                    this.drawBuff(key);
-                    if (buff.buff_y_Pos - 100 > window.innerHeight) {
-                        console.log("usunięto buff");
-                        this.Buffs.delete(key);
-                        continue;
-                    }
-                }
-            }
-        }
+        this.drawBuffOuter();
         return this.CheckWin();
     }
     clearCanvas() {

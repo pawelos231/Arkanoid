@@ -27,7 +27,7 @@ export class Buff implements BuffsInterface {
     constructor(
         BuffType: BuffTypes, 
         tabOfBricks: Array<Brick>, 
-        AppliedBuffs: number[],
+        AppliedBuffs: number[] = [],
         time: number,
         ctx: CanvasRenderingContext2D,
         {buff_x, buff_y}: Buff_Pos)
@@ -49,7 +49,7 @@ export class Buff implements BuffsInterface {
             this.AppliedBuffs = []
         }, this.time - 4500)
 
-        console.log(this.AppliedBuffs)
+        //console.log(this.AppliedBuffs)
         
         if (!this.AppliedBuffs.find(item => item == this.BuffType)){
             this.AppliedBuffs.push(this.BuffType)
@@ -60,56 +60,62 @@ export class Buff implements BuffsInterface {
     }
     
     private applyDestroyerBuff(): void{
-
-        Media.spanwCustomSound(DESTROYER_BUFF_SOUND)
-        
-        this.tabOfBricks.forEach((item: Brick) => {
-            item.brickPointsGet.timesToHit = 1
-        })
-
+        console.log("apply DESTROYER")
     }
 
     private applyAddLivesBuff(): void{
-        Media.spanwCustomSound(ADD_LIVE_BUFF_SOUND)
         console.log("apply ADD LIVE")
     }
 
-    private applySpeedBuff(): void{
-        Media.spanwCustomSound(SPEED_BUFF_SOUND)
+    private async applySpeedBuff(){
         console.log("apply SPEED")
     }
 
     private applyInvincibiltyBuff(): void{
-        Media.spanwCustomSound(INVINCIBILITY_BUFF_SOUND)
         console.log("apply INVINCIBILITY")
     }
 
     private applyPaddleSpeedBuff(): void{
-        Media.spanwCustomSound(PADDLE_SPEED_BUFF_SOUND)
         console.log("apply PADDLE SPEED")
     }
 
     public applyBuffEffects(): void{
+        console.log(this.BuffType)
         switch(this.BuffType){
             case BuffTypes.PaddleSpeed:{
+
+                Promise.resolve(Media.spanwCustomSound(PADDLE_SPEED_BUFF_SOUND))
                 this.WrapperIfBuffIsActive(this.applyPaddleSpeedBuff.bind(this))
                 break;
+
             }
             case BuffTypes.AddLive:{
+
+                Promise.resolve(Media.spanwCustomSound(ADD_LIVE_BUFF_SOUND))
                 this.WrapperIfBuffIsActive(this.applyAddLivesBuff.bind(this))
                 break;
+
             }
             case BuffTypes.DestroyerBuff:{
+
+                Promise.resolve(Media.spanwCustomSound(DESTROYER_BUFF_SOUND))
                 this.WrapperIfBuffIsActive(this.applyDestroyerBuff.bind(this))
                 break;
+
             }
             case BuffTypes.SpeedBuff:{
+
+                Promise.resolve(Media.spanwCustomSound(SPEED_BUFF_SOUND))
                 this.WrapperIfBuffIsActive(this.applySpeedBuff.bind(this))
                 break;
+
             }
             case BuffTypes.InvincibilityBuff:{
+
+                Promise.resolve(Media.spanwCustomSound(INVINCIBILITY_BUFF_SOUND))
                 this.WrapperIfBuffIsActive(this.applyInvincibiltyBuff.bind(this))
                 break;
+
             }
             default:
                 console.log("nieopisany efekt")

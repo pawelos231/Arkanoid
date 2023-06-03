@@ -21,3 +21,5 @@ export const ADD_LIVE_BUFF_SOUND = "http://localhost:1234/addLive.mp3"
 export const PADDLE_SPEED_BUFF_SOUND = "http://localhost:1234/paddleSpeed.mp3"
 export const SPEED_BUFF_SOUND = "http://localhost:1234/speedBuff.mp3"
 export const INVINCIBILITY_BUFF_SOUND = "http://localhost:1234/Invincibility.mp3"
+
+export const SPECIAL_BRICK_1 = "http://localhost:1234/cotomabyc.mp3"
