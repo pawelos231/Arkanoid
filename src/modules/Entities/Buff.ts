@@ -112,7 +112,9 @@ export class Buff implements BuffsInterface {
             }
             case BuffTypes.InvincibilityBuff:{
 
-                Promise.resolve(Media.spanwCustomSound(INVINCIBILITY_BUFF_SOUND))
+                Promise.resolve(
+                Media.spanwCustomSound(INVINCIBILITY_BUFF_SOUND))
+                
                 this.WrapperIfBuffIsActive(this.applyInvincibiltyBuff.bind(this))
                 break;
 
@@ -206,7 +208,12 @@ export class Buff implements BuffsInterface {
     get timeToLive(){
         return this.time
     }
+
     get buff_y_Pos(){
         return this.buff_y
+    }
+
+    get buff_x_Pos(){
+        return this.buff_x
     }
 }

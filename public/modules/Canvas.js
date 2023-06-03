@@ -11,6 +11,7 @@ import { Buff } from "./Entities/Buff";
 import { BuffTypes } from "../interfaces/HelperEnums";
 import { generateRandomNumber } from "../helpers/randomNumber";
 import { SPECIAL_BRICK_1 } from "../constants/gameState";
+import { gameOverStatus } from "../helpers/gameOverStatusCheck";
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor(level, pointsToWin, lives, image, rowsCount, columnsCount) {
@@ -138,7 +139,6 @@ export class Canvas extends Common {
             const BuffInstance = new Buff(randomBuff, JSON.parse(JSON.stringify(this.bricksArray)), this.appliedBuffs, 5000, this.ctx, buffDropPosition);
             const key = `${randomBuff};${BuffInstance.createdAtVal}`;
             this.Buffs.set(key, BuffInstance);
-            this.applyBuffEffects(key);
             this.drawBuffFlag = true;
         }
     }
@@ -182,29 +182,8 @@ export class Canvas extends Common {
         }
     }
     CheckWin() {
-        if (this.gameState.lives == 0) {
-            return {
-                end: false,
-                status: 0,
-                level: this.gameState.getLevel,
-                points: this.gameState.playerPointsGet
-            };
-        }
         const WIN = !(this.bricksArray.find((item) => item.getStatus == 1));
-        if (WIN) {
-            return {
-                end: false,
-                status: 1,
-                level: this.gameState.getLevel,
-                points: this.gameState.playerPointsGet
-            };
-        }
-        return {
-            end: true,
-            status: 0,
-            level: this.gameState.getLevel,
-            points: this.gameState.playerPointsGet
-        };
+        return gameOverStatus(this.gameState.getLevel, this.gameState.playerPointsGet, WIN, this.gameState.lives);
     }
     drawBall() {
         //change to fix resizeable
@@ -246,7 +225,25 @@ export class Canvas extends Common {
     }
     drawPaddle() {
         const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
+        this.isBuffColidedWithPaddle();
         paddle.drawPaddle(this.gameState.paddle_positions);
+    }
+    isBuffColidedWithPaddle() {
+        const { paddle_x, paddle_y } = this.gameState.paddle_positions;
+        for (const [key, value] of this.Buffs) {
+            const buff = value;
+            const buffYPosition = buff === null || buff === void 0 ? void 0 : buff.buff_y_Pos;
+            const buffXPostion = buff === null || buff === void 0 ? void 0 : buff.buff_x_Pos;
+            const isCollsion = (buffXPostion > paddle_x &&
+                buffXPostion < paddle_x + PADDLE_WIDTH)
+                &&
+                    (buffYPosition > paddle_y &&
+                        buffYPosition < paddle_y + PADDLE_HEIGHT);
+            if (isCollsion) {
+                this.applyBuffEffects(key);
+                this.Buffs.delete(key);
+            }
+        }
     }
     addBricksToArray(brick_x, brick_y, specialBrick, brickData) {
         const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, specialBrick, 1, brick_x, brick_y, brickData);

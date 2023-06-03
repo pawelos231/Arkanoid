@@ -16,4 +16,7 @@ export class Paddle {
         this.ctx.fillStyle = "white";
         this.ctx.fillRect(positions.paddle_x, positions.paddle_y, this.width - 1, this.height - 1);
     }
+    get paddlePositions() {
+        return this.positions;
+    }
 }

@@ -49,14 +49,16 @@ class Menu extends Common {
         this.EventListenerInstance = new EventListener();
     }
     GenerateBackground() {
+        let interval;
         if (this.StarsBackground) {
             this.StarsBackground.Init();
-            const interval = setInterval(() => {
+            interval = setInterval(() => {
                 var _a;
                 (_a = this.StarsBackground) === null || _a === void 0 ? void 0 : _a.Tick.bind(this.StarsBackground)();
             }, 12);
         }
         else {
+            clearInterval(interval);
             console.log("obiekt został zniszczony");
         }
     }

@@ -7,7 +7,7 @@ import { GameOver } from "./GameOver";
 import { FETCH_LEVELS } from "../constants/api/Urls";
 import { LevelData } from "../interfaces/level";
 import { REFRESH_RATE_MS } from "../constants/gameState";
-
+import { GameEndStatus } from "../interfaces/HelperEnums";
 
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu"
 const POINTS_TO_GET = 10000000
@@ -26,21 +26,29 @@ class LevelSelect extends Common {
 
     const interval = setInterval(() => {
       const {end, status,points,level } = canvas.draw()
-      if (!end) {
+      if (end) {
         clearInterval(interval)
         switch (status) {
-          case 1: {
+          case GameEndStatus.Win: {
+
             const gameOver: GameOver = new GameOver(points, status, 10, level)
             gameOver.ShowUserScreenOver()
             gameOver.SendUserLevelData()
-          }
             break;
-          case 0:
+
+          }
+
+          case GameEndStatus.Loss: {
+
             const gameOver: GameOver = new GameOver(points, status, 10, level)
             gameOver.ShowUserScreenOver()
             console.log("przegrałeś")
             break;
+            
+          }
+  
         }
+
       }
     }, REFRESH_RATE_MS)
     

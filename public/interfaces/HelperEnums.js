@@ -5,6 +5,11 @@ export var Logger;
     Logger[Logger["Warn"] = 1] = "Warn";
     Logger[Logger["Error"] = 2] = "Error";
 })(Logger || (Logger = {}));
+export var GameEndStatus;
+(function (GameEndStatus) {
+    GameEndStatus[GameEndStatus["Win"] = 1] = "Win";
+    GameEndStatus[GameEndStatus["Loss"] = 0] = "Loss";
+})(GameEndStatus || (GameEndStatus = {}));
 export var MediaEnum;
 (function (MediaEnum) {
     MediaEnum["Sounds"] = "sounds";

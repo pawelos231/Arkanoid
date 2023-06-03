@@ -45,6 +45,9 @@ const LIST_OF_BUFFS = "listOfBuffs > ul"
 const PAGINATE_SONGS_RESULT_CLASS = "paginateSongResults"
 const PAGINATE_BUFFS_RESULT_CLASS = "paginateBuffs"
 
+
+
+
 class Menu extends Common<true> {
     
     private fetcher: Fetcher = new Fetcher(this.elementId)
@@ -59,12 +62,14 @@ class Menu extends Common<true> {
     }
 
     private GenerateBackground(){
+        let interval
         if(this.StarsBackground){
             this.StarsBackground.Init()
-            const interval = setInterval(()=> {
+            interval = setInterval(()=> {
                 this.StarsBackground?.Tick.bind(this.StarsBackground)()
             }, 12)
         } else {
+            clearInterval(interval)
             console.log("obiekt został zniszczony")
         }
     }

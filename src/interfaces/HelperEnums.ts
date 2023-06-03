@@ -6,6 +6,11 @@ export enum Logger {
     Error = 2,
 }
 
+export enum GameEndStatus {
+    Win = 1,
+    Loss = 0
+}
+
 export enum MediaEnum {
     Sounds = "sounds",
     Music = "music"

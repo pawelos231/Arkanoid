@@ -14,6 +14,7 @@ import { BuffTypes } from "../interfaces/HelperEnums";
 import { generateRandomNumber } from "../helpers/randomNumber";
 import { Buff_Pos } from "../interfaces/gameStateInterface";
 import { SPECIAL_BRICK_1 } from "../constants/gameState";
+import { gameOverStatus } from "../helpers/gameOverStatusCheck";
 
 
 const GAME_CANVAS = "game_canvas"
@@ -225,7 +226,7 @@ export class Canvas<T> extends Common<true> {
         //declare some buff dropping condtion here
         //1 IN 10 CHANCE
 
-        if (Math.floor(Math.random() * 10) == 2 ){
+        if (Math.floor(Math.random() * 10) == 2){
 
 
             const buffDropPosition: Buff_Pos = {
@@ -245,7 +246,6 @@ export class Canvas<T> extends Common<true> {
   
             this.Buffs.set(key, BuffInstance)
 
-            this.applyBuffEffects(key)
             this.drawBuffFlag = true
         }
     }
@@ -292,10 +292,11 @@ export class Canvas<T> extends Common<true> {
 
                 this.gameState.BallMoveRateSetY = -MoveRateY
 
-                let timesToHit: number = this.bricksArray[i].brickPointsGet.timesToHit
+                let timesToHit: number 
+                = this.bricksArray[i].brickPointsGet.timesToHit
 
                 timesToHit--
-
+    
                 this.bricksArray[i].timesToHitSet = timesToHit
 
                 if(timesToHit <= 0){
@@ -328,33 +329,11 @@ export class Canvas<T> extends Common<true> {
 
 
     private CheckWin(): GameOverStatus {
-        if (this.gameState.lives == 0) {
-            return { 
-                end: false, 
-                status: 0, 
-                level: this.gameState.getLevel, 
-                points: this.gameState.playerPointsGet 
-            }
-        }
-
+        
         const WIN: boolean = 
         !(this.bricksArray.find((item: Brick) => item.getStatus == 1 ))
 
-        if (WIN) {
-            return { 
-                end: false, 
-                status: 1, 
-                level: this.gameState.getLevel, 
-                points: this.gameState.playerPointsGet 
-            }
-        }
-        
-        return { 
-            end: true, 
-            status: 0, 
-            level: this.gameState.getLevel, 
-            points: this.gameState.playerPointsGet 
-        }
+        return gameOverStatus(this.gameState.getLevel, this.gameState.playerPointsGet, WIN, this.gameState.lives)
     }
 
 
@@ -417,8 +396,43 @@ export class Canvas<T> extends Common<true> {
     private drawPaddle(): void {
 
         const paddle: Paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx)
+
+        this.isBuffColidedWithPaddle()
+
         paddle.drawPaddle(this.gameState.paddle_positions)
    
+    }
+
+    private isBuffColidedWithPaddle(){
+
+        const {paddle_x, paddle_y} = this.gameState.paddle_positions
+
+        
+        for(const [key, value] of this.Buffs){
+
+            const buff = value
+            const buffYPosition = buff?.buff_y_Pos!
+            const buffXPostion = buff?.buff_x_Pos!
+
+
+            const isCollsion: boolean= 
+            (buffXPostion > paddle_x && 
+            buffXPostion< paddle_x + PADDLE_WIDTH) 
+            && 
+            (buffYPosition > paddle_y && 
+            buffYPosition < paddle_y + PADDLE_HEIGHT)
+
+
+
+            if(isCollsion){
+
+                this.applyBuffEffects(key)
+                this.Buffs.delete(key)
+
+            }
+
+
+        }
     }
 
     private addBricksToArray(
