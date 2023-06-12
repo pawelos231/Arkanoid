@@ -10,8 +10,8 @@ import { SpecialBrick } from "./SpecialBrickView";
 import { Buff } from "./Entities/Buff";
 import { BuffTypes } from "../interfaces/HelperEnums";
 import { generateRandomNumber } from "../helpers/randomNumber";
-import { SPECIAL_BRICK_1 } from "../constants/gameState";
 import { gameOverStatus } from "../helpers/gameOverStatusCheck";
+import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor(level, pointsToWin, lives, image, rowsCount, columnsCount) {
@@ -158,7 +158,7 @@ export class Canvas extends Common {
                 const IsSpecialBrick = this.bricksArray[i].brickStateGet.specialBrick;
                 const status = this.bricksArray[i].getStatus;
                 if (IsSpecialBrick && status == 1) {
-                    const specialBrick = new SpecialBrick(this.image, SPECIAL_BRICK_1);
+                    const specialBrick = new SpecialBrick(this.image, KRZYSIU_SPECIAL_IMAGE.sound);
                     specialBrick.displayViewOfSpecialBrick();
                 }
                 this.gameState.BallMoveRateSetY = -MoveRateY;

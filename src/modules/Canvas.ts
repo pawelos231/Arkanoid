@@ -13,13 +13,13 @@ import { Buff } from "./Entities/Buff";
 import { BuffTypes } from "../interfaces/HelperEnums";
 import { generateRandomNumber } from "../helpers/randomNumber";
 import { Buff_Pos } from "../interfaces/gameStateInterface";
-import { SPECIAL_BRICK_1 } from "../constants/gameState";
 import { gameOverStatus } from "../helpers/gameOverStatusCheck";
+import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 
 
 const GAME_CANVAS = "game_canvas"
 
-export class Canvas<T> extends Common<true> {
+export class Canvas extends Common<true> {
 
     private BRICK_HEIGHT: number = 0
     private BRICK_WIDTH: number = 0
@@ -36,12 +36,12 @@ export class Canvas<T> extends Common<true> {
     private canvas: HTMLCanvasElement;
     private gameState: GameState
     private bricksArray: Array<Brick>
-    private image: T
+    private image: HTMLImageElement | null
     private appliedBuffs: number[]
     private drawBuffFlag: boolean = false
     private Buffs = new Map<string, Buff>()
 
-    constructor(level: number, pointsToWin: number, lives: number, image: T, rowsCount: number, columnsCount: number) {
+    constructor(level: number, pointsToWin: number, lives: number, image: HTMLImageElement | null, rowsCount: number, columnsCount: number) {
         super(GAME_CANVAS)
         this.canvas = null as any
         this.ctx = null as any
@@ -284,7 +284,7 @@ export class Canvas<T> extends Common<true> {
 
                     const specialBrick: SpecialBrick = new SpecialBrick(
                         this.image as HTMLImageElement, 
-                        SPECIAL_BRICK_1)
+                        KRZYSIU_SPECIAL_IMAGE.sound)
 
                     specialBrick.displayViewOfSpecialBrick()     
                 }

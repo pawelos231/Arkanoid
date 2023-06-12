@@ -4,25 +4,27 @@ import { tabOfBrickData } from "../data/tabOfBrickData";
 import { loader } from "./Loader";
 import { Fetcher } from "../helpers/Fetcher";
 import { GameOver } from "./GameOver";
-import { FETCH_LEVELS } from "../constants/api/Urls";
+import { GET_LEVELS_URL, GET_MOD_LEVELS_URL } from "../constants/api/Urls";
 import { LevelData } from "../interfaces/level";
 import { REFRESH_RATE_MS } from "../constants/gameState";
 import { GameEndStatus } from "../interfaces/HelperEnums";
+import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu"
 const POINTS_TO_GET = 10000000
-const TEMP_SPECIAL_IMG = "http://localhost:1234/Krzysiu.a065cfe0.png"
 
 class LevelSelect extends Common {
   constructor() {
     super()
   }
+
   public async fetchLevels() {
-    return Fetcher.FetchData<string>(FETCH_LEVELS)
+    console.log(await Fetcher.FetchData<string>(GET_MOD_LEVELS_URL))
+    return Fetcher.FetchData<string>(GET_LEVELS_URL)
   }
 
 
-  private DrawOnCanvas<T>(canvas: Canvas<T>) {
+  private DrawOnCanvas(canvas: Canvas) {
 
     const interval = setInterval(() => {
       const {end, status,points,level } = canvas.draw()
@@ -72,10 +74,10 @@ class LevelSelect extends Common {
         const randomBrick: number = 
         Math.floor(Math.random() * ((numberOfColumns-1) * (numberOfRows - 1)))
 
-        const image: HTMLImageElement = await loader.loadImage(TEMP_SPECIAL_IMG)
+        const image: HTMLImageElement = await loader.loadImage(KRZYSIU_SPECIAL_IMAGE.src)
 
-        const canvas: Canvas<HTMLImageElement> = 
-        new Canvas<HTMLImageElement>(level, 
+        const canvas: Canvas = 
+        new Canvas(level, 
           POINTS_TO_GET, 
           lives, 
           image, 
@@ -87,13 +89,13 @@ class LevelSelect extends Common {
         canvas.addEventOnResize()
         canvas.setListenerMovePaddle()
 
-        this.DrawOnCanvas<HTMLImageElement>(canvas)
+        this.DrawOnCanvas(canvas)
       }
 
 
       else {
-        const canvas: Canvas<null> = 
-        new Canvas<null>(level, 
+        const canvas: Canvas = 
+        new Canvas(level, 
           POINTS_TO_GET, 
           lives, 
           null, 
@@ -104,7 +106,7 @@ class LevelSelect extends Common {
 
         canvas.addEventOnResize()
         
-        this.DrawOnCanvas<null>(canvas)
+        this.DrawOnCanvas(canvas)
 
         canvas.setListenerMovePaddle()
       }

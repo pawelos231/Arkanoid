@@ -95,22 +95,45 @@ export class Fetcher extends Common {
     }
 
     public static async FetchData<T>(url: string): Promise<T> {
-        const data: T = await fetch(url, {
-            method: GET
-        })
-            .then((res: Response) => res.json())
-            .catch((err: any) => { throw new Error(err) })
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+          });
+      
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+      
+          const data: T = await response.json();
+          console.log(data);
+          return data;
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          throw error;
+        }
+      }
 
-        return data
-    }
-
-    public static async sendDataToBackend<T>(url: string, data: T): Promise<void> {
-        await fetch(url, {
+      public static async sendDataToBackend<T>(url: string, data: T): Promise<void> {
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
             body: JSON.stringify(data),
-            method: POST
-        })
-        .then((res: Response) => res.json())
-        .then((data: T) => console.log(data))
-    }
+          });
+      
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+      
+          const responseData: T = await response.json();
+          console.log(responseData);
+        } catch (error) {
+          console.error('Error sending data to backend:', error);
+          throw error;
+        }
+      }
+      
 
 }

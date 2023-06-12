@@ -281,14 +281,16 @@ class Menu extends Common<true> {
 
     private async StartGame(): Promise<void> {
         media.setSound()
+
         const isLogged: null | string = localStorage.getItem("game")
+        
         const startGamePanel: HTMLElement = this.bindElementByClass(START_THE_GAME)
         const BackToMenuPanel: HTMLElement = this.bindElementByClass(BACK_TO_MENU)
         const StartGameButton: HTMLElement = this.bindElementByClass(START_GAME)
         const LevelSelect: HTMLElement = this.bindElementByClass(MAIN_MENU_LEVEL_SELECT)
 
 
-        if (isLogged) {
+        if (1) {
             this.makeLoginPanelInvisible()
             this.changeVisbilityOfGivenElement(startGamePanel, true)
         }

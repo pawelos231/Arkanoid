@@ -1,7 +1,7 @@
 import { Common } from "../modules/Common";
 import { Validator } from "./PasswordInputValidation";
 import { HIDDEN } from "../constants/classNames";
-import { DEVELEPOMENT_URL, POST, GET } from '../constants/Fetchers';
+import { DEVELEPOMENT_URL, POST } from '../constants/Fetchers';
 const PASSWORD_INPUT_ELEMENT = "password";
 const ELEMENT_DOES_NOT_EXIST = "element nie istnieje";
 const PASSWORD = "haslo";
@@ -77,19 +77,40 @@ export class Fetcher extends Common {
         });
     }
     static async FetchData(url) {
-        const data = await fetch(url, {
-            method: GET
-        })
-            .then((res) => res.json())
-            .catch((err) => { throw new Error(err); });
-        return data;
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            console.log(data);
+            return data;
+        }
+        catch (error) {
+            console.error('Error fetching data:', error);
+            throw error;
+        }
     }
     static async sendDataToBackend(url, data) {
-        await fetch(url, {
-            body: JSON.stringify(data),
-            method: POST
-        })
-            .then((res) => res.json())
-            .then((data) => console.log(data));
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const responseData = await response.json();
+            console.log(responseData);
+        }
+        catch (error) {
+            console.error('Error sending data to backend:', error);
+            throw error;
+        }
     }
 }
