@@ -1,6 +1,5 @@
 import { Common } from "./Common";
 import { Canvas } from "./Canvas";
-import { tabOfBrickData } from "../data/tabOfBrickData";
 import { loader } from "./Loader";
 import { Fetcher } from "../helpers/Fetcher";
 import { GameOver } from "./GameOver";
@@ -44,13 +43,12 @@ class LevelSelect extends Common {
             const MenuCanvas = this.bindElementByClass("webgl");
             this.changeVisbilityOfGivenElement(MenuCanvas, false);
             const isSpecialLevel = Math.floor(Math.random() * 1);
-            const { level, levelName, lives, bossLevel, brickArray, numberOfRows, numberOfColumns, timer, requiredScore, description, highScore, } = levelData;
-            const randomBrick = Math.floor(Math.random() * ((numberOfColumns - 1) * (numberOfRows - 1)));
+            const randomBrick = Math.floor(Math.random() * ((levelData.numberOfColumns - 1) * (levelData.numberOfRows - 1)));
             const image = isSpecialLevel === 0
                 ? await loader.loadImage(KRZYSIU_SPECIAL_IMAGE.src)
                 : null;
-            const canvas = new Canvas(level, POINTS_TO_GET, lives, image, numberOfRows, numberOfColumns);
-            canvas.configureCanvas(tabOfBrickData(), true, randomBrick);
+            const canvas = new Canvas(image, levelData);
+            canvas.configureCanvas(true, randomBrick);
             canvas.addEventOnResize();
             canvas.setListenerMovePaddle();
             this.DrawOnCanvas(canvas);

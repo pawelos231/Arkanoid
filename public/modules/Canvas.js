@@ -14,7 +14,7 @@ import { gameOverStatus } from "../helpers/gameOverStatusCheck";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
-    constructor(level, pointsToWin, lives, image, rowsCount, columnsCount) {
+    constructor(image, levelData) {
         super(GAME_CANVAS);
         this.BRICK_HEIGHT = 0;
         this.BRICK_WIDTH = 0;
@@ -24,22 +24,23 @@ export class Canvas extends Common {
         this.keyPressedRight = false;
         this.drawBuffFlag = false;
         this.Buffs = new Map();
+        this.levelData = levelData;
         this.canvas = null;
         this.ctx = null;
         this.bricksArray = [];
         this.image = image;
-        this.rowsCount = rowsCount;
-        this.columnsCount = columnsCount;
+        this.rowsCount = this.levelData.numberOfRows;
+        this.columnsCount = this.levelData.numberOfColumns;
         this.playerPoints = 0;
         this.hitCounter = 0;
-        this.pointsToWin = pointsToWin;
+        this.pointsToWin = this.levelData.requiredScore;
         this.appliedBuffs = [];
-        this.gameState = new GameState(level, lives, this.pointsToWin, this.hitCounter, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS, this.ballMoveRateX, this.ballMoveRateY);
+        this.gameState = new GameState(this.levelData.level, this.levelData.lives, this.pointsToWin, this.hitCounter, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS, this.ballMoveRateX, this.ballMoveRateY);
     }
     get getGameState() {
         return this.gameState;
     }
-    configureCanvas(brickPoints, isSpecialLevel, randomBrickIndex = 0) {
+    configureCanvas(isSpecialLevel, randomBrickIndex = 0) {
         this.changeVisbilityOfGivenElement(this.elementId, true);
         this.canvas = this.elementId;
         this.canvas.style.backgroundColor = "black";
@@ -47,8 +48,8 @@ export class Canvas extends Common {
         this.BRICK_HEIGHT = window.innerHeight / 18;
         this.BRICK_WIDTH = window.innerWidth / this.columnsCount;
         isSpecialLevel ?
-            this.initBricks(randomBrickIndex, brickPoints) :
-            this.initBricks(-100, brickPoints);
+            this.initBricks(randomBrickIndex) :
+            this.initBricks(-100);
     }
     addEventOnResize() {
         window.addEventListener("resize", () => {
@@ -164,6 +165,7 @@ export class Canvas extends Common {
                 this.gameState.BallMoveRateSetY = -MoveRateY;
                 let timesToHit = this.bricksArray[i].brickPointsGet.timesToHit;
                 timesToHit--;
+                console.log(timesToHit);
                 this.bricksArray[i].timesToHitSet = timesToHit;
                 if (timesToHit <= 0) {
                     this.bricksArray[i].setStatus = 0;
@@ -246,21 +248,23 @@ export class Canvas extends Common {
         }
     }
     addBricksToArray(brick_x, brick_y, specialBrick, brickData) {
+        console.log(brick_x, brick_y);
         const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, specialBrick, 1, brick_x, brick_y, brickData);
         this.bricksArray.push(brick);
     }
-    initBricks(SpecialBrickIndex = -100, BrickPoints) {
+    initBricks(SpecialBrickIndex = -100) {
+        const sortedLevel = this.levelData.brickArray.sort((a, b) => a.rowNumber - b.rowNumber);
         let count = 0;
-        for (let i = 0; i < this.rowsCount; i++) {
-            for (let j = 0; j < this.columnsCount; j++) {
-                count++;
-                if (SpecialBrickIndex === count) {
-                    this.addBricksToArray(j, i, true, BrickPoints[i]);
-                }
-                else {
-                    this.addBricksToArray(j, i, false, BrickPoints[i]);
-                }
-            }
+        console.log(sortedLevel);
+        for (let i = 0; i < sortedLevel.length; i++) {
+            const levelData = {
+                color: sortedLevel[i].color,
+                timesToHit: sortedLevel[i].timesToHit,
+                points: sortedLevel[i].points,
+                buffDropRate: sortedLevel[i].buffDropRate
+            };
+            count++;
+            this.addBricksToArray(sortedLevel[i].columnNumber, sortedLevel[i].rowNumber, count === SpecialBrickIndex ? true : false, levelData);
         }
     }
     drawBuffOuter() {

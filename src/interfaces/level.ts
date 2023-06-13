@@ -1,7 +1,10 @@
-export type Brick = {
+export type BrickData = {
     rowNumber: number
     columnNumber: number
     color: string
+    timesToHit: number, 
+    points: number, 
+    buffDropRate:number
  }
  
  export interface Level {
@@ -12,7 +15,7 @@ export type Brick = {
      lives: number
      timer: number
      bossLevel: boolean
-     brickArray: Brick[]
+     brickArray: BrickData[]
      description: string
      highScore: number
      requiredScore: number

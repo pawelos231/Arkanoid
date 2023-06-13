@@ -1,6 +1,8 @@
 import { BrickState, BrickPoints } from "../../interfaces/gameStateInterface"
 
 
+const DEFAULT_BRICK_COLOR = "#FFF"
+
 export class Brick {
     private width: number
     private height: number
@@ -60,7 +62,7 @@ export class Brick {
 
 
     public  drawBrick<T>(image: T | null = null): void {
-
+        if (this.brickPoints.color === DEFAULT_BRICK_COLOR) return
         if (this.brickState.status == 0) return
 
         this.setColor<T | null>(this.brickState.specialBrick, this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, image)

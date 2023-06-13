@@ -15,12 +15,14 @@ import { generateRandomNumber } from "../helpers/randomNumber";
 import { Buff_Pos } from "../interfaces/gameStateInterface";
 import { gameOverStatus } from "../helpers/gameOverStatusCheck";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
+import { Level, BrickData } from "../interfaces/level";
+import { tabOfBrickData } from "../data/tabOfBrickData";
 
 
 
 interface ICanvas {
     getGameState: GameState;
-    configureCanvas: (brickPoints: BrickPoints[], isSpecialLevel: boolean, randomBrickIndex?: number) => void;
+    configureCanvas: (isSpecialLevel: boolean, randomBrickIndex?: number) => void;
     addEventOnResize: () => void;
     setListenerMovePaddle: () => void;
   }
@@ -49,23 +51,25 @@ export class Canvas extends Common<true> implements ICanvas {
     private appliedBuffs: number[]
     private drawBuffFlag: boolean = false
     private Buffs = new Map<string, Buff>()
+    private levelData: Level
 
-    constructor(level: number, pointsToWin: number, lives: number, image: HTMLImageElement | null, rowsCount: number, columnsCount: number) {
+    constructor(image: HTMLImageElement | null, levelData: Level) {
         super(GAME_CANVAS)
+        this.levelData = levelData
         this.canvas = null as any
         this.ctx = null as any
         this.bricksArray = []
         this.image = image
-        this.rowsCount = rowsCount
-        this.columnsCount = columnsCount
+        this.rowsCount = this.levelData.numberOfRows
+        this.columnsCount = this.levelData.numberOfColumns
         this.playerPoints = 0
         this.hitCounter = 0
-        this.pointsToWin = pointsToWin
+        this.pointsToWin = this.levelData.requiredScore
         this.appliedBuffs = []
 
         this.gameState = new GameState(
-            level, 
-            lives, 
+            this.levelData.level, 
+            this.levelData.lives, 
             this.pointsToWin,  
             this.hitCounter, 
             this.playerPoints, 
@@ -79,7 +83,7 @@ export class Canvas extends Common<true> implements ICanvas {
         return this.gameState
     }
 
-    public configureCanvas(brickPoints: BrickPoints[], isSpecialLevel: boolean, randomBrickIndex: number = 0): void {
+    public configureCanvas(isSpecialLevel: boolean, randomBrickIndex: number = 0): void {
 
         this.changeVisbilityOfGivenElement(this.elementId, true)
 
@@ -93,8 +97,8 @@ export class Canvas extends Common<true> implements ICanvas {
         this.BRICK_WIDTH = window.innerWidth / this.columnsCount
 
         isSpecialLevel ? 
-        this.initBricks(randomBrickIndex, brickPoints) : 
-        this.initBricks(-100, brickPoints)
+        this.initBricks(randomBrickIndex) : 
+        this.initBricks(-100)
 
     }
 
@@ -208,7 +212,6 @@ export class Canvas extends Common<true> implements ICanvas {
     }
 
     private applyBuffEffects(BuffId: string) {
-
         const buff = this.Buffs.get(BuffId)!
 
         buff.applyBuffEffects()
@@ -279,7 +282,7 @@ export class Canvas extends Common<true> implements ICanvas {
                 const MoveRateY: number = this.getGameState.BallMoveRateGetY
 
                 this.DropBuff(BRICK)
-    
+                
                 this.upadateScore(i)
               
                 this.isCollisonFromSide(i, ball_x, ball_y, RADIUS) 
@@ -305,6 +308,7 @@ export class Canvas extends Common<true> implements ICanvas {
                 = this.bricksArray[i].brickPointsGet.timesToHit
 
                 timesToHit--
+                console.log(timesToHit)
     
                 this.bricksArray[i].timesToHitSet = timesToHit
 
@@ -447,9 +451,10 @@ export class Canvas extends Common<true> implements ICanvas {
     private addBricksToArray(
     brick_x: number, 
     brick_y: number, 
-    specialBrick: boolean, 
-    brickData: BrickPoints): void 
+    specialBrick: boolean,
+    brickData: Omit<BrickData, "columnNumber" | "rowNumber">): void 
     {
+        console.log(brick_x, brick_y)
         const brick: Brick = new Brick(
             this.BRICK_WIDTH, 
             this.BRICK_HEIGHT, 
@@ -463,20 +468,23 @@ export class Canvas extends Common<true> implements ICanvas {
     }
 
     private initBricks(
-    SpecialBrickIndex: number = -100, 
-    BrickPoints: BrickPoints[]): void 
+    SpecialBrickIndex: number = -100): void 
     {
+        const sortedLevel: BrickData[] = this.levelData.brickArray.sort((a: BrickData, b: BrickData) => a.rowNumber - b.rowNumber)
+
         let count: number = 0
-        for (let i = 0; i < this.rowsCount; i++) {
-            for (let j = 0; j < this.columnsCount; j++) {
-                count++
-                
-                if (SpecialBrickIndex === count){
-                    this.addBricksToArray(j, i, true, BrickPoints[i])
-                } else {
-                    this.addBricksToArray(j, i, false, BrickPoints[i])
-                }
+        console.log(sortedLevel)
+        for(let  i = 0; i<sortedLevel.length; i++){
+
+            const levelData: Omit<BrickData, "columnNumber" | "rowNumber"> = {
+                color: sortedLevel[i].color,
+                timesToHit: sortedLevel[i].timesToHit,
+                points: sortedLevel[i].points,
+                buffDropRate: sortedLevel[i].buffDropRate
             }
+
+            count++
+            this.addBricksToArray(sortedLevel[i].columnNumber, sortedLevel[i].rowNumber, count === SpecialBrickIndex ? true : false, levelData)
         }
 
     }

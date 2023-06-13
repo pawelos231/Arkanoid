@@ -40,15 +40,9 @@ export const tabOfBrickData = (): BrickPoints[] => {
         },
         {
             color: "#000",
-            timesToHit: 4,
+            timesToHit: 1,
             points: 50,
             buffDropRate: 0.05
         },
-        {
-            color: "#808080",
-            timesToHit: 1000000000,
-            points: 0,
-            buffDropRate: 0.05
-        }
     ]
 }

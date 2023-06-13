@@ -52,38 +52,17 @@ class LevelSelect extends Common {
 
       const isSpecialLevel: number = Math.floor(Math.random() * 1);
 
-      const {
-        level,
-        levelName,
-        lives,
-        bossLevel,
-        brickArray,
-        numberOfRows,
-        numberOfColumns,
-        timer,
-        requiredScore,
-        description,
-        highScore,
-      } = levelData;
-
       const randomBrick: number =
-        Math.floor(Math.random() * ((numberOfColumns - 1) * (numberOfRows - 1)));
+        Math.floor(Math.random() * ((levelData.numberOfColumns - 1) * (levelData.numberOfRows - 1)));
 
       const image: HTMLImageElement | null =
         isSpecialLevel === 0
           ? await loader.loadImage(KRZYSIU_SPECIAL_IMAGE.src)
           : null;
 
-      const canvas: Canvas = new Canvas(
-        level,
-        POINTS_TO_GET,
-        lives,
-        image,
-        numberOfRows,
-        numberOfColumns
-      );
+      const canvas: Canvas = new Canvas(image, levelData)
 
-      canvas.configureCanvas(tabOfBrickData(), true, randomBrick);
+      canvas.configureCanvas(true, randomBrick);
       canvas.addEventOnResize();
       canvas.setListenerMovePaddle();
       this.DrawOnCanvas(canvas);
