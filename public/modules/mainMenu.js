@@ -8,7 +8,7 @@ import { tempTabOfSongs } from '../data/temporarySongsData.js';
 import { tempTabOfSounds } from '../data/temporarySoundsData.js';
 import { GET_STATS_URL } from '../constants/api/Urls.js';
 import { ViewsCreator } from '../helpers/viewCreator.js';
-import { StarsBackroundView } from '../scenes/MainMenuThree.js';
+import { StarsBackgroundView } from '../scenes/MainMenuThree.js';
 import { tabOfBuffs } from '../data/BuffsData.js';
 import { EventListener } from '../helpers/Events/EventListener';
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
@@ -45,16 +45,16 @@ class Menu extends Common {
         super(REGISTER_FORMS);
         this.fetcher = new Fetcher(this.elementId);
         this.formElementRegister = this.bindElementByClass(FORM_TO_REGISTER);
-        this.StarsBackground = new StarsBackroundView(600, "Stars");
+        this.StarsBackground = new StarsBackgroundView(600, "Stars");
         this.EventListenerInstance = new EventListener();
     }
     GenerateBackground() {
         let interval;
         if (this.StarsBackground) {
-            this.StarsBackground.Init();
+            this.StarsBackground.init();
             interval = setInterval(() => {
                 var _a;
-                (_a = this.StarsBackground) === null || _a === void 0 ? void 0 : _a.Tick.bind(this.StarsBackground)();
+                (_a = this.StarsBackground) === null || _a === void 0 ? void 0 : _a.tick.bind(this.StarsBackground)();
             }, 12);
         }
         else {

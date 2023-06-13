@@ -24,15 +24,36 @@
     gap: 12px;
 }
 
-.mainLevelSelect>.mainLevelSelectMenu>div {
+.mainLevelSelectMenu>div {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-basis: 10%;
-    background-color: red;
+    flex-basis: 8%;
     cursor: pointer;
     transition: .2s;
-    height: 15%;
+    flex-direction: column;
+    height: 20%;
+    border-radius: 3%;
+}
+
+.mainLevelSelect>.mainLevelSelectMenu>div>div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+}
+
+
+
+
+.mainLevelSelect>.mainLevelSelectMenu>p {
+    background-color: blue;
+    cursor: pointer;
+    transition: .2s;
     border-radius: 3%;
 }
 
@@ -40,8 +61,8 @@
     display: none !important;
 }
 
-.mainLevelSelectMenu>div:hover {
-    transform: scale(1.05);
+.mainLevelSelectMenu>div>div:hover {
+    transform: scale(0.95);
 }
 
 .backToMenu {
@@ -55,4 +76,41 @@
 
 .backToMenu:hover {
     transform: scale(.95);
+}
+
+.modalLevelInfo{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+    height: 80%;
+    background-color: white;
+    
+    border-radius: 20px;
+    gap: 10px;
+}
+
+.modalLevelInfo > div{
+    padding: 15px;
+    background-color: black;
+    border-radius: 5px;
+    width: 60%;
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 50px;
+    background-color: transparent !important;
+    color: black;
+    width: 10% !important;
+    transition: .2s;
+    cursor: pointer;
+}
+
+.close:hover{
+    transform: scale(1.05);
 }

@@ -9,7 +9,7 @@ import { Sounds, tempTabOfSounds } from '../data/temporarySoundsData.js'
 import { GET_STATS_URL } from '../constants/api/Urls.js'
 import { ViewsCreator } from '../helpers/viewCreator.js'
 import { VisulizerFunc } from '../interfaces/PaginationInterfaces.js'
-import { StarsBackroundView } from '../scenes/MainMenuThree.js'
+import { StarsBackgroundView } from '../scenes/MainMenuThree.js'
 import { tabOfBuffs } from '../data/BuffsData.js'
 import { Buff } from '../data/BuffsData.js'
 import { EventListener } from '../helpers/Events/EventListener'
@@ -52,7 +52,7 @@ class Menu extends Common<true> {
     
     private fetcher: Fetcher = new Fetcher(this.elementId)
     private formElementRegister: HTMLElement = this.bindElementByClass(FORM_TO_REGISTER)
-    private StarsBackground: StarsBackroundView | undefined = new StarsBackroundView(600, "Stars")
+    private StarsBackground: StarsBackgroundView | undefined = new StarsBackgroundView(600, "Stars")
     private cachedInstance: any
     private EventListenerInstance: EventListener = new EventListener()
 
@@ -64,9 +64,9 @@ class Menu extends Common<true> {
     private GenerateBackground(){
         let interval
         if(this.StarsBackground){
-            this.StarsBackground.Init()
+            this.StarsBackground.init()
             interval = setInterval(()=> {
-                this.StarsBackground?.Tick.bind(this.StarsBackground)()
+                this.StarsBackground?.tick.bind(this.StarsBackground)()
             }, 12)
         } else {
             clearInterval(interval)

@@ -10,46 +10,48 @@ import { Logger } from "../interfaces/HelperEnums";
 const REGISTER_FORMS = "RegisterElement";
 let Common = class Common {
     constructor(...elementId) {
-        (elementId && elementId[0]) ?
-            this.elementId =
-                this.bindElementById(elementId[0]) :
+        if (elementId && elementId[0]) {
+            this.elementId = this.bindElementById(elementId[0]);
+        }
+        else {
             this.elementId = undefined;
+        }
     }
     bindElementById(elementToFindById) {
         const element = document.getElementById(elementToFindById);
         if (!element)
-            throw new Error(`nie znaleziono elementu ${elementToFindById}`);
+            throw new Error(`Nie znaleziono elementu ${elementToFindById}`);
         return element;
     }
     bindElementByClass(elementToFindByClass) {
         const element = document.documentElement.querySelector("." + elementToFindByClass);
         if (!element)
-            throw new Error(`nie znaleziono elementu ${elementToFindByClass}`);
+            throw new Error(`Nie znaleziono elementu ${elementToFindByClass}`);
         return element;
     }
     changeVisbilityOfGivenElement(element, flag) {
-        flag ?
-            element === null || element === void 0 ? void 0 : element.classList.remove(HIDDEN) :
-            element === null || element === void 0 ? void 0 : element.classList.add(HIDDEN);
+        flag ? element === null || element === void 0 ? void 0 : element.classList.remove(HIDDEN) : element === null || element === void 0 ? void 0 : element.classList.add(HIDDEN);
     }
     bindMultipleElements(elementsTobBind) {
         const elements = document.querySelectorAll("." + elementsTobBind);
         if (!elements)
-            throw new Error(`nie znaleziono elementu ${elementsTobBind}`);
+            throw new Error(`Nie znaleziono elementu ${elementsTobBind}`);
         return elements;
     }
     displayMessageAtTheTopOfTheScreen(message, status) {
         if (status > 2 || status < 0)
-            throw new Error("nieporawny status wiadomości, wprowadź wartości z enuma Errors");
+            throw new Error("Nieprawidłowy status wiadomości, wprowadź wartości z enuma Errors");
         const messageNode = this.bindElementByClass("MESSAGE");
-        if (Logger.Error == status) {
-            messageNode.style.color = "red";
-        }
-        if (status == Logger.Message) {
-            messageNode.style.color = "green";
-        }
-        if (status == Logger.Warn) {
-            messageNode.style.color = "orange";
+        switch (status) {
+            case Logger.Error:
+                messageNode.style.color = "red";
+                break;
+            case Logger.Message:
+                messageNode.style.color = "green";
+                break;
+            case Logger.Warn:
+                messageNode.style.color = "orange";
+                break;
         }
         this.changeVisbilityOfGivenElement(messageNode, true);
         setTimeout(() => {

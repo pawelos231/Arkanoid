@@ -1,7 +1,19 @@
-export interface LevelData {
-    numberOfRows: number
-    numberOfColumns: number
-    lives: number
-    level: number
-    timer: number
-}
+export type Brick = {
+    rowNumber: number
+    columnNumber: number
+    color: string
+ }
+ 
+ export interface Level {
+     level: number
+     levelName: string
+     numberOfRows: number
+     numberOfColumns: number
+     lives: number
+     timer: number
+     bossLevel: boolean
+     brickArray: Brick[]
+     description: string
+     highScore: number
+     requiredScore: number
+ }

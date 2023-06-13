@@ -17,9 +17,18 @@ import { gameOverStatus } from "../helpers/gameOverStatusCheck";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 
 
+
+interface ICanvas {
+    getGameState: GameState;
+    configureCanvas: (brickPoints: BrickPoints[], isSpecialLevel: boolean, randomBrickIndex?: number) => void;
+    addEventOnResize: () => void;
+    setListenerMovePaddle: () => void;
+  }
+
+
 const GAME_CANVAS = "game_canvas"
 
-export class Canvas extends Common<true> {
+export class Canvas extends Common<true> implements ICanvas {
 
     private BRICK_HEIGHT: number = 0
     private BRICK_WIDTH: number = 0

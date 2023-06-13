@@ -105,7 +105,6 @@ export class Fetcher extends Common {
           }
       
           const data: T = await response.json();
-          console.log(data);
           return data;
         } catch (error) {
           console.error('Error fetching data:', error);
