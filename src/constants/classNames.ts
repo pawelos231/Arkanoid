@@ -1,2 +1,2 @@
-export const HIDDEN: string = "hidden"
-export const INVALID: string = "invalid"
+export const HIDDEN: string = "hidden";
+export const INVALID: string = "invalid";

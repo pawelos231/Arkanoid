@@ -6,26 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Arkanoid</title>
     <link rel="stylesheet" href="./styles/menu.css" />
-    <link rel="stylesheet" href="./styles/levelSelect.css">
-    <link rel="stylesheet" href="./styles/canvas.css">
-    <link rel="stylesheet" href="./styles/main.css">
-    <link rel="stylesheet" href="./styles/settings.css">
-    <link rel="stylesheet" href="./styles/info.css">
+    <link rel="stylesheet" href="./styles/levelSelect.css" />
+    <link rel="stylesheet" href="./styles/canvas.css" />
+    <link rel="stylesheet" href="./styles/main.css" />
+    <link rel="stylesheet" href="./styles/settings.css" />
+    <link rel="stylesheet" href="./styles/info.css" />
   </head>
   <body>
-
     <div id="RegisterElement" class="hidden">
       <!-- FORMS TO LOGIN / REGISTER-->
       <form name="register" id="form" class="formToRegister">
         <input
-        name="imie"
+          name="imie"
           class="reginp"
           required
           type="text"
           placeholder="Wprowadz imie"
         />
         <input
-        name="nick"
+          name="nick"
           class="reginp"
           required
           type="text"
@@ -39,7 +38,11 @@
           type="text"
           placeholder="Wprowadz hasło"
         />
-        <input id="sendUserInputsRequest" type="submit" value="Zarejestruj się"></input>
+        <input
+          id="sendUserInputsRequest"
+          type="submit"
+          value="Zarejestruj się"
+        />
       </form>
 
       <form name="login" id="form" class="formToLogin hidden">
@@ -57,20 +60,19 @@
           type="text"
           placeholder="Wprowadz hasło"
         />
-        <input id="sendUserInputsRequest" type="submit" value="Zaloguj się"></input>
+        <input id="sendUserInputsRequest" type="submit" value="Zaloguj się" />
       </form>
 
       <p name="register" class="checkIfLoginOrRegister">Chce się zalogować</p>
     </div>
-   
 
     <p class="Stats">Statystyki</p>
-  
+
     <div class="modalStats hidden">
       <div class="innerModalStats">
         <h2></h2>
         <ul>
-         <!--Data goes here-->
+          <!--Data goes here-->
         </ul>
       </div>
     </div>
@@ -81,25 +83,20 @@
       <div class="Info">Info</div>
     </div>
 
-
-
     <!--SETTINGS-->
 
     <div class="OpenedSettings hidden">
-      
       <div class="innerOpenedSettings">
         <h2>Ustawienia</h2>
         <p class="closeSettings">X</p>
         <!--VOLUME-->
         <div class="musicRange">
-          <input type="range" id="music" name="music"
-                 min="0" max="100">
+          <input type="range" id="music" name="music" min="0" max="100" />
           <label for="music">Volume</label>
         </div>
-         <!--SOUND-->
-         <div class="soundRange">
-          <input type="range" id="sound" name="sound"
-                 min="0" max="100">
+        <!--SOUND-->
+        <div class="soundRange">
+          <input type="range" id="sound" name="sound" min="0" max="100" />
           <label for="sound">Sound</label>
         </div>
         <div class="resetInputsSettings">Reset Settings</div>
@@ -108,48 +105,39 @@
           <div class="Sound">Sounds</div>
           <div class="Music">Music</div>
         </div>
-        
+
         <div id="paginateSongs" class="paginateSongResults hidden">
           <p class="left"><</p>
           <p class="page">0 z 10</p>
           <p class="right">></p>
-        </div>  
+        </div>
 
         <div class="listOfSongs">
           <ul>
-          <!--Songs-->
+            <!--Songs-->
           </ul>
         </div>
-
       </div>
     </div>
 
-
     <!--INFO-->
     <div class="OpenedInfo hidden">
-      
       <div class="innerOpenedInfo">
         <h2>Info</h2>
         <p class="closeInfo">X</p>
         <!--VOLUME-->
-    
-        
+
         <div id="paginateBuffs" class="paginateBuffs hidden">
           <p class="left"><</p>
           <p class="page">0 z 10</p>
           <p class="right">></p>
-        </div>  
+        </div>
 
         <div class="listOfBuffs">
-          <ul>
-          
-          </ul>
+          <ul></ul>
         </div>
-        
       </div>
     </div>
-
-
 
     <p class="LoginStatus"></p>
 
@@ -157,37 +145,30 @@
 
     <section id="levelSelect" class="mainLevelSelect hidden">
       <p class="backToMenu">Cofnij</p>
-      
-      <div class="mainLevelSelectMenu">       
-      </div>
+
+      <div class="mainLevelSelectMenu"></div>
       <div class="modalLevelInfo hidden">
-        <div>LevelName: </div>
-        <div>LevelName: </div>
-        <div>LevelName: </div>
-        <div>LevelName: </div>
-        <div>LevelName: </div>
-        <div>LevelName: </div>
-        <div>LevelName: </div>
-
+        <div>LevelName:</div>
+        <div>LevelName:</div>
+        <div>LevelName:</div>
+        <div>LevelName:</div>
+        <div>LevelName:</div>
+        <div>LevelName:</div>
+        <div>LevelName:</div>
       </div>
-
     </section>
 
     <canvas id="game_canvas" class="hidden"></canvas>
 
     <p class="MESSAGE hidden">siema</p>
 
-    <div id="GameOver"  class="hidden">
+    <div id="GameOver" class="hidden">
       <div class="innerGameOver">
-      
         <button class="backToMenuOver"><a href="./">Powrót do menu</a></button>
       </div>
     </div>
 
-
-    <p id="LevelEditor">
-      Edytor Poziomów
-    </p>
+    <p id="LevelEditor">Edytor Poziomów</p>
 
     <script type="module" src="app.js"></script>
   </body>

@@ -1,19 +1,18 @@
-import { Media } from "./Media"
+import { Media } from "./Media";
 export class SpecialBrick {
-    private image: any | HTMLImageElement
-    private sound: string
+  private image: any | HTMLImageElement;
+  private sound: string;
 
-    constructor(image: HTMLImageElement, sound: string){
-        this.image = image
-        this.sound = sound
-    }
+  constructor(image: HTMLImageElement, sound: string) {
+    this.image = image;
+    this.sound = sound;
+  }
 
-    public displayViewOfSpecialBrick(){
-
-        if(this.sound == "") throw new Error("nie mozesz przekazać pustego stringa")
-        console.log(this.image)
-        Media.spanwCustomSound(this.sound)
-        console.log("trafiony special")
-        
-    }
+  public displayViewOfSpecialBrick() {
+    if (this.sound == "")
+      throw new Error("nie mozesz przekazać pustego stringa");
+    console.log(this.image);
+    Media.spanwCustomSound(this.sound);
+    console.log("trafiony special");
+  }
 }

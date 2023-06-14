@@ -4,50 +4,70 @@ import { Logger } from "../interfaces/HelperEnums";
 
 const REGISTER_FORMS = "RegisterElement";
 
-type CommonElementIdType<T extends boolean> = T extends true ? HTMLElement : undefined;
+type CommonElementIdType<T extends boolean> = T extends true
+  ? HTMLElement
+  : undefined;
 
 @sealed
 export class Common<T extends boolean = false> {
   protected elementId: CommonElementIdType<T>;
 
-  protected constructor(...elementId: T extends true ? [string] : [undefined?]) {
+  protected constructor(
+    ...elementId: T extends true ? [string] : [undefined?]
+  ) {
     if (elementId && elementId[0]) {
-      this.elementId = this.bindElementById(elementId[0]) as CommonElementIdType<T>;
+      this.elementId = this.bindElementById(
+        elementId[0]
+      ) as CommonElementIdType<T>;
     } else {
       this.elementId = undefined as CommonElementIdType<T>;
     }
   }
 
   protected bindElementById(elementToFindById: string): HTMLElement {
-    const element: HTMLElement | null = document.getElementById(elementToFindById);
+    const element: HTMLElement | null =
+      document.getElementById(elementToFindById);
 
-    if (!element) throw new Error(`Nie znaleziono elementu ${elementToFindById}`);
+    if (!element)
+      throw new Error(`Nie znaleziono elementu ${elementToFindById}`);
 
     return element;
   }
 
   protected bindElementByClass(elementToFindByClass: string): HTMLElement {
-    const element: HTMLElement | null = document.documentElement.querySelector("." + elementToFindByClass);
+    const element: HTMLElement | null = document.documentElement.querySelector(
+      "." + elementToFindByClass
+    );
 
-    if (!element) throw new Error(`Nie znaleziono elementu ${elementToFindByClass}`);
+    if (!element)
+      throw new Error(`Nie znaleziono elementu ${elementToFindByClass}`);
 
     return element;
   }
 
-  protected changeVisbilityOfGivenElement(element: HTMLElement, flag: boolean): void {
+  protected changeVisbilityOfGivenElement(
+    element: HTMLElement,
+    flag: boolean
+  ): void {
     flag ? element?.classList.remove(HIDDEN) : element?.classList.add(HIDDEN);
   }
 
   protected bindMultipleElements(elementsTobBind: string): NodeListOf<Element> {
-    const elements: NodeListOf<Element> = document.querySelectorAll("." + elementsTobBind);
+    const elements: NodeListOf<Element> = document.querySelectorAll(
+      "." + elementsTobBind
+    );
 
-    if (!elements) throw new Error(`Nie znaleziono elementu ${elementsTobBind}`);
+    if (!elements)
+      throw new Error(`Nie znaleziono elementu ${elementsTobBind}`);
 
     return elements;
   }
 
   protected displayMessageAtTheTopOfTheScreen(message: string, status: number) {
-    if (status > 2 || status < 0) throw new Error("Nieprawidłowy status wiadomości, wprowadź wartości z enuma Errors");
+    if (status > 2 || status < 0)
+      throw new Error(
+        "Nieprawidłowy status wiadomości, wprowadź wartości z enuma Errors"
+      );
 
     const messageNode: HTMLElement = this.bindElementByClass("MESSAGE");
 
@@ -71,7 +91,8 @@ export class Common<T extends boolean = false> {
   }
 
   protected makeLoginPanelInvisible(): void {
-    const RegisterElemement: HTMLElement | null = this.bindElementById(REGISTER_FORMS);
+    const RegisterElemement: HTMLElement | null =
+      this.bindElementById(REGISTER_FORMS);
     this.changeVisbilityOfGivenElement(RegisterElemement, false);
   }
 }

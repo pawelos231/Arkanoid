@@ -9,13 +9,21 @@ const INNER_GAME_OVER = "innerGameOver";
 export class GameOver extends Common<true> implements GameOverInterface {
   LevelInfo: IFinishedGame;
 
-  constructor(points: number, status: number, elapsedTime: number, level: number) {
+  constructor(
+    points: number,
+    status: number,
+    elapsedTime: number,
+    level: number
+  ) {
     super("GameOver");
     Object.freeze((this.LevelInfo = { points, status, elapsedTime, level }));
   }
 
   public async SendUserLevelData(): Promise<void> {
-    Fetcher.sendDataToBackend<IFinishedGame>(SEND_STATS_ABOUT_GAME, this.LevelInfo);
+    Fetcher.sendDataToBackend<IFinishedGame>(
+      SEND_STATS_ABOUT_GAME,
+      this.LevelInfo
+    );
   }
 
   public ShowUserScreenOver(): void {
@@ -45,6 +53,7 @@ export class GameOver extends Common<true> implements GameOverInterface {
       </ul>
     `;
 
-    innerElement.style.border = this.LevelInfo.status == 1 ? "2px solid green" : "2px solid red";
+    innerElement.style.border =
+      this.LevelInfo.status == 1 ? "2px solid green" : "2px solid red";
   }
 }

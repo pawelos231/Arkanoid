@@ -52,15 +52,17 @@ class LevelSelect extends Common {
 
       const isSpecialLevel: number = Math.floor(Math.random() * 1);
 
-      const randomBrick: number =
-        Math.floor(Math.random() * ((levelData.numberOfColumns - 1) * (levelData.numberOfRows - 1)));
+      const randomBrick: number = Math.floor(
+        Math.random() *
+          ((levelData.numberOfColumns - 1) * (levelData.numberOfRows - 1))
+      );
 
       const image: HTMLImageElement | null =
         isSpecialLevel === 0
           ? await loader.loadImage(KRZYSIU_SPECIAL_IMAGE.src)
           : null;
 
-      const canvas: Canvas = new Canvas(image, levelData)
+      const canvas: Canvas = new Canvas(image, levelData);
 
       canvas.configureCanvas(true, randomBrick);
       canvas.addEventOnResize();

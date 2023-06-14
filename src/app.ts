@@ -1,2 +1,2 @@
-import { menu } from './modules/mainMenu.js'
-menu.start()
+import { menu } from "./modules/mainMenu.js";
+menu.start();
