@@ -22,18 +22,13 @@ export interface Ball_Pos {
   ball_y: number;
 }
 
-export interface GameOverStatus {
+export interface IFinishedGame {
   level: number;
   points: number;
   end: boolean;
   status: number;
-}
-
-export interface IFinishedGame {
-  points: number;
-  status: number;
   elapsedTime: number;
-  level: number;
+  reason: string;
 }
 
 export interface Buff_Pos {

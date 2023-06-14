@@ -1,12 +1,13 @@
 class Loader {
-    IsUrlValid() {
-    }
+    IsUrlValid() { }
     loadSound(soundUrl) {
         const audio = new Audio();
         return new Promise((resolve, reject) => {
-            audio.addEventListener('canplaythrough', (event) => this.itemLoaded(event), false);
+            audio.addEventListener("canplaythrough", (event) => this.itemLoaded(event), false);
             audio.src = soundUrl;
-            soundUrl.length !== 0 ? resolve(audio) : reject("nie udało się wczytać pliku");
+            soundUrl.length !== 0
+                ? resolve(audio)
+                : reject("nie udało się wczytać pliku");
         });
     }
     itemLoaded(event) {

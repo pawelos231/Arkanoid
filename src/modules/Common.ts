@@ -63,7 +63,7 @@ export class Common<T extends boolean = false> {
     return elements;
   }
 
-  protected displayMessageAtTheTopOfTheScreen(message: string, status: number) {
+  protected displayMessageAtTheTopOfTheScreen(message: string, status: Logger) {
     if (status > 2 || status < 0)
       throw new Error(
         "Nieprawidłowy status wiadomości, wprowadź wartości z enuma Errors"

@@ -1,4 +1,4 @@
-import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL } from "../constants/gameState";
+import { LEFT_ARROW, LEFT_NORMAL, RIGHT_ARROW, RIGHT_NORMAL, } from "../constants/gameState";
 export var Logger;
 (function (Logger) {
     Logger[Logger["Message"] = 0] = "Message";

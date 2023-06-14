@@ -38,7 +38,7 @@ export class GameState {
     get gamePointsToWin() {
         return this.pointsToWin;
     }
-    get livesGetter() {
+    get getLives() {
         return this.lives;
     }
     get ball_positions_getter() {

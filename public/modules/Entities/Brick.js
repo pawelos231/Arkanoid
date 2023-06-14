@@ -40,8 +40,10 @@ export class Brick {
         }
     }
     drawBrick(image = null) {
-        if (this.brickPoints.color === DEFAULT_BRICK_COLOR)
+        if (this.brickPoints.color === DEFAULT_BRICK_COLOR) {
+            this.brickState.status = 0;
             return;
+        }
         if (this.brickState.status == 0)
             return;
         this.setColor(this.brickState.specialBrick, this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, image);

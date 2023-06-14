@@ -70,7 +70,7 @@ export class GameState {
     return this.pointsToWin;
   }
 
-  get livesGetter(): number {
+  get getLives(): number {
     return this.lives;
   }
 

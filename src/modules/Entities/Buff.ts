@@ -11,12 +11,13 @@ import {
 } from "../../constants/gameState";
 import { findProperBuff } from "../../data/BuffsData";
 import { Buff_Pos, Particle } from "../../interfaces/gameStateInterface";
+import { AppliedBuff } from "../../interfaces/HelperEnums";
 
 export class Buff implements BuffsInterface {
   private BuffType: BuffTypes;
   private tabOfBricks: Array<Brick>;
   private cachedBrickArray: Array<Brick>;
-  private AppliedBuffs: number[];
+  private AppliedBuffs: AppliedBuff[];
   private time: number = 1000;
   private buff_x: number = window.innerWidth / 2;
   private buff_y: number = 100;
@@ -30,7 +31,7 @@ export class Buff implements BuffsInterface {
   constructor(
     BuffType: BuffTypes,
     tabOfBricks: Array<Brick>,
-    AppliedBuffs: number[] = [],
+    AppliedBuffs: AppliedBuff[] = [],
     time: number,
     ctx: CanvasRenderingContext2D,
     { buff_x, buff_y }: Buff_Pos
@@ -50,10 +51,16 @@ export class Buff implements BuffsInterface {
       this.AppliedBuffs = [];
     }, this.time - 4500);
 
-    //console.log(this.AppliedBuffs)
+    console.log(this.AppliedBuffs);
 
-    if (!this.AppliedBuffs.find((item) => item == this.BuffType)) {
-      this.AppliedBuffs.push(this.BuffType);
+    if (
+      !this.AppliedBuffs.find((item) => item.appliedBuffId == this.BuffType)
+    ) {
+      this.AppliedBuffs.push({
+        timeStart: Date.now(),
+        timeEnd: Date.now() + 4500,
+        appliedBuffId: this.BuffType,
+      });
       return applyBuff();
     }
 

@@ -24,18 +24,32 @@ class LevelSelect extends Common {
 
   private DrawOnCanvas(canvas: Canvas): void {
     const interval = setInterval(() => {
-      const { end, status, points, level } = canvas.draw();
+      const endLevel = canvas.draw();
+      if (!endLevel) return;
+      const { end, status, points, level, elapsedTime, reason } = endLevel;
       if (end) {
         clearInterval(interval);
         switch (status) {
           case GameEndStatus.Win: {
-            const gameOver: GameOver = new GameOver(points, status, 10, level);
+            const gameOver: GameOver = new GameOver(
+              points,
+              status,
+              elapsedTime,
+              level,
+              reason
+            );
             gameOver.ShowUserScreenOver();
             gameOver.SendUserLevelData();
             break;
           }
           case GameEndStatus.Loss: {
-            const gameOver: GameOver = new GameOver(points, status, 10, level);
+            const gameOver: GameOver = new GameOver(
+              points,
+              status,
+              elapsedTime,
+              level,
+              reason
+            );
             gameOver.ShowUserScreenOver();
             console.log("przegrałeś");
             break;

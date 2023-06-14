@@ -6,7 +6,10 @@ export class Paddle {
         this.positions = { paddle_y: 0, paddle_x: 0 };
     }
     initPaddlePos() {
-        return { paddle_x: window.innerWidth / 2 - 100, paddle_y: window.innerHeight - 70 };
+        return {
+            paddle_x: window.innerWidth / 2 - 100,
+            paddle_y: window.innerHeight - 70,
+        };
     }
     clearPaddle(heightOffset) {
         this.ctx.clearRect(this.positions.paddle_x, heightOffset, this.width + 1, this.height + 1);

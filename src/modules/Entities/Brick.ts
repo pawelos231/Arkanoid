@@ -81,7 +81,10 @@ export class Brick {
   }
 
   public drawBrick<T>(image: T | null = null): void {
-    if (this.brickPoints.color === DEFAULT_BRICK_COLOR) return;
+    if (this.brickPoints.color === DEFAULT_BRICK_COLOR) {
+      this.brickState.status = 0;
+      return;
+    }
     if (this.brickState.status == 0) return;
 
     this.setColor<T | null>(

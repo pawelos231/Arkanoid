@@ -36,6 +36,12 @@ export enum BuffTypes {
   DestroyerBuff = 4,
 }
 
+export interface AppliedBuff {
+  timeStart: number;
+  timeEnd: number;
+  appliedBuffId: BuffTypes;
+}
+
 export enum StatusOfSong {
   Succes = 2,
   AlreadyPlaying = 1,

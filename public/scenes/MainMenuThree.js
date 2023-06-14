@@ -81,8 +81,10 @@ export class StarsBackgroundView extends Common {
         this.particles.forEach((particle, index) => {
             particle.mesh.position.z += 0.5855;
             particle.material.emissive.r = 1 * Math.abs(particle.mesh.position.z);
-            particle.material.emissive.g = 3.86 * Math.abs(1 / particle.mesh.position.z);
-            particle.material.emissive.b = 3.86 * Math.abs(1 / particle.mesh.position.z);
+            particle.material.emissive.g =
+                3.86 * Math.abs(1 / particle.mesh.position.z);
+            particle.material.emissive.b =
+                3.86 * Math.abs(1 / particle.mesh.position.z);
             if (particle.mesh.position.z > 1.5) {
                 this.scene.remove(particle.mesh);
                 this.particles.splice(index, 1);

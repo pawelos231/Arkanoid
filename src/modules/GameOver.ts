@@ -3,24 +3,31 @@ import { GameOverInterface } from "../interfaces/classesInterfaces";
 import { Fetcher } from "../helpers/Fetcher";
 import { SEND_STATS_ABOUT_GAME } from "../constants/api/Urls";
 import { IFinishedGame } from "../interfaces/gameStateInterface";
+import { clock } from "../helpers/Clock";
+import { calculateOverallPoints } from "../helpers/calculateOverallLevelPoints";
 
 const INNER_GAME_OVER = "innerGameOver";
 
+type IFinishedOmit = Omit<IFinishedGame, "end">;
+
 export class GameOver extends Common<true> implements GameOverInterface {
-  LevelInfo: IFinishedGame;
+  LevelInfo: IFinishedOmit;
 
   constructor(
     points: number,
     status: number,
     elapsedTime: number,
-    level: number
+    level: number,
+    reason: string
   ) {
     super("GameOver");
-    Object.freeze((this.LevelInfo = { points, status, elapsedTime, level }));
+    Object.freeze(
+      (this.LevelInfo = { points, status, elapsedTime, level, reason })
+    );
   }
 
   public async SendUserLevelData(): Promise<void> {
-    Fetcher.sendDataToBackend<IFinishedGame>(
+    Fetcher.sendDataToBackend<IFinishedOmit>(
       SEND_STATS_ABOUT_GAME,
       this.LevelInfo
     );
@@ -46,10 +53,15 @@ export class GameOver extends Common<true> implements GameOverInterface {
     innerElement.innerHTML += `<p class="statsInfo">Twoje statystyki</p>`;
     innerElement.innerHTML += `
       <ul>
-        <li>Ilość punktów</li>
         <li>Poziom: ${this.LevelInfo.level}</li>
-        <li>Zdobyte punkty: ${this.LevelInfo.points}</li>
-        <li>czas gry: ${this.LevelInfo.elapsedTime}</li>
+        <li>Zdobyte punkty za zbite cegły: ${this.LevelInfo.points}</li>
+        <li>czas gry: ${clock(this.LevelInfo.elapsedTime)}</li>
+        <li>powód: ${this.LevelInfo.reason}</li>
+        <li>zdobyte punkty za ogólny wynik: ${calculateOverallPoints(
+          this.LevelInfo.points,
+          this.LevelInfo.elapsedTime,
+          this.LevelInfo.level
+        )}</li>
       </ul>
     `;
 

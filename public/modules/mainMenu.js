@@ -1,16 +1,16 @@
-import { Common } from './Common.js';
-import { Validator } from '../helpers/PasswordInputValidation.js';
-import { Fetcher } from '../helpers/Fetcher.js';
-import { media } from './Media.js';
-import { levelSelect } from './LevelSelect.js';
-import { Paginator } from './Paginator';
-import { tempTabOfSongs } from '../data/temporarySongsData.js';
-import { tempTabOfSounds } from '../data/temporarySoundsData.js';
-import { GET_STATS_URL } from '../constants/api/Urls.js';
-import { ViewsCreator } from '../helpers/viewCreator.js';
-import { StarsBackgroundView } from '../scenes/MainMenuThree.js';
-import { tabOfBuffs } from '../data/BuffsData.js';
-import { EventListener } from '../helpers/Events/EventListener';
+import { Common } from "./Common.js";
+import { Validator } from "../helpers/PasswordInputValidation.js";
+import { Fetcher } from "../helpers/Fetcher.js";
+import { media } from "./Media.js";
+import { levelSelect } from "./LevelSelect.js";
+import { Paginator } from "./Paginator";
+import { tempTabOfSongs } from "../data/temporarySongsData.js";
+import { tempTabOfSounds } from "../data/temporarySoundsData.js";
+import { GET_STATS_URL } from "../constants/api/Urls.js";
+import { ViewsCreator } from "../helpers/viewCreator.js";
+import { StarsBackgroundView } from "../scenes/MainMenuThree.js";
+import { tabOfBuffs } from "../data/BuffsData.js";
+import { EventListener } from "../helpers/Events/EventListener";
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -80,7 +80,19 @@ class Menu extends Common {
         PAGINATE_SONGS_RESULT_CLASS;
         const LEFT_ITERATOR = this.bindElementByClass(`${PAGINATE_SONGS_RESULT_CLASS}> .left`);
         const RIGHT_ITERATOR = this.bindElementByClass(`${PAGINATE_SONGS_RESULT_CLASS}> .right`);
-        return { MUSIC, SOUNDS, songsList, resetInputsSettings, changeVolumeOfMusic, changeVolumeOfSound, CloseSettings, OpenedSettingsPage, OpenSettings, LEFT_ITERATOR, RIGHT_ITERATOR };
+        return {
+            MUSIC,
+            SOUNDS,
+            songsList,
+            resetInputsSettings,
+            changeVolumeOfMusic,
+            changeVolumeOfSound,
+            CloseSettings,
+            OpenedSettingsPage,
+            OpenSettings,
+            LEFT_ITERATOR,
+            RIGHT_ITERATOR,
+        };
     }
     declareHTMLInfoELements() {
         const OpenInfo = this.bindElementByClass(INFO);
@@ -89,7 +101,14 @@ class Menu extends Common {
         const ListOfBuffs = this.bindElementByClass(LIST_OF_BUFFS);
         const LEFT_ITERATOR = this.bindElementByClass(`${PAGINATE_BUFFS_RESULT_CLASS}> .left`);
         const RIGHT_ITERATOR = this.bindElementByClass(`${PAGINATE_BUFFS_RESULT_CLASS}> .right`);
-        return { OpenInfo, closeInfo, ListOfBuffs, OpenedInfoPage, RIGHT_ITERATOR, LEFT_ITERATOR };
+        return {
+            OpenInfo,
+            closeInfo,
+            ListOfBuffs,
+            OpenedInfoPage,
+            RIGHT_ITERATOR,
+            LEFT_ITERATOR,
+        };
     }
     switchBetweenRegisterAndLogin() {
         const changeValueOfMenuToLogin = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER);
@@ -98,8 +117,9 @@ class Menu extends Common {
         changeValueOfMenuToLogin.addEventListener("click", () => {
             this.changeVisbilityOfGivenElement(this.formElementRegister, flag);
             flag = !flag;
-            flag ?
-                changeValueOfMenuToLogin.textContent = I_WANT_TO_REGISTER : changeValueOfMenuToLogin.textContent = I_WANT_TO_LOGIN;
+            flag
+                ? (changeValueOfMenuToLogin.textContent = I_WANT_TO_REGISTER)
+                : (changeValueOfMenuToLogin.textContent = I_WANT_TO_LOGIN);
             this.changeVisbilityOfGivenElement(formElementLogin, flag);
         });
     }

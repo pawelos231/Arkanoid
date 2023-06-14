@@ -18,18 +18,21 @@ class LevelSelect extends Common {
     }
     DrawOnCanvas(canvas) {
         const interval = setInterval(() => {
-            const { end, status, points, level } = canvas.draw();
+            const endLevel = canvas.draw();
+            if (!endLevel)
+                return;
+            const { end, status, points, level, elapsedTime, reason } = endLevel;
             if (end) {
                 clearInterval(interval);
                 switch (status) {
                     case GameEndStatus.Win: {
-                        const gameOver = new GameOver(points, status, 10, level);
+                        const gameOver = new GameOver(points, status, elapsedTime, level, reason);
                         gameOver.ShowUserScreenOver();
                         gameOver.SendUserLevelData();
                         break;
                     }
                     case GameEndStatus.Loss: {
-                        const gameOver = new GameOver(points, status, 10, level);
+                        const gameOver = new GameOver(points, status, elapsedTime, level, reason);
                         gameOver.ShowUserScreenOver();
                         console.log("przegrałeś");
                         break;
@@ -43,7 +46,8 @@ class LevelSelect extends Common {
             const MenuCanvas = this.bindElementByClass("webgl");
             this.changeVisbilityOfGivenElement(MenuCanvas, false);
             const isSpecialLevel = Math.floor(Math.random() * 1);
-            const randomBrick = Math.floor(Math.random() * ((levelData.numberOfColumns - 1) * (levelData.numberOfRows - 1)));
+            const randomBrick = Math.floor(Math.random() *
+                ((levelData.numberOfColumns - 1) * (levelData.numberOfRows - 1)));
             const image = isSpecialLevel === 0
                 ? await loader.loadImage(KRZYSIU_SPECIAL_IMAGE.src)
                 : null;

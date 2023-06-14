@@ -8,11 +8,10 @@ import {
   INIT_BALL_POS,
   INIT_PADDLE_POS,
 } from "../constants/gameState";
-import { GameOverStatus } from "../interfaces/gameStateInterface";
+import { IFinishedGame } from "../interfaces/gameStateInterface";
 import { Directions } from "../interfaces/HelperEnums";
 import { GameState } from "./gameState";
 import { media } from "./Media";
-import { BrickPoints } from "../interfaces/gameStateInterface";
 import { SpecialBrick } from "./SpecialBrickView";
 import { Buff } from "./Entities/Buff";
 import { BuffTypes } from "../interfaces/HelperEnums";
@@ -21,7 +20,15 @@ import { Buff_Pos } from "../interfaces/gameStateInterface";
 import { gameOverStatus } from "../helpers/gameOverStatusCheck";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 import { Level, BrickData } from "../interfaces/level";
-import { tabOfBrickData } from "../data/tabOfBrickData";
+import { AppliedBuff } from "../interfaces/HelperEnums";
+import { calculateBrickDimmenssions } from "../helpers/calculateBrickDimmensions";
+import { clock } from "../helpers/Clock";
+
+const DEFAULT_BRICK_HEIGHT = 0;
+const DEFAULT_BRICK_WIDTH = 0;
+const DEFAULT_BALL_MOVEMENT_Y_SPEED = -12;
+const DEFAULT_BALL_MOVEMENT_X_SPEED = -12;
+const NO_SPECIAL_BRICK_INDEX = -100;
 
 interface ICanvas {
   getGameState: GameState;
@@ -33,10 +40,10 @@ interface ICanvas {
 const GAME_CANVAS = "game_canvas";
 
 export class Canvas extends Common<true> implements ICanvas {
-  private BRICK_HEIGHT: number = 0;
-  private BRICK_WIDTH: number = 0;
-  private ballMoveRateX: number = -12;
-  private ballMoveRateY: number = -12;
+  private BRICK_HEIGHT: number = DEFAULT_BRICK_HEIGHT;
+  private BRICK_WIDTH: number = DEFAULT_BRICK_WIDTH;
+  private ballMoveRateX: number = DEFAULT_BALL_MOVEMENT_X_SPEED;
+  private ballMoveRateY: number = DEFAULT_BALL_MOVEMENT_Y_SPEED;
   private rowsCount: number;
   private columnsCount: number;
   private hitCounter: number;
@@ -49,10 +56,13 @@ export class Canvas extends Common<true> implements ICanvas {
   private gameState: GameState;
   private bricksArray: Array<Brick>;
   private image: HTMLImageElement | null;
-  private appliedBuffs: number[];
+  private appliedBuffs: AppliedBuff[] = [];
   private drawBuffFlag: boolean = false;
   private Buffs = new Map<string, Buff>();
   private levelData: Level;
+  private endGame: boolean = false;
+  private elapsedTime: number = 0;
+  private endLevelData: IFinishedGame | null = null;
 
   constructor(image: HTMLImageElement | null, levelData: Level) {
     super(GAME_CANVAS);
@@ -66,7 +76,6 @@ export class Canvas extends Common<true> implements ICanvas {
     this.playerPoints = 0;
     this.hitCounter = 0;
     this.pointsToWin = this.levelData.requiredScore;
-    this.appliedBuffs = [];
 
     this.gameState = new GameState(
       this.levelData.level,
@@ -97,10 +106,21 @@ export class Canvas extends Common<true> implements ICanvas {
 
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
-    this.BRICK_HEIGHT = window.innerHeight / 18;
-    this.BRICK_WIDTH = window.innerWidth / this.columnsCount;
+    const { WIDTH, HEIGHT } = calculateBrickDimmenssions(
+      this.rowsCount,
+      this.columnsCount
+    );
 
-    isSpecialLevel ? this.initBricks(randomBrickIndex) : this.initBricks(-100);
+    this.BRICK_HEIGHT = HEIGHT;
+    this.BRICK_WIDTH = WIDTH;
+    isSpecialLevel
+      ? this.initBricks(randomBrickIndex)
+      : this.initBricks(NO_SPECIAL_BRICK_INDEX);
+
+    setInterval(() => {
+      this.levelData.timer -= 1;
+      this.elapsedTime++;
+    }, 1000);
   }
 
   public addEventOnResize(): void {
@@ -109,9 +129,12 @@ export class Canvas extends Common<true> implements ICanvas {
 
       this.canvas.height = values[0];
       this.canvas.width = values[1];
-
-      this.BRICK_HEIGHT = window.innerHeight / 18;
-      this.BRICK_WIDTH = window.innerWidth / 8;
+      const { WIDTH, HEIGHT } = calculateBrickDimmenssions(
+        this.rowsCount,
+        this.columnsCount
+      );
+      this.BRICK_HEIGHT = HEIGHT;
+      this.BRICK_WIDTH = WIDTH;
 
       for (let i = 0; i < this.bricksArray.length; i++) {
         this.bricksArray[i].widthSetter = this.BRICK_WIDTH;
@@ -228,7 +251,7 @@ export class Canvas extends Common<true> implements ICanvas {
     //declare some buff dropping condtion here
     //1 IN 10 CHANCE
 
-    if (Math.floor(Math.random() * 10) == 2) {
+    if (Math.floor(Math.random() * 2) == 1) {
       const buffDropPosition: Buff_Pos = {
         buff_x: BRICK.brickStateGet.brick_x * this.BRICK_WIDTH + 110,
         buff_y: BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT,
@@ -296,13 +319,13 @@ export class Canvas extends Common<true> implements ICanvas {
         let timesToHit: number = this.bricksArray[i].brickPointsGet.timesToHit;
 
         timesToHit--;
-        console.log(timesToHit);
 
         this.bricksArray[i].timesToHitSet = timesToHit;
 
         if (timesToHit <= 0) {
           this.bricksArray[i].setStatus = 0;
         }
+        this.CheckWin();
 
         media.spawnSoundWhenHitBrick();
         break;
@@ -327,19 +350,6 @@ export class Canvas extends Common<true> implements ICanvas {
     }
   }
 
-  private CheckWin(): GameOverStatus {
-    const WIN: boolean = !this.bricksArray.find(
-      (item: Brick) => item.getStatus == 1
-    );
-
-    return gameOverStatus(
-      this.gameState.getLevel,
-      this.gameState.playerPointsGet,
-      WIN,
-      this.gameState.lives
-    );
-  }
-
   private drawBall(): void {
     //change to fix resizeable
     const ball: Ball = new Ball(this.ctx, 25);
@@ -359,6 +369,7 @@ export class Canvas extends Common<true> implements ICanvas {
 
     if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
       this.gameState.lives = this.gameState.lives - 1;
+      this.CheckWin();
 
       this.ballMoveRateY = -12;
 
@@ -394,12 +405,12 @@ export class Canvas extends Common<true> implements ICanvas {
   private drawPaddle(): void {
     const paddle: Paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
 
-    this.isBuffColidedWithPaddle();
+    this.buffColidedWithPaddle();
 
     paddle.drawPaddle(this.gameState.paddle_positions);
   }
 
-  private isBuffColidedWithPaddle() {
+  private buffColidedWithPaddle() {
     const { paddle_x, paddle_y } = this.gameState.paddle_positions;
 
     for (const [key, value] of this.Buffs) {
@@ -426,7 +437,6 @@ export class Canvas extends Common<true> implements ICanvas {
     specialBrick: boolean,
     brickData: Omit<BrickData, "columnNumber" | "rowNumber">
   ): void {
-    console.log(brick_x, brick_y);
     const brick: Brick = new Brick(
       this.BRICK_WIDTH,
       this.BRICK_HEIGHT,
@@ -447,7 +457,6 @@ export class Canvas extends Common<true> implements ICanvas {
     );
 
     let count: number = 0;
-    console.log(sortedLevel);
     for (let i = 0; i < sortedLevel.length; i++) {
       const levelData: Omit<BrickData, "columnNumber" | "rowNumber"> = {
         color: sortedLevel[i].color,
@@ -487,13 +496,14 @@ export class Canvas extends Common<true> implements ICanvas {
     }
   }
 
-  private drawGame(): GameOverStatus {
+  private drawGame(): IFinishedGame | void {
     this.drawPaddle();
     this.drawBricks();
     this.drawBall();
     this.drawBuffOuter();
-
-    return this.CheckWin();
+    if (this.endGame) {
+      return this.endLevelData!;
+    }
   }
 
   private clearCanvas(): void {
@@ -512,15 +522,46 @@ export class Canvas extends Common<true> implements ICanvas {
     }
   }
 
+  private drawClock() {
+    this.ctx.font = "24px Arial";
+    this.ctx.fillStyle = "red";
+    this.ctx.textAlign = "center";
+    const x = this.canvas.width - 100;
+    const y = this.canvas.height - 30;
+    this.ctx.fillText(clock(this.levelData.timer), x, y);
+  }
+
   private setInitCanvasSize(): void {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
   }
 
-  public draw(): GameOverStatus {
+  private CheckWin(): void {
+    const WIN: boolean = !this.bricksArray.find(
+      (item: Brick) => item.getStatus == 1
+    );
+    console.log("call");
+
+    const OverStatus = gameOverStatus(
+      this.gameState.getLevel,
+      this.gameState.playerPointsGet,
+      WIN,
+      this.gameState.getLives,
+      this.elapsedTime,
+      this.levelData.timer
+    );
+
+    if (OverStatus.end) {
+      this.endLevelData = OverStatus;
+      this.endGame = true;
+    }
+  }
+
+  public draw(): IFinishedGame | void {
     this.handleKeyPress();
     this.setInitCanvasSize();
     this.clearCanvas();
+    this.drawClock();
 
     return this.drawGame();
   }
