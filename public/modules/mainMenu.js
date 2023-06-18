@@ -4,13 +4,13 @@ import { Fetcher } from "../helpers/Fetcher.js";
 import { media } from "./Media.js";
 import { levelSelect } from "./LevelSelect.js";
 import { Paginator } from "./Paginator";
-import { tempTabOfSongs } from "../data/temporarySongsData.js";
 import { tempTabOfSounds } from "../data/temporarySoundsData.js";
 import { GET_STATS_URL } from "../constants/api/Urls.js";
 import { ViewsCreator } from "../helpers/viewCreator.js";
 import { StarsBackgroundView } from "../scenes/MainMenuThree.js";
 import { tabOfBuffs } from "../data/BuffsData.js";
 import { EventListener } from "../helpers/Events/EventListener";
+import { GET_SONGS } from "../constants/api/Urls.js";
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -168,8 +168,8 @@ class Menu extends Common {
         const creatorOfViews = new ViewsCreator();
         const createViewForSongs = creatorOfViews.createViewForSongs.bind(creatorOfViews);
         const createViewForSounds = creatorOfViews.createViewForSounds.bind(creatorOfViews);
-        htmlElements.OpenSettings.addEventListener("click", () => {
-            const SongsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tempTabOfSongs, createViewForSongs, PAGINATE_SONGS_RESULT_CLASS, this.EventListenerInstance);
+        htmlElements.OpenSettings.addEventListener("click", async () => {
+            const SongsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, await Fetcher.FetchData(GET_SONGS), createViewForSongs, PAGINATE_SONGS_RESULT_CLASS, this.EventListenerInstance);
             const SoundsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSounds, PAGINATE_SONGS_RESULT_CLASS, this.EventListenerInstance);
             htmlElements.SOUNDS.addEventListener("click", () => {
                 SoundsPaginator.PaginateResults();

@@ -13,6 +13,7 @@ import { StarsBackgroundView } from "../scenes/MainMenuThree.js";
 import { tabOfBuffs } from "../data/BuffsData.js";
 import { Buff } from "../data/BuffsData.js";
 import { EventListener } from "../helpers/Events/EventListener";
+import { GET_SONGS } from "../constants/api/Urls.js";
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
@@ -252,13 +253,13 @@ class Menu extends Common<true> {
     const createViewForSounds: VisulizerFunc<Sounds> =
       creatorOfViews.createViewForSounds.bind(creatorOfViews);
 
-    htmlElements.OpenSettings.addEventListener("click", () => {
+    htmlElements.OpenSettings.addEventListener("click", async () => {
       const SongsPaginator = new Paginator<Songs>(
         htmlElements.songsList,
         htmlElements.RIGHT_ITERATOR,
         htmlElements.LEFT_ITERATOR,
         ITEMS_PER_PAGE,
-        tempTabOfSongs,
+        await Fetcher.FetchData(GET_SONGS),
         createViewForSongs,
         PAGINATE_SONGS_RESULT_CLASS,
         this.EventListenerInstance
