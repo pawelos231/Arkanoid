@@ -41,7 +41,6 @@ export class Canvas extends Common {
             this.eventListener.removeListenersOnGivenNode(window, "resize");
             this.eventListener.removeListenersOnGivenNode(window, "keyup");
             this.eventListener.removeListenersOnGivenNode(window, "keydown");
-            this.eventListener.hasListeners(window);
         };
         this.levelData = levelData;
         this.canvas = null;

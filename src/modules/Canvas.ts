@@ -522,7 +522,6 @@ export class Canvas extends Common<true> implements ICanvas {
     this.eventListener.removeListenersOnGivenNode(window, "resize");
     this.eventListener.removeListenersOnGivenNode(window, "keyup");
     this.eventListener.removeListenersOnGivenNode(window, "keydown");
-    this.eventListener.hasListeners(window);
   };
 
   private drawClock() {

@@ -87,32 +87,30 @@ export class Buff implements BuffsInterface {
     console.log("apply PADDLE SPEED");
   }
 
-  public applyBuffEffects(): void {
-    console.log(this.BuffType);
+  public async applyBuffEffects(): Promise<void> {
     switch (this.BuffType) {
       case BuffTypes.PaddleSpeed: {
-        Promise.resolve(Media.spanwCustomSound(PADDLE_SPEED_BUFF_SOUND));
+        await Media.spanwCustomSound(PADDLE_SPEED_BUFF_SOUND);
         this.WrapperIfBuffIsActive(this.applyPaddleSpeedBuff.bind(this));
         break;
       }
       case BuffTypes.AddLive: {
-        Promise.resolve(Media.spanwCustomSound(ADD_LIVE_BUFF_SOUND));
+        await Media.spanwCustomSound(ADD_LIVE_BUFF_SOUND);
         this.WrapperIfBuffIsActive(this.applyAddLivesBuff.bind(this));
         break;
       }
       case BuffTypes.DestroyerBuff: {
-        Promise.resolve(Media.spanwCustomSound(DESTROYER_BUFF_SOUND));
+        await Media.spanwCustomSound(DESTROYER_BUFF_SOUND);
         this.WrapperIfBuffIsActive(this.applyDestroyerBuff.bind(this));
         break;
       }
       case BuffTypes.SpeedBuff: {
-        Promise.resolve(Media.spanwCustomSound(SPEED_BUFF_SOUND));
+        await Media.spanwCustomSound(SPEED_BUFF_SOUND);
         this.WrapperIfBuffIsActive(this.applySpeedBuff.bind(this));
         break;
       }
       case BuffTypes.InvincibilityBuff: {
-        Promise.resolve(Media.spanwCustomSound(INVINCIBILITY_BUFF_SOUND));
-
+        await Media.spanwCustomSound(INVINCIBILITY_BUFF_SOUND);
         this.WrapperIfBuffIsActive(this.applyInvincibiltyBuff.bind(this));
         break;
       }
