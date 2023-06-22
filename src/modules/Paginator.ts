@@ -4,11 +4,16 @@ import { PaginatorInterface } from "../interfaces/classesInterfaces";
 import { VisulizerFunc } from "../interfaces/PaginationInterfaces";
 import { EventListener } from "../helpers/Events/EventListener";
 
-export class Paginator<T> extends Common implements PaginatorInterface<T> {
+const PAGE_MUST_BE_IN_RANGE = "Strona musi być w rangu";
+
+export class Paginator<T>
+  extends Common<false>
+  implements PaginatorInterface<T>
+{
   private readonly createView: VisulizerFunc<T>;
   private readonly mediaToLoad: T[];
   private readonly MainList: HTMLElement;
-  private readonly EventListenerInstance: EventListener;
+  private readonly eventListener: EventListener;
   private ITEMS_PER_PAGE: number;
   private PaginationClass: string;
   private currentPage: number;
@@ -25,14 +30,14 @@ export class Paginator<T> extends Common implements PaginatorInterface<T> {
     mediaToLoad: T[],
     createView: VisulizerFunc<T>,
     PaginationClass: string,
-    EventListenerInstance: EventListener
+    eventListener: EventListener
   ) {
     super();
     this.createView = createView;
     this.mediaToLoad = mediaToLoad;
     this.PaginationClass = PaginationClass;
     this.MainList = MainList;
-    this.EventListenerInstance = EventListenerInstance;
+    this.eventListener = eventListener;
     this.RightIterator = RightIterator;
     this.LeftIterator = LeftIterator;
     this.ITEMS_PER_PAGE = ITEMS_PER_PAGE;
@@ -67,7 +72,7 @@ export class Paginator<T> extends Common implements PaginatorInterface<T> {
     if (this.currentPage > PAGES - 1) {
       this.currentPage--;
       this.displayMessageAtTheTopOfTheScreen(
-        "Strona musi być w rangu",
+        PAGE_MUST_BE_IN_RANGE,
         Logger.Error
       );
       return;
@@ -82,7 +87,7 @@ export class Paginator<T> extends Common implements PaginatorInterface<T> {
     if (this.currentPage < 0) {
       this.currentPage++;
       this.displayMessageAtTheTopOfTheScreen(
-        "Strona musi być w rangu",
+        PAGE_MUST_BE_IN_RANGE,
         Logger.Error
       );
       return;
@@ -93,45 +98,54 @@ export class Paginator<T> extends Common implements PaginatorInterface<T> {
   }
 
   private cleanupListeners(): void {
-    this.EventListenerInstance.removeListenersOnGivenNode(
-      this.RightIterator,
-      "click"
-    );
+    this.eventListener.removeListenersOnGivenNode(this.RightIterator, "click");
 
-    this.EventListenerInstance.removeListenersOnGivenNode(
-      this.LeftIterator,
-      "click"
-    );
+    this.eventListener.removeListenersOnGivenNode(this.LeftIterator, "click");
   }
 
   public PaginateResults(): void {
-    this.cleanupListeners();
+    try {
+      this.cleanupListeners();
 
-    const PAGE_NUMBER_CONTAINER = this.bindElementByClass(
-      `${this.PaginationClass}> .page`
-    );
+      const PAGE_NUMBER_CONTAINER = this.bindElementByClass(
+        `${this.PaginationClass}> .page`
+      );
 
-    const PAGINATION_ELEMENT: HTMLElement = this.bindElementByClass(
-      this.PaginationClass
-    );
+      const PAGINATION_ELEMENT: HTMLElement = this.bindElementByClass(
+        this.PaginationClass
+      );
 
-    this.changeVisbilityOfGivenElement(PAGINATION_ELEMENT, true);
+      if (!PAGE_NUMBER_CONTAINER || !PAGINATION_ELEMENT) {
+        console.warn("Required elements not found.");
+        return;
+      }
 
-    this.LIST_LEN = this.mediaToLoad.length;
-    this.PAGES = Math.ceil(this.LIST_LEN / this.ITEMS_PER_PAGE);
+      this.changeVisbilityOfGivenElement(PAGINATION_ELEMENT, true);
 
-    PAGE_NUMBER_CONTAINER.innerHTML = `${this.currentPage + 1} z ${this.PAGES}`;
+      if (!Array.isArray(this.mediaToLoad) || this.mediaToLoad.length === 0) {
+        console.warn("Invalid mediaToLoad data.");
+        return;
+      }
 
-    this.PickProperVisualizer();
+      this.LIST_LEN = this.mediaToLoad.length;
+      this.PAGES = Math.ceil(this.LIST_LEN / this.ITEMS_PER_PAGE);
 
-    const incrementRight = (): void =>
-      this.incrementRight(this.PAGES, PAGE_NUMBER_CONTAINER as HTMLElement);
+      PAGE_NUMBER_CONTAINER.innerHTML = `${this.currentPage + 1} z ${
+        this.PAGES
+      }`;
 
-    const incrementLeft = (): void =>
-      this.incrementLeft(this.PAGES, PAGE_NUMBER_CONTAINER as HTMLElement);
+      this.PickProperVisualizer();
 
-    this.EventListenerInstance.add(this.RightIterator, "click", incrementRight);
+      const incrementRight = (): void =>
+        this.incrementRight(this.PAGES, PAGE_NUMBER_CONTAINER as HTMLElement);
 
-    this.EventListenerInstance.add(this.LeftIterator, "click", incrementLeft);
+      const incrementLeft = (): void =>
+        this.incrementLeft(this.PAGES, PAGE_NUMBER_CONTAINER as HTMLElement);
+
+      this.eventListener.add(this.RightIterator, "click", incrementRight);
+      this.eventListener.add(this.LeftIterator, "click", incrementLeft);
+    } catch (error) {
+      console.error("An error occurred in PaginateResults:", error);
+    }
   }
 }

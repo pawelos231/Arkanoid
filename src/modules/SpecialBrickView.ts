@@ -1,7 +1,7 @@
 import { Media } from "./Media";
 export class SpecialBrick {
-  private image: any | HTMLImageElement;
-  private sound: string;
+  private readonly image: any | HTMLImageElement;
+  private readonly sound: string;
 
   constructor(image: HTMLImageElement, sound: string) {
     this.image = image;
@@ -11,7 +11,6 @@ export class SpecialBrick {
   public displayViewOfSpecialBrick() {
     if (this.sound == "")
       throw new Error("nie mozesz przekazać pustego stringa");
-    console.log(this.image);
     Media.spanwCustomSound(this.sound);
     console.log("trafiony special");
   }

@@ -1,7 +1,7 @@
 import { Common } from "../modules/Common";
 import { Validator } from "./PasswordInputValidation";
 import { HIDDEN } from "../constants/classNames";
-import { DEVELEPOMENT_URL, POST } from '../constants/Fetchers';
+import { DEVELEPOMENT_URL, POST } from "../constants/Fetchers";
 const PASSWORD_INPUT_ELEMENT = "password";
 const ELEMENT_DOES_NOT_EXIST = "element nie istnieje";
 const PASSWORD = "haslo";
@@ -23,7 +23,7 @@ export class Fetcher extends Common {
         }
         await fetch(`${DEVELEPOMENT_URL}/${parentName}`, {
             method: POST,
-            body: JSON.stringify(FormObject)
+            body: JSON.stringify(FormObject),
         })
             .then((res) => res.json())
             .then((data) => {
@@ -53,8 +53,8 @@ export class Fetcher extends Common {
         loginAndRegisterFormNodes.forEach((item) => {
             item.addEventListener("submit", (e) => {
                 e.preventDefault();
-                const newForm2 = item;
-                const newFormData = new FormData(newForm2);
+                const createdForm = item;
+                const newFormData = new FormData(createdForm);
                 for (const [key, value] of newFormData) {
                     //if the name of the input is not Password then continue with loop
                     if (key !== PASSWORD)
@@ -79,7 +79,7 @@ export class Fetcher extends Common {
     static async FetchData(url) {
         try {
             const response = await fetch(url, {
-                method: 'GET',
+                method: "GET",
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -88,16 +88,16 @@ export class Fetcher extends Common {
             return data;
         }
         catch (error) {
-            console.error('Error fetching data:', error);
+            console.error("Error fetching data:", error);
             throw error;
         }
     }
     static async sendDataToBackend(url, data) {
         try {
             const response = await fetch(url, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data),
             });
@@ -105,10 +105,9 @@ export class Fetcher extends Common {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const responseData = await response.json();
-            console.log(responseData);
         }
         catch (error) {
-            console.error('Error sending data to backend:', error);
+            console.error("Error sending data to backend:", error);
             throw error;
         }
     }

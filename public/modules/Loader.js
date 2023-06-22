@@ -1,5 +1,4 @@
 class Loader {
-    IsUrlValid() { }
     loadSound(soundUrl) {
         const audio = new Audio();
         return new Promise((resolve, reject) => {

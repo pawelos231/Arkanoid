@@ -85,6 +85,7 @@ export class Brick {
       this.brickState.status = 0;
       return;
     }
+
     if (this.brickState.status == 0) return;
 
     this.setColor<T | null>(

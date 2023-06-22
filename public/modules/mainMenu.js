@@ -46,7 +46,7 @@ class Menu extends Common {
         this.fetcher = new Fetcher(this.elementId);
         this.formElementRegister = this.bindElementByClass(FORM_TO_REGISTER);
         this.StarsBackground = new StarsBackgroundView(600, "Stars");
-        this.EventListenerInstance = new EventListener();
+        this.eventListener = new EventListener();
     }
     GenerateBackground() {
         let interval;
@@ -114,7 +114,7 @@ class Menu extends Common {
         const changeValueOfMenuToLogin = this.bindElementByClass(CHECK_IF_LOGIN_OR_REGISTER);
         const formElementLogin = this.bindElementByClass(FORM_TO_LOGIN);
         let flag = false;
-        changeValueOfMenuToLogin.addEventListener("click", () => {
+        this.eventListener.add(changeValueOfMenuToLogin, "click", () => {
             this.changeVisbilityOfGivenElement(this.formElementRegister, flag);
             flag = !flag;
             flag
@@ -131,9 +131,8 @@ class Menu extends Common {
         StatsElement.addEventListener("click", async () => {
             this.changeVisbilityOfGivenElement(ModalElementStats, flag);
             flag = !flag;
-            const fetchData = Fetcher.FetchData(GET_STATS_URL);
             ResultsCheckBoard.children[0].textContent = "ładuje";
-            const stats = await fetchData;
+            const stats = await Fetcher.FetchData(GET_STATS_URL);
             ResultsCheckBoard.children[1].textContent = "";
             ResultsCheckBoard.children[0].textContent = "Najlepsze Statystyki Graczy";
             stats.map((value) => {
@@ -155,22 +154,23 @@ class Menu extends Common {
             const creatorOfViews = new ViewsCreator();
             const createViewForBuffs = creatorOfViews.createViewForBuffs.bind(creatorOfViews);
             this.changeVisbilityOfGivenElement(htmlInfoElements.OpenedInfoPage, true);
-            const PaginatorInstance = new Paginator(htmlInfoElements.ListOfBuffs, htmlInfoElements.RIGHT_ITERATOR, htmlInfoElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tabOfBuffs, createViewForBuffs, PAGINATE_BUFFS_RESULT_CLASS, this.EventListenerInstance);
+            const PaginatorInstance = new Paginator(htmlInfoElements.ListOfBuffs, htmlInfoElements.RIGHT_ITERATOR, htmlInfoElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tabOfBuffs, createViewForBuffs, PAGINATE_BUFFS_RESULT_CLASS, this.eventListener);
             PaginatorInstance.PaginateResults();
-            htmlInfoElements.closeInfo.addEventListener("click", () => {
+            this.eventListener.add(htmlInfoElements.closeInfo, "click", () => {
                 this.changeVisbilityOfGivenElement(htmlInfoElements.OpenedInfoPage, false);
+                this.eventListener.removeListenersOnGivenNode(htmlInfoElements.closeInfo, "click");
             });
         });
     }
     async openSettings() {
         const htmlElements = this.declareHTMLSettingsELements();
         const ITEMS_PER_PAGE = 5;
-        const creatorOfViews = new ViewsCreator();
-        const createViewForSongs = creatorOfViews.createViewForSongs.bind(creatorOfViews);
-        const createViewForSounds = creatorOfViews.createViewForSounds.bind(creatorOfViews);
+        const viewsCreator = new ViewsCreator();
+        const createViewForSongs = viewsCreator.createViewForSongs.bind(viewsCreator);
+        const createViewForSounds = viewsCreator.createViewForSounds.bind(viewsCreator);
         htmlElements.OpenSettings.addEventListener("click", async () => {
-            const SongsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, await Fetcher.FetchData(GET_SONGS), createViewForSongs, PAGINATE_SONGS_RESULT_CLASS, this.EventListenerInstance);
-            const SoundsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSounds, PAGINATE_SONGS_RESULT_CLASS, this.EventListenerInstance);
+            const SongsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, await Fetcher.FetchData(GET_SONGS), createViewForSongs, PAGINATE_SONGS_RESULT_CLASS, this.eventListener);
+            const SoundsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSounds, PAGINATE_SONGS_RESULT_CLASS, this.eventListener);
             htmlElements.SOUNDS.addEventListener("click", () => {
                 SoundsPaginator.PaginateResults();
             });
@@ -178,13 +178,13 @@ class Menu extends Common {
                 SongsPaginator.PaginateResults();
             });
             this.changeVisbilityOfGivenElement(htmlElements.OpenedSettingsPage, true);
-            htmlElements.resetInputsSettings.addEventListener("click", () => {
+            this.eventListener.add(htmlElements.resetInputsSettings, "click", () => {
                 media.resetValuesToDefault(htmlElements.changeVolumeOfMusic, htmlElements.changeVolumeOfSound);
             });
             media.changeVolumeOfBackgroundMusic(htmlElements.changeVolumeOfMusic);
             media.changeVolumeOfSound(htmlElements.changeVolumeOfSound);
         });
-        htmlElements.CloseSettings.addEventListener("click", () => {
+        this.eventListener.add(htmlElements.CloseSettings, "click", () => {
             this.changeVisbilityOfGivenElement(htmlElements.OpenedSettingsPage, false);
         });
     }
@@ -199,13 +199,13 @@ class Menu extends Common {
             this.makeLoginPanelInvisible();
             this.changeVisbilityOfGivenElement(startGamePanel, true);
         }
-        StartGameButton.addEventListener("click", async () => {
+        this.eventListener.add(StartGameButton, "click", () => {
             this.changeVisbilityOfGivenElement(LevelSelect, true);
             this.changeVisbilityOfGivenElement(startGamePanel, false);
             this.destroyBackground();
             levelSelect.handleOnClickLevel();
         });
-        BackToMenuPanel.addEventListener("click", () => {
+        this.eventListener.add(BackToMenuPanel, "click", () => {
             this.StarsBackground = this.cachedInstance;
             this.changeVisbilityOfGivenElement(LevelSelect, false);
             this.changeVisbilityOfGivenElement(startGamePanel, true);
