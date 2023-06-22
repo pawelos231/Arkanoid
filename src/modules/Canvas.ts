@@ -23,19 +23,14 @@ import { Level, BrickData } from "../interfaces/level";
 import { AppliedBuff } from "../interfaces/HelperEnums";
 import { calculateBrickDimmenssions } from "../helpers/calculateBrickDimmensions";
 import { clock } from "../helpers/Clock";
+import { ICanvas } from "../interfaces/classesInterfaces";
+import { EventListener } from "../helpers/Events/EventListener";
 
 const DEFAULT_BRICK_HEIGHT = 0;
 const DEFAULT_BRICK_WIDTH = 0;
 const DEFAULT_BALL_MOVEMENT_Y_SPEED = -12;
 const DEFAULT_BALL_MOVEMENT_X_SPEED = -12;
 const NO_SPECIAL_BRICK_INDEX = -100;
-
-interface ICanvas {
-  getGameState: GameState;
-  configureCanvas: (isSpecialLevel: boolean, randomBrickIndex?: number) => void;
-  addEventOnResize: () => void;
-  setListenerMovePaddle: () => void;
-}
 
 const GAME_CANVAS = "game_canvas";
 
@@ -44,6 +39,7 @@ export class Canvas extends Common<true> implements ICanvas {
   private BRICK_WIDTH: number = DEFAULT_BRICK_WIDTH;
   private ballMoveRateX: number = DEFAULT_BALL_MOVEMENT_X_SPEED;
   private ballMoveRateY: number = DEFAULT_BALL_MOVEMENT_Y_SPEED;
+
   private rowsCount: number;
   private columnsCount: number;
   private hitCounter: number;
@@ -63,6 +59,8 @@ export class Canvas extends Common<true> implements ICanvas {
   private endGame: boolean = false;
   private elapsedTime: number = 0;
   private endLevelData: IFinishedGame | null = null;
+  private timer: NodeJS.Timeout;
+  private eventListener: EventListener = new EventListener();
 
   constructor(image: HTMLImageElement | null, levelData: Level) {
     super(GAME_CANVAS);
@@ -76,6 +74,10 @@ export class Canvas extends Common<true> implements ICanvas {
     this.playerPoints = 0;
     this.hitCounter = 0;
     this.pointsToWin = this.levelData.requiredScore;
+    this.timer = setInterval(() => {
+      this.levelData.timer -= 1;
+      this.elapsedTime++;
+    }, 1000);
 
     this.gameState = new GameState(
       this.levelData.level,
@@ -116,15 +118,10 @@ export class Canvas extends Common<true> implements ICanvas {
     isSpecialLevel
       ? this.initBricks(randomBrickIndex)
       : this.initBricks(NO_SPECIAL_BRICK_INDEX);
-
-    setInterval(() => {
-      this.levelData.timer -= 1;
-      this.elapsedTime++;
-    }, 1000);
   }
 
   public addEventOnResize(): void {
-    window.addEventListener("resize", () => {
+    this.eventListener.add(window, "resize", () => {
       let values: number[] = [window.innerHeight, window.innerWidth];
 
       this.canvas.height = values[0];
@@ -144,7 +141,7 @@ export class Canvas extends Common<true> implements ICanvas {
   }
 
   public setListenerMovePaddle(): void {
-    window.addEventListener("keydown", (event: KeyboardEvent) => {
+    this.eventListener.add(window, "keydown", (event: KeyboardEvent) => {
       const keyCode: number = event.keyCode;
       if (
         keyCode == Directions.LeftArrows ||
@@ -159,8 +156,7 @@ export class Canvas extends Common<true> implements ICanvas {
         this.keyPressedRight = true;
       }
     });
-
-    window.addEventListener("keyup", (event: KeyboardEvent) => {
+    this.eventListener.add(window, "keyup", (event: KeyboardEvent) => {
       const keyCode: number = event.keyCode;
 
       if (
@@ -522,6 +518,13 @@ export class Canvas extends Common<true> implements ICanvas {
     }
   }
 
+  private cleanUpListeners = () => {
+    this.eventListener.removeListenersOnGivenNode(window, "resize");
+    this.eventListener.removeListenersOnGivenNode(window, "keyup");
+    this.eventListener.removeListenersOnGivenNode(window, "keydown");
+    this.eventListener.hasListeners(window);
+  };
+
   private drawClock() {
     this.ctx.font = "24px Arial";
     this.ctx.fillStyle = "red";
@@ -540,7 +543,6 @@ export class Canvas extends Common<true> implements ICanvas {
     const WIN: boolean = !this.bricksArray.find(
       (item: Brick) => item.getStatus == 1
     );
-    console.log("call");
 
     const OverStatus = gameOverStatus(
       this.gameState.getLevel,
@@ -552,6 +554,8 @@ export class Canvas extends Common<true> implements ICanvas {
     );
 
     if (OverStatus.end) {
+      clearInterval(this.timer);
+      this.cleanUpListeners();
       this.endLevelData = OverStatus;
       this.endGame = true;
     }

@@ -14,6 +14,7 @@ import { gameOverStatus } from "../helpers/gameOverStatusCheck";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 import { calculateBrickDimmenssions } from "../helpers/calculateBrickDimmensions";
 import { clock } from "../helpers/Clock";
+import { EventListener } from "../helpers/Events/EventListener";
 const DEFAULT_BRICK_HEIGHT = 0;
 const DEFAULT_BRICK_WIDTH = 0;
 const DEFAULT_BALL_MOVEMENT_Y_SPEED = -12;
@@ -35,6 +36,13 @@ export class Canvas extends Common {
         this.endGame = false;
         this.elapsedTime = 0;
         this.endLevelData = null;
+        this.eventListener = new EventListener();
+        this.cleanUpListeners = () => {
+            this.eventListener.removeListenersOnGivenNode(window, "resize");
+            this.eventListener.removeListenersOnGivenNode(window, "keyup");
+            this.eventListener.removeListenersOnGivenNode(window, "keydown");
+            this.eventListener.hasListeners(window);
+        };
         this.levelData = levelData;
         this.canvas = null;
         this.ctx = null;
@@ -45,6 +53,10 @@ export class Canvas extends Common {
         this.playerPoints = 0;
         this.hitCounter = 0;
         this.pointsToWin = this.levelData.requiredScore;
+        this.timer = setInterval(() => {
+            this.levelData.timer -= 1;
+            this.elapsedTime++;
+        }, 1000);
         this.gameState = new GameState(this.levelData.level, this.levelData.lives, this.pointsToWin, this.hitCounter, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS, this.ballMoveRateX, this.ballMoveRateY);
     }
     get getGameState() {
@@ -61,13 +73,9 @@ export class Canvas extends Common {
         isSpecialLevel
             ? this.initBricks(randomBrickIndex)
             : this.initBricks(NO_SPECIAL_BRICK_INDEX);
-        setInterval(() => {
-            this.levelData.timer -= 1;
-            this.elapsedTime++;
-        }, 1000);
     }
     addEventOnResize() {
-        window.addEventListener("resize", () => {
+        this.eventListener.add(window, "resize", () => {
             let values = [window.innerHeight, window.innerWidth];
             this.canvas.height = values[0];
             this.canvas.width = values[1];
@@ -81,7 +89,7 @@ export class Canvas extends Common {
         });
     }
     setListenerMovePaddle() {
-        window.addEventListener("keydown", (event) => {
+        this.eventListener.add(window, "keydown", (event) => {
             const keyCode = event.keyCode;
             if (keyCode == Directions.LeftArrows ||
                 keyCode == Directions.LeftNormal) {
@@ -92,7 +100,7 @@ export class Canvas extends Common {
                 this.keyPressedRight = true;
             }
         });
-        window.addEventListener("keyup", (event) => {
+        this.eventListener.add(window, "keyup", (event) => {
             const keyCode = event.keyCode;
             if (keyCode == Directions.LeftArrows ||
                 keyCode == Directions.LeftNormal) {
@@ -329,9 +337,10 @@ export class Canvas extends Common {
     }
     CheckWin() {
         const WIN = !this.bricksArray.find((item) => item.getStatus == 1);
-        console.log("call");
         const OverStatus = gameOverStatus(this.gameState.getLevel, this.gameState.playerPointsGet, WIN, this.gameState.getLives, this.elapsedTime, this.levelData.timer);
         if (OverStatus.end) {
+            clearInterval(this.timer);
+            this.cleanUpListeners();
             this.endLevelData = OverStatus;
             this.endGame = true;
         }

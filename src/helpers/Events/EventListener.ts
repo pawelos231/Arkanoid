@@ -1,30 +1,32 @@
 import { Common } from "../../modules/Common";
 
-type EventHandler = (this: HTMLElement, event: Event) => void;
+type El = HTMLElement | (Window & typeof globalThis);
+
+type EventHandler<T extends Event> = (this: El, event: T) => void;
 
 export class EventListener extends Common {
-  private listeners = new Map<HTMLElement, EventHandler[]>();
+  private listeners = new Map<El, EventHandler<any>[]>();
 
-  public add<T extends keyof HTMLElementEventMap>(
-    element: HTMLElement,
+  public add<T extends keyof HTMLElementEventMap, _E extends Event>(
+    element: HTMLElement | (Window & typeof globalThis),
     event: T,
-    handler: EventHandler
+    handler: EventHandler<_E>
   ) {
     if (!this.listeners.has(element)) {
       this.listeners.set(element, []);
     }
 
-    const handlers: EventHandler[] = this.listeners.get(element)!;
-    const closureHandler = (event: Event) => handler.call(element, event);
+    const handlers: EventHandler<_E>[] = this.listeners.get(element)!;
+    const closureHandler = (event: Event) => handler.call(element, event as _E);
 
     handlers.push(closureHandler);
     element.addEventListener(event, closureHandler);
   }
 
   public removeListener(
-    element: HTMLElement,
+    element: El,
     event: keyof HTMLElementEventMap,
-    handler: EventHandler
+    handler: EventHandler<Event>
   ) {
     const handlers = this.listeners.get(element);
     if (handlers) {
@@ -36,12 +38,12 @@ export class EventListener extends Common {
     }
   }
 
-  public hasListeners(element: HTMLElement): boolean {
+  public hasListeners(element: El): boolean {
     return this.listeners.has(element);
   }
 
   public removeListenersOnGivenNode<T extends keyof HTMLElementEventMap>(
-    element: HTMLElement,
+    element: El,
     event: T
   ) {
     const handlers = this.listeners.get(element);
