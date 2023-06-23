@@ -330,6 +330,14 @@ export class Canvas extends Common {
         const y = this.canvas.height - 30;
         this.ctx.fillText(clock(this.levelData.timer), x, y);
     }
+    drawLives() {
+        this.ctx.font = "24px Arial";
+        this.ctx.fillStyle = "red";
+        this.ctx.textAlign = "center";
+        const x = 100;
+        const y = this.canvas.height - 30;
+        this.ctx.fillText(`lives: ${String(this.gameState.getLives)}`, x, y);
+    }
     setInitCanvasSize() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
@@ -349,6 +357,7 @@ export class Canvas extends Common {
         this.setInitCanvasSize();
         this.clearCanvas();
         this.drawClock();
+        this.drawLives();
         return this.drawGame();
     }
 }
