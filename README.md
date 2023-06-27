@@ -1,6 +1,8 @@
 # Arkanoid
 
+<center>
 ![Work in progress](https://via.placeholder.com/600x50/FFA500/000000?text=Work+in+progress%21)
+</center>
 
 This project is an attempt to recreate Arkanoid and make it more enjoyable and engaging.
 
