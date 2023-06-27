@@ -1,8 +1,9 @@
 # Arkanoid
 
-<center>
-![Work in progress](https://via.placeholder.com/600x50/FFA500/000000?text=Work+in+progress%21)
-</center>
+<p align='center'>
+<br>
+<i><b>[🚧 Game will receive updates in the future depending on the functionality i would like to implement 🚧]</b></i>
+</p>
 
 This project is an attempt to recreate Arkanoid and make it more enjoyable and engaging.
 
@@ -57,6 +58,6 @@ The project includes a level editor that allows you to create and customize your
 
 ## Conclusion
 
-Arkanoid is an ongoing project aimed at recreating the classic game with added features, customization options, and enhanced gameplay experiences. Stay tuned for future updates and additions as the project evolves.
+Arkanoid project aimed at recreating the classic game with added features, customization options, and enhanced gameplay experiences. Stay tuned for future updates and additions as the project evolves.
 
 Feel free to explore, contribute, and have fun with Arkanoid!
