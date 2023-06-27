@@ -28,13 +28,13 @@ The game includes eight different types of bricks, each with unique characterist
 
 The game introduces five different types of buffs that can enhance gameplay. Each buff has a specific color, description, and image associated with it. The table below provides an overview of the available buffs:
 
-| Color  | Description                                          | Image                                                                                            |
-| ------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| FF0000 | Enhances your paddle speed                           | ![PaddleSpeed](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)       |
-| 00FF00 | Adds one life                                        | ![AddLive](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)           |
-| 0000FF | Enhances your ball and paddle speed by small amounts | ![SpeedBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)         |
-| FFFF00 | Makes you invincible for about 1 minute              | ![InvincibilityBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png) |
-| FF00FF | Makes your ball go through EVERYTHING, broken buff   | ![DestroyerBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)     |
+| Color   | Description                                          | Image                                                                                            |
+| ------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Red     | Enhances your paddle speed                           | ![PaddleSpeed](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)       |
+| Green   | Adds one life                                        | ![AddLive](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)           |
+| Blue    | Enhances your ball and paddle speed by small amounts | ![SpeedBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)         |
+| Yellow  | Makes you invincible for about 1 minute              | ![InvincibilityBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png) |
+| Magenta | Makes your ball go through EVERYTHING, broken buff   | ![DestroyerBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)     |
 
 ### Grid Resizing
 
