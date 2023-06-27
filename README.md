@@ -2,7 +2,7 @@
 
 <p align='center'>
 <br>
-<i><b>[🚧 Game will receive updates in the future depending on the functionality i would like to implement 🚧]</b></i>
+<i><b>[🚧 Game will receive updates in the future depending on the additional functionalities i would like to implement 🚧]</b></i>
 </p>
 
 This project is an attempt to recreate Arkanoid and make it more enjoyable and engaging.
