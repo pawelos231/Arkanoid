@@ -8,9 +8,9 @@ import { tempTabOfSounds } from "../data/temporarySoundsData.js";
 import { GET_STATS_URL } from "../constants/api/Urls.js";
 import { ViewsCreator } from "../helpers/viewCreator.js";
 import { StarsBackgroundView } from "../scenes/MainMenuThree.js";
-import { tabOfBuffs } from "../data/BuffsData.js";
 import { EventListener } from "../helpers/Events/EventListener";
 import { GET_SONGS } from "../constants/api/Urls.js";
+import { GET_BUFFS } from "../constants/api/Urls.js";
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -150,11 +150,11 @@ class Menu extends Common {
     async OpenInfo() {
         const htmlInfoElements = this.declareHTMLInfoELements();
         const ITEMS_PER_PAGE = 5;
-        htmlInfoElements.OpenInfo.addEventListener("click", () => {
+        htmlInfoElements.OpenInfo.addEventListener("click", async () => {
             const creatorOfViews = new ViewsCreator();
             const createViewForBuffs = creatorOfViews.createViewForBuffs.bind(creatorOfViews);
             this.changeVisbilityOfGivenElement(htmlInfoElements.OpenedInfoPage, true);
-            const PaginatorInstance = new Paginator(htmlInfoElements.ListOfBuffs, htmlInfoElements.RIGHT_ITERATOR, htmlInfoElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tabOfBuffs, createViewForBuffs, PAGINATE_BUFFS_RESULT_CLASS, this.eventListener);
+            const PaginatorInstance = new Paginator(htmlInfoElements.ListOfBuffs, htmlInfoElements.RIGHT_ITERATOR, htmlInfoElements.LEFT_ITERATOR, ITEMS_PER_PAGE, await Fetcher.FetchData(GET_BUFFS), createViewForBuffs, PAGINATE_BUFFS_RESULT_CLASS, this.eventListener);
             PaginatorInstance.PaginateResults();
             this.eventListener.add(htmlInfoElements.closeInfo, "click", () => {
                 this.changeVisbilityOfGivenElement(htmlInfoElements.OpenedInfoPage, false);

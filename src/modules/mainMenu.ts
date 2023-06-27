@@ -10,10 +10,10 @@ import { GET_STATS_URL } from "../constants/api/Urls.js";
 import { ViewsCreator } from "../helpers/viewCreator.js";
 import { VisulizerFunc } from "../interfaces/PaginationInterfaces.js";
 import { StarsBackgroundView } from "../scenes/MainMenuThree.js";
-import { tabOfBuffs } from "../data/BuffsData.js";
 import { Buff } from "../data/BuffsData.js";
 import { EventListener } from "../helpers/Events/EventListener";
 import { GET_SONGS } from "../constants/api/Urls.js";
+import { GET_BUFFS } from "../constants/api/Urls.js";
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
@@ -209,7 +209,7 @@ class Menu extends Common<true> {
 
     const ITEMS_PER_PAGE = 5;
 
-    htmlInfoElements.OpenInfo.addEventListener("click", () => {
+    htmlInfoElements.OpenInfo.addEventListener("click", async () => {
       const creatorOfViews: ViewsCreator = new ViewsCreator();
 
       const createViewForBuffs: VisulizerFunc<Buff> =
@@ -222,7 +222,7 @@ class Menu extends Common<true> {
         htmlInfoElements.RIGHT_ITERATOR,
         htmlInfoElements.LEFT_ITERATOR,
         ITEMS_PER_PAGE,
-        tabOfBuffs,
+        await Fetcher.FetchData(GET_BUFFS),
         createViewForBuffs,
         PAGINATE_BUFFS_RESULT_CLASS,
         this.eventListener

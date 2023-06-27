@@ -1,3 +1,1 @@
-const calculatePaddleDimmensions = () => {
-    
-}
+const calculatePaddleDimmensions = () => {};
