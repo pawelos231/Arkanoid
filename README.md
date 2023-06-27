@@ -1,17 +1,14 @@
 # Arkanoid
 
-<p align='center'>
-<br>
-<i><b>[🚧 Work in progress! 🚧]</b></i>
-</p>
+![Work in progress](https://via.placeholder.com/600x50/FFA500/000000?text=Work+in+progress%21)
 
-This project is my attempt to recreate arkanoid and make it funnier / more interesting.
+This project is an attempt to recreate Arkanoid and make it more enjoyable and engaging.
 
-To run this project you would also need backend for it, if you want to experience it in its full capacity you can also downoload and run levelEditor on your computer, currently i am not planning on hosting this project mainly beacuse i dont want to for now, but i will se in the future.
+## Features
 
-## implemented features
+### Bricks
 
-this implementation covers pretty much everything that a normal arkanoid would have plus alot more, for example buffs, playing songs or level creation. speaking of levels, there are 8 different types of bricks:
+The game includes eight different types of bricks, each with unique characteristics and properties. The table below provides an overview of the bricks' colors, required hits to destroy them, points earned, and buff drop rates:
 
 | Color       | Times to Hit  | Points | Buff Drop Rate |
 | ----------- | ------------- | ------ | -------------- |
@@ -24,12 +21,40 @@ this implementation covers pretty much everything that a normal arkanoid would h
 | Black       | 4             | 50     | 0.05           |
 | Gray        | 1,000,000,000 | 0      | 0.05           |
 
-beyond level implementation you can also play sonngs that were added by me (in the future i plan to also give this option to users). The implementation also has 5 different types of buffs which you can see here:
+### Buffs
 
-| Color  | Description                                          | Image                                                                                                                                        |
-| ------ | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| FF0000 | Enhances your paddle speed                           | ![PaddleSpeed](https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png)       |
-| 00FF00 | Adds one live                                        | ![AddLive](https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png)           |
-| 0000FF | Enhances your ball and paddle speed by small amounts | ![SpeedBuff](https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png)         |
-| FFFF00 | Makes you invincible for about 1 minute              | ![InvincibilityBuff](https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png) |
-| FF00FF | Makes your ball go through EVERYTHING, broken buff   | ![DestroyerBuff](https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png)     |
+The game introduces five different types of buffs that can enhance gameplay. Each buff has a specific color, description, and image associated with it. The table below provides an overview of the available buffs:
+
+| Color  | Description                                          | Image                                                                                            |
+| ------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| FF0000 | Enhances your paddle speed                           | ![PaddleSpeed](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)       |
+| 00FF00 | Adds one life                                        | ![AddLive](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)           |
+| 0000FF | Enhances your ball and paddle speed by small amounts | ![SpeedBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)         |
+| FFFF00 | Makes you invincible for about 1 minute              | ![InvincibilityBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png) |
+| FF00FF | Makes your ball go through EVERYTHING, broken buff   | ![DestroyerBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)     |
+
+### Grid Resizing
+
+The game allows for resizing the grid of bricks. You can render a grid of up to 20 x 10 bricks, providing flexibility in level design and gameplay experiences.
+
+### Collision Sound
+
+During collisions between the ball and bricks or other objects, a sound effect is played. You can choose from a variety of sound options to customize the auditory experience of the game.
+
+### Volume Controls
+
+The project includes options to adjust the volume of both the music and sound effects. You can lower or increase the volume levels according to your preference, enhancing the overall gameplay experience.
+
+### Backend
+
+To run the full version of the game, a backend is required. The backend provides additional functionality and supports features such as level creation, user profiles, and score tracking. Instructions for setting up the backend will be provided separately.
+
+### Level Editor
+
+The project includes a level editor that allows you to create and customize your own levels. The level editor provides a user-friendly interface to design unique levels with different brick arrangements, challenges, and buff placements. It empowers you to unleash your creativity and share your custom levels with others.
+
+## Conclusion
+
+Arkanoid is an ongoing project aimed at recreating the classic game with added features, customization options, and enhanced gameplay experiences. Stay tuned for future updates and additions as the project evolves.
+
+Feel free to explore, contribute, and have fun with Arkanoid!
