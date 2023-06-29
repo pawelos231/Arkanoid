@@ -52,14 +52,15 @@ The project includes options to adjust the volume of both the music and sound ef
 
 To run the full version of the game, a backend is required. The backend provides additional functionality and supports features such as level creation, user profiles, and score tracking. Instructions for setting up the backend will be provided separately.
 
-
 ### Level Editor
 
 The Level Editor project provides a powerful tool for creating and customizing your own levels in the Arkanoid game. With its user-friendly interface, you can unleash your creativity and design unique levels with various brick arrangements, challenges, and buff placements. The Level Editor empowers you to bring your imaginative ideas to life and share your custom levels with others.
 
 To access the Level Editor and start creating your own levels, please visit the [Level Editor repository](https://github.com/pawelos231/arkanoid_level_editor).
 
-![Level Editor](https://github.com/pawelos231/arkanoid_level_editor/raw/main/src/images/amogus.png)
+<a href="https://github.com/pawelos231/arkanoid_level_editor">
+  <img src="https://raw.githubusercontent.com/pawelos231/arkanoid_level_editor/main/src/images/amogus.png" alt="Link to Level Editor" />
+</a>
 
 Click on the image above to visit the Level Editor repository and explore its features.
 
