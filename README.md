@@ -55,6 +55,8 @@ To run the full version of the game, a backend is required. The backend provides
 ### Level Editor
 
 The project includes a level editor that allows you to create and customize your own levels. The level editor provides a user-friendly interface to design unique levels with different brick arrangements, challenges, and buff placements. It empowers you to unleash your creativity and share your custom levels with others.
+The Level editor page has its own repository which you can checkout here:
+![LevelEditor](https://github.com/pawelos231/arkanoid_level_editor/raw/main/src/images/amogus.png)
 
 ## Conclusion
 
