@@ -1,4 +1,5 @@
 import { Ball_Pos } from "../../interfaces/gameStateInterface";
+import { LIGHT_BLUE } from "../../constants/colors";
 export class Ball {
   private ballPosition: Ball_Pos;
   private ctx: CanvasRenderingContext2D;
@@ -34,7 +35,7 @@ export class Ball {
       Math.PI * 2,
       false
     );
-    this.ctx.fillStyle = "#0095DD";
+    this.ctx.fillStyle = LIGHT_BLUE;
     this.ctx.fill();
   }
 
