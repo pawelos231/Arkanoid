@@ -12,6 +12,12 @@ import {
 import { findProperBuff } from "../../data/BuffsData";
 import { Buff_Pos, Particle } from "../../interfaces/gameStateInterface";
 import { AppliedBuff } from "../../interfaces/HelperEnums";
+import { GameState } from "../gameState";
+import { calculateBallSize } from "../../helpers/calculateBallDimmensions";
+import {
+  DEFAULT_PADDLE_SPEED_MULTIPLIER,
+  DEFAULT_BALL_SPEED_MULTIPLIER,
+} from "../../constants/gameState";
 
 export class Buff implements BuffsInterface {
   private BuffType: BuffTypes;
@@ -22,11 +28,11 @@ export class Buff implements BuffsInterface {
   private buff_x: number = window.innerWidth / 2;
   private buff_y: number = 100;
   private buffVelocity: number = 7;
-  private ball_radius = 20;
   private ctx: CanvasRenderingContext2D;
   private particles: Particle[] = [];
   private particleCount: number = 5;
   private createdAt = Date.now();
+  private gameState;
 
   constructor(
     BuffType: BuffTypes,
@@ -34,7 +40,8 @@ export class Buff implements BuffsInterface {
     AppliedBuffs: AppliedBuff[] = [],
     time: number,
     ctx: CanvasRenderingContext2D,
-    { buff_x, buff_y }: Buff_Pos
+    { buff_x, buff_y }: Buff_Pos,
+    gameState: GameState
   ) {
     this.BuffType = BuffType;
     this.tabOfBricks = tabOfBricks;
@@ -44,6 +51,7 @@ export class Buff implements BuffsInterface {
     this.buff_y = buff_y;
     this.time = time;
     this.ctx = ctx;
+    this.gameState = gameState;
   }
 
   public WrapperIfBuffIsActive<F extends Function>(applyBuff: F): F | false {
@@ -51,8 +59,7 @@ export class Buff implements BuffsInterface {
       this.AppliedBuffs = [];
     }, this.time - 4500);
 
-    console.log(this.AppliedBuffs);
-
+    if (this.BuffType == BuffTypes.AddLive) return applyBuff();
     if (
       !this.AppliedBuffs.find((item) => item.appliedBuffId == this.BuffType)
     ) {
@@ -72,11 +79,14 @@ export class Buff implements BuffsInterface {
   }
 
   private applyAddLivesBuff(): void {
-    console.log("apply ADD LIVE");
+    this.gameState.setLives = this.gameState.getLives + 1;
   }
 
   private async applySpeedBuff() {
-    console.log("apply SPEED");
+    this.gameState.BallMoveRateSetX =
+      this.gameState.BallMoveRateGetX * DEFAULT_BALL_SPEED_MULTIPLIER;
+    this.gameState.BallMoveRateSetY =
+      this.gameState.BallMoveRateGetY * DEFAULT_BALL_SPEED_MULTIPLIER;
   }
 
   private applyInvincibiltyBuff(): void {
@@ -84,7 +94,8 @@ export class Buff implements BuffsInterface {
   }
 
   private applyPaddleSpeedBuff(): void {
-    console.log("apply PADDLE SPEED");
+    this.gameState.set_paddle_move_rate_X =
+      this.gameState.get_paddle_move_rate_X * DEFAULT_PADDLE_SPEED_MULTIPLIER;
   }
 
   public async applyBuffEffects(): Promise<void> {
@@ -178,7 +189,7 @@ export class Buff implements BuffsInterface {
     this.ctx.arc(
       this.buff_x,
       this.buff_y,
-      this.ball_radius,
+      calculateBallSize(),
       0,
       Math.PI * 2,
       false

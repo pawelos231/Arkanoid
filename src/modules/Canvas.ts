@@ -2,35 +2,37 @@ import { Common } from "./Common";
 import { Brick } from "./Entities/Brick";
 import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
+import { GameState } from "./gameState";
+import { SpecialBrick } from "./SpecialBrickView";
+import { Buff } from "./Entities/Buff";
+import { generateRandomNumber } from "../helpers/randomNumber";
+import { gameOverStatus } from "../helpers/gameOverStatusCheck";
+import { calculateBrickDimmenssions } from "../helpers/calculateBrickDimmensions";
+import { clock } from "../helpers/Clock";
+import { EventListener } from "../helpers/Events/EventListener";
+import { BUFF_EXPIRATION } from "../constants/gameState";
+import { media } from "./Media";
+
 import {
   PADDLE_WIDTH,
   PADDLE_HEIGHT,
   INIT_BALL_POS,
   INIT_PADDLE_POS,
+  DEFAULT_PADDLE_MOVEMENT_X,
+  DEFAULT_BRICK_WIDTH,
+  DEFAULT_BRICK_HEIGHT,
+  DEFAULT_BALL_MOVEMENT_Y_SPEED,
+  DEFAULT_BALL_MOVEMENT_X_SPEED,
+  NO_SPECIAL_BRICK_INDEX,
 } from "../constants/gameState";
-import { IFinishedGame } from "../interfaces/gameStateInterface";
-import { Directions } from "../interfaces/HelperEnums";
-import { GameState } from "./gameState";
-import { media } from "./Media";
-import { SpecialBrick } from "./SpecialBrickView";
-import { Buff } from "./Entities/Buff";
-import { BuffTypes } from "../interfaces/HelperEnums";
-import { generateRandomNumber } from "../helpers/randomNumber";
-import { Buff_Pos } from "../interfaces/gameStateInterface";
-import { gameOverStatus } from "../helpers/gameOverStatusCheck";
-import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
-import { Level, BrickData } from "../interfaces/level";
-import { AppliedBuff } from "../interfaces/HelperEnums";
-import { calculateBrickDimmenssions } from "../helpers/calculateBrickDimmensions";
-import { clock } from "../helpers/Clock";
-import { ICanvas } from "../interfaces/classesInterfaces";
-import { EventListener } from "../helpers/Events/EventListener";
 
-const DEFAULT_BRICK_HEIGHT = 0;
-const DEFAULT_BRICK_WIDTH = 0;
-const DEFAULT_BALL_MOVEMENT_Y_SPEED = -12;
-const DEFAULT_BALL_MOVEMENT_X_SPEED = -12;
-const NO_SPECIAL_BRICK_INDEX = -100;
+import { IFinishedGame, Buff_Pos } from "../interfaces/gameStateInterface";
+import { Directions, BuffTypes, AppliedBuff } from "../interfaces/HelperEnums";
+import { Level, BrickData } from "../interfaces/level";
+import { ICanvas } from "../interfaces/classesInterfaces";
+import { calculatePaddleDimmensions } from "../helpers/calculatePaddleDimmensions";
+import { calculateBallSize } from "../helpers/calculateBallDimmensions";
+import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 
 const GAME_CANVAS = "game_canvas";
 
@@ -39,6 +41,7 @@ export class Canvas extends Common<true> implements ICanvas {
   private BRICK_WIDTH: number = DEFAULT_BRICK_WIDTH;
   private ballMoveRateX: number = DEFAULT_BALL_MOVEMENT_X_SPEED;
   private ballMoveRateY: number = DEFAULT_BALL_MOVEMENT_Y_SPEED;
+  private paddleMoveRateX: number = DEFAULT_PADDLE_MOVEMENT_X;
 
   private rowsCount: number;
   private columnsCount: number;
@@ -52,14 +55,14 @@ export class Canvas extends Common<true> implements ICanvas {
   private gameState: GameState;
   private bricksArray: Array<Brick>;
   private image: HTMLImageElement | null;
-  private appliedBuffs: AppliedBuff[] = [];
   private drawBuffFlag: boolean = false;
-  private Buffs = new Map<string, Buff>();
   private levelData: Level;
   private endGame: boolean = false;
   private elapsedTime: number = 0;
   private endLevelData: IFinishedGame | null = null;
   private timer: NodeJS.Timeout;
+  private appliedBuffs: AppliedBuff[] = [];
+  private Buffs = new Map<string, Buff>();
   private eventListener: EventListener = new EventListener();
 
   constructor(image: HTMLImageElement | null, levelData: Level) {
@@ -88,7 +91,8 @@ export class Canvas extends Common<true> implements ICanvas {
       INIT_PADDLE_POS,
       INIT_BALL_POS,
       this.ballMoveRateX,
-      this.ballMoveRateY
+      this.ballMoveRateY,
+      this.paddleMoveRateX
     );
   }
 
@@ -211,12 +215,11 @@ export class Canvas extends Common<true> implements ICanvas {
     const BRICK: Brick = this.bricksArray[i];
     const brick_pos_x: number = BRICK.brickStateGet.brick_x * this.BRICK_WIDTH;
     const brick_pos_y: number = BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT;
-
     return (
       brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS &&
       brick_pos_y < ball_y + RADIUS &&
-      brick_pos_x < ball_x + RADIUS + 12.5 &&
-      brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5
+      brick_pos_x < ball_x + RADIUS + RADIUS / 2 &&
+      brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - RADIUS / 2
     );
   }
 
@@ -259,9 +262,10 @@ export class Canvas extends Common<true> implements ICanvas {
         randomBuff,
         JSON.parse(JSON.stringify(this.bricksArray)),
         this.appliedBuffs,
-        5000,
+        BUFF_EXPIRATION,
         this.ctx,
-        buffDropPosition
+        buffDropPosition,
+        this.gameState
       );
 
       const key = `${randomBuff};${BuffInstance.createdAtVal}`;
@@ -282,7 +286,12 @@ export class Canvas extends Common<true> implements ICanvas {
 
       if (BRICK.brickStateGet.status === 0) continue;
 
-      const IS_COLLISION: boolean = this.isCollision(i, ball_x, ball_y, RADIUS);
+      const IS_COLLISION: boolean = this.isCollision(
+        i,
+        ball_x,
+        ball_y,
+        calculateBallSize()
+      );
 
       if (IS_COLLISION) {
         const MoveRateX: number = this.getGameState.BallMoveRateGetX;
@@ -292,7 +301,7 @@ export class Canvas extends Common<true> implements ICanvas {
 
         this.upadateScore(i);
 
-        this.isCollisonFromSide(i, ball_x, ball_y, RADIUS)
+        this.isCollisonFromSide(i, ball_x, ball_y, calculateBallSize())
           ? (this.gameState.BallMoveRateSetX = -MoveRateX)
           : null;
 
@@ -344,11 +353,22 @@ export class Canvas extends Common<true> implements ICanvas {
       media.spawnSoundWhenHitPaddle();
       this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
     }
+    const MoveRateX: number = this.getGameState.BallMoveRateGetX;
+    if (
+      (paddle_x + PADDLE_WIDTH <= ball_x - RADIUS &&
+        paddle_x + PADDLE_WIDTH >= ball_x - RADIUS - 12) ||
+      (paddle_x <= ball_x + RADIUS &&
+        paddle_x >= ball_x + RADIUS + 10 &&
+        ball_y - RADIUS > paddle_y + this.BRICK_HEIGHT &&
+        paddle_y < paddle_y + RADIUS)
+    ) {
+      this.gameState.BallMoveRateSetX = MoveRateX;
+    }
   }
 
   private drawBall(): void {
     //change to fix resizeable
-    const ball: Ball = new Ball(this.ctx, 25);
+    const ball: Ball = new Ball(this.ctx, calculateBallSize());
     const RADIUS: number = ball.radiusOfBallGetter;
 
     if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
@@ -399,7 +419,8 @@ export class Canvas extends Common<true> implements ICanvas {
   }
 
   private drawPaddle(): void {
-    const paddle: Paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
+    const { WIDTH, HEIGHT } = calculatePaddleDimmensions();
+    const paddle: Paddle = new Paddle(WIDTH, HEIGHT, this.ctx);
 
     this.buffColidedWithPaddle();
 
@@ -508,13 +529,15 @@ export class Canvas extends Common<true> implements ICanvas {
 
   private handleKeyPress(): void {
     const paddle_x: number = this.gameState.paddle_positions.paddle_x;
-
+    const { WIDTH, HEIGHT } = calculatePaddleDimmensions();
     if (this.keyPressedLeft && paddle_x > 0) {
-      this.gameState.paddle_positions.paddle_x -= 15;
+      this.gameState.paddle_positions.paddle_x -=
+        this.gameState.get_paddle_move_rate_X;
     }
 
-    if (this.keyPressedRight && paddle_x + PADDLE_WIDTH < window.innerWidth) {
-      this.gameState.paddle_positions.paddle_x += 15;
+    if (this.keyPressedRight && paddle_x + WIDTH < window.innerWidth) {
+      this.gameState.paddle_positions.paddle_x +=
+        this.gameState.get_paddle_move_rate_X;
     }
   }
 

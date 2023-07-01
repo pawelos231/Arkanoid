@@ -2,24 +2,21 @@ import { Common } from "./Common";
 import { Brick } from "./Entities/Brick";
 import { Ball } from "./Entities/Ball";
 import { Paddle } from "./Entities/Paddle";
-import { PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS, } from "../constants/gameState";
-import { Directions } from "../interfaces/HelperEnums";
 import { GameState } from "./gameState";
-import { media } from "./Media";
 import { SpecialBrick } from "./SpecialBrickView";
 import { Buff } from "./Entities/Buff";
-import { BuffTypes } from "../interfaces/HelperEnums";
 import { generateRandomNumber } from "../helpers/randomNumber";
 import { gameOverStatus } from "../helpers/gameOverStatusCheck";
-import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 import { calculateBrickDimmenssions } from "../helpers/calculateBrickDimmensions";
 import { clock } from "../helpers/Clock";
 import { EventListener } from "../helpers/Events/EventListener";
-const DEFAULT_BRICK_HEIGHT = 0;
-const DEFAULT_BRICK_WIDTH = 0;
-const DEFAULT_BALL_MOVEMENT_Y_SPEED = -12;
-const DEFAULT_BALL_MOVEMENT_X_SPEED = -12;
-const NO_SPECIAL_BRICK_INDEX = -100;
+import { BUFF_EXPIRATION } from "../constants/gameState";
+import { media } from "./Media";
+import { PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS, DEFAULT_PADDLE_MOVEMENT_X, DEFAULT_BRICK_WIDTH, DEFAULT_BRICK_HEIGHT, DEFAULT_BALL_MOVEMENT_Y_SPEED, DEFAULT_BALL_MOVEMENT_X_SPEED, NO_SPECIAL_BRICK_INDEX, } from "../constants/gameState";
+import { Directions, BuffTypes } from "../interfaces/HelperEnums";
+import { calculatePaddleDimmensions } from "../helpers/calculatePaddleDimmensions";
+import { calculateBallSize } from "../helpers/calculateBallDimmensions";
+import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor(image, levelData) {
@@ -28,14 +25,15 @@ export class Canvas extends Common {
         this.BRICK_WIDTH = DEFAULT_BRICK_WIDTH;
         this.ballMoveRateX = DEFAULT_BALL_MOVEMENT_X_SPEED;
         this.ballMoveRateY = DEFAULT_BALL_MOVEMENT_Y_SPEED;
+        this.paddleMoveRateX = DEFAULT_PADDLE_MOVEMENT_X;
         this.keyPressedLeft = false;
         this.keyPressedRight = false;
-        this.appliedBuffs = [];
         this.drawBuffFlag = false;
-        this.Buffs = new Map();
         this.endGame = false;
         this.elapsedTime = 0;
         this.endLevelData = null;
+        this.appliedBuffs = [];
+        this.Buffs = new Map();
         this.eventListener = new EventListener();
         this.cleanUpListeners = () => {
             this.eventListener.removeListenersOnGivenNode(window, "resize");
@@ -56,7 +54,7 @@ export class Canvas extends Common {
             this.levelData.timer -= 1;
             this.elapsedTime++;
         }, 1000);
-        this.gameState = new GameState(this.levelData.level, this.levelData.lives, this.pointsToWin, this.hitCounter, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS, this.ballMoveRateX, this.ballMoveRateY);
+        this.gameState = new GameState(this.levelData.level, this.levelData.lives, this.pointsToWin, this.hitCounter, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS, this.ballMoveRateX, this.ballMoveRateY, this.paddleMoveRateX);
     }
     get getGameState() {
         return this.gameState;
@@ -132,8 +130,8 @@ export class Canvas extends Common {
         const brick_pos_y = BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT;
         return (brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS &&
             brick_pos_y < ball_y + RADIUS &&
-            brick_pos_x < ball_x + RADIUS + 12.5 &&
-            brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - 12.5);
+            brick_pos_x < ball_x + RADIUS + RADIUS / 2 &&
+            brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - RADIUS / 2);
     }
     drawBuff(BuffId) {
         const buff = this.Buffs.get(BuffId);
@@ -158,7 +156,7 @@ export class Canvas extends Common {
                 buff_y: BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT,
             };
             const randomBuff = this.selectRandomBuff();
-            const BuffInstance = new Buff(randomBuff, JSON.parse(JSON.stringify(this.bricksArray)), this.appliedBuffs, 5000, this.ctx, buffDropPosition);
+            const BuffInstance = new Buff(randomBuff, JSON.parse(JSON.stringify(this.bricksArray)), this.appliedBuffs, BUFF_EXPIRATION, this.ctx, buffDropPosition, this.gameState);
             const key = `${randomBuff};${BuffInstance.createdAtVal}`;
             this.Buffs.set(key, BuffInstance);
             this.drawBuffFlag = true;
@@ -169,13 +167,13 @@ export class Canvas extends Common {
             const BRICK = this.bricksArray[i];
             if (BRICK.brickStateGet.status === 0)
                 continue;
-            const IS_COLLISION = this.isCollision(i, ball_x, ball_y, RADIUS);
+            const IS_COLLISION = this.isCollision(i, ball_x, ball_y, calculateBallSize());
             if (IS_COLLISION) {
                 const MoveRateX = this.getGameState.BallMoveRateGetX;
                 const MoveRateY = this.getGameState.BallMoveRateGetY;
                 this.DropBuff(BRICK);
                 this.upadateScore(i);
-                this.isCollisonFromSide(i, ball_x, ball_y, RADIUS)
+                this.isCollisonFromSide(i, ball_x, ball_y, calculateBallSize())
                     ? (this.gameState.BallMoveRateSetX = -MoveRateX)
                     : null;
                 const IsSpecialBrick = this.bricksArray[i].brickStateGet.specialBrick;
@@ -204,10 +202,19 @@ export class Canvas extends Common {
             media.spawnSoundWhenHitPaddle();
             this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
         }
+        const MoveRateX = this.getGameState.BallMoveRateGetX;
+        if ((paddle_x + PADDLE_WIDTH <= ball_x - RADIUS &&
+            paddle_x + PADDLE_WIDTH >= ball_x - RADIUS - 12) ||
+            (paddle_x <= ball_x + RADIUS &&
+                paddle_x >= ball_x + RADIUS + 10 &&
+                ball_y - RADIUS > paddle_y + this.BRICK_HEIGHT &&
+                paddle_y < paddle_y + RADIUS)) {
+            this.gameState.BallMoveRateSetX = MoveRateX;
+        }
     }
     drawBall() {
         //change to fix resizeable
-        const ball = new Ball(this.ctx, 25);
+        const ball = new Ball(this.ctx, calculateBallSize());
         const RADIUS = ball.radiusOfBallGetter;
         if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
             this.gameState.BallMoveRateSetX = 12;
@@ -245,7 +252,8 @@ export class Canvas extends Common {
         });
     }
     drawPaddle() {
-        const paddle = new Paddle(PADDLE_WIDTH, PADDLE_HEIGHT, this.ctx);
+        const { WIDTH, HEIGHT } = calculatePaddleDimmensions();
+        const paddle = new Paddle(WIDTH, HEIGHT, this.ctx);
         this.buffColidedWithPaddle();
         paddle.drawPaddle(this.gameState.paddle_positions);
     }
@@ -315,11 +323,14 @@ export class Canvas extends Common {
     }
     handleKeyPress() {
         const paddle_x = this.gameState.paddle_positions.paddle_x;
+        const { WIDTH, HEIGHT } = calculatePaddleDimmensions();
         if (this.keyPressedLeft && paddle_x > 0) {
-            this.gameState.paddle_positions.paddle_x -= 15;
+            this.gameState.paddle_positions.paddle_x -=
+                this.gameState.get_paddle_move_rate_X;
         }
-        if (this.keyPressedRight && paddle_x + PADDLE_WIDTH < window.innerWidth) {
-            this.gameState.paddle_positions.paddle_x += 15;
+        if (this.keyPressedRight && paddle_x + WIDTH < window.innerWidth) {
+            this.gameState.paddle_positions.paddle_x +=
+                this.gameState.get_paddle_move_rate_X;
         }
     }
     drawClock() {

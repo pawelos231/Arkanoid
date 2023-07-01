@@ -1,3 +1,4 @@
+import { LIGHT_BLUE } from "../../constants/colors";
 export class Ball {
     constructor(ctx, radius) {
         this.ballPosition = { ball_x: 0, ball_y: 0 };
@@ -20,7 +21,7 @@ export class Ball {
         this.ballPosition = positions;
         this.ctx.beginPath();
         this.ctx.arc(this.ballPosition.ball_x, this.ballPosition.ball_y, this.radius, 0, Math.PI * 2, false);
-        this.ctx.fillStyle = "#0095DD";
+        this.ctx.fillStyle = LIGHT_BLUE;
         this.ctx.fill();
     }
     renderFireParticlesAroundBall() { }

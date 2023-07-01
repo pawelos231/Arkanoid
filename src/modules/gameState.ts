@@ -1,15 +1,17 @@
 import { Paddle_Pos, Ball_Pos } from "../interfaces/gameStateInterface";
 
+
 export class GameState {
   level: number;
   pointsToWin: number;
   paddle_positions: Paddle_Pos;
   lives: number;
   ball_positions: Ball_Pos;
-  counter: number;
-  ballMoveRateX: number;
-  ballMoveRateY: number;
+  private counter: number;
+  private ballMoveRateX: number;
+  private ballMoveRateY: number;
   private playerPoints: number;
+  private paddleMoveRateX: number;
 
   constructor(
     level: number,
@@ -20,7 +22,8 @@ export class GameState {
     paddle_positions: Paddle_Pos,
     ball_positions: Ball_Pos,
     ballMoveRateX: number,
-    ballMoveRateY: number
+    ballMoveRateY: number,
+    paddleMoveRateX: number
   ) {
     this.level = level;
     this.pointsToWin = pointsToWin;
@@ -31,6 +34,7 @@ export class GameState {
     this.playerPoints = playerPoints;
     this.ballMoveRateX = ballMoveRateX;
     this.ballMoveRateY = ballMoveRateY;
+    this.paddleMoveRateX = paddleMoveRateX;
   }
 
   set BallMoveRateSet(rate: number) {
@@ -74,11 +78,23 @@ export class GameState {
     return this.lives;
   }
 
+  set setLives(lives: number) {
+    this.lives = lives;
+  }
+
   get ball_positions_getter(): Ball_Pos {
     return this.ball_positions;
   }
 
   get paddle_positions_getter(): Paddle_Pos {
     return this.paddle_positions;
+  }
+
+  get get_paddle_move_rate_X(): number {
+    return this.paddleMoveRateX;
+  }
+
+  set set_paddle_move_rate_X(paddleMoveRate: number) {
+    this.paddleMoveRateX = paddleMoveRate;
   }
 }

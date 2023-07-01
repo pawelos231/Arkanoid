@@ -1,5 +1,5 @@
 export class GameState {
-    constructor(level, lives, pointsToWin, counter, playerPoints, paddle_positions, ball_positions, ballMoveRateX, ballMoveRateY) {
+    constructor(level, lives, pointsToWin, counter, playerPoints, paddle_positions, ball_positions, ballMoveRateX, ballMoveRateY, paddleMoveRateX) {
         this.level = level;
         this.pointsToWin = pointsToWin;
         this.paddle_positions = paddle_positions;
@@ -9,6 +9,7 @@ export class GameState {
         this.playerPoints = playerPoints;
         this.ballMoveRateX = ballMoveRateX;
         this.ballMoveRateY = ballMoveRateY;
+        this.paddleMoveRateX = paddleMoveRateX;
     }
     set BallMoveRateSet(rate) {
         this.ballMoveRateX = rate;
@@ -41,10 +42,19 @@ export class GameState {
     get getLives() {
         return this.lives;
     }
+    set setLives(lives) {
+        this.lives = lives;
+    }
     get ball_positions_getter() {
         return this.ball_positions;
     }
     get paddle_positions_getter() {
         return this.paddle_positions;
+    }
+    get get_paddle_move_rate_X() {
+        return this.paddleMoveRateX;
+    }
+    set set_paddle_move_rate_X(paddleMoveRate) {
+        this.paddleMoveRateX = paddleMoveRate;
     }
 }
