@@ -5,8 +5,6 @@
 <i><b>[🚧 Game will receive updates in the future depending on the additional functionalities i would like to implement 🚧]</b></i>
 </p>
 
-This project is an attempt to recreate Arkanoid and make it more enjoyable and engaging.
-
 ## Features
 
 ### Bricks
@@ -65,6 +63,14 @@ To access the Level Editor and start creating your own levels, please visit the 
 Click on the image above to visit the Level Editor repository and explore its features.
 
 Feel free to provide feedback, or share the custom levels you create. Let your creativity shine in the Arkanoid game with the Level Editor!
+
+### Potential Future development plans
+
+- Player-Created Levels: The game will be enhanced to provide the ability for players to create and customize their own levels within the game environment. These levels can be saved and loaded for future play.
+
+- Overall Points Tracking: The project will include functionality to track and store players' overall points earned throughout their gameplay sessions. This feature will enable players to see their progress and potentially compete for high scores.
+
+- Top 10 Players Display: The planned "stats" page will showcase the top 10 players based on their overall performance. This feature will add a competitive aspect and encourage players to strive for higher rankings.
 
 ## Conclusion
 
