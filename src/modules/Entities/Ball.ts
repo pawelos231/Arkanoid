@@ -37,7 +37,27 @@ export class Ball {
     );
     this.ctx.fillStyle = LIGHT_BLUE;
     this.ctx.fill();
+    this.renderFireParticlesAroundBall();
   }
 
-  public renderFireParticlesAroundBall() {}
+  public renderFireParticlesAroundBall(): void {
+    const numParticles = 10;
+    const particleRadius = 2;
+
+    for (let i = 0; i < numParticles; i++) {
+      const angle = (Math.PI * 2 * i) / numParticles;
+      const particleX =
+        this.ballPosition.ball_x + Math.cos(angle) * this.radius;
+      const particleY =
+        this.ballPosition.ball_y + Math.sin(angle) * this.radius;
+
+      this.ctx.beginPath();
+      this.ctx.arc(particleX, particleY, particleRadius, 0, Math.PI * 2, false);
+
+      const fillColor = `hsl(${Math.random() * 60 + 10}, 100%, 50%)`;
+      this.ctx.fillStyle = fillColor;
+
+      this.ctx.fill();
+    }
+  }
 }

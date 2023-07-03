@@ -66,7 +66,7 @@ Feel free to provide feedback, or share the custom levels you create. Let your c
 
 ### Potential Future development plans
 
-- Player-Created Levels: The game will be enhanced to provide the ability for players to create and customize their own levels within the game environment. These levels can be saved and loaded for future play.
+- Player-Created Levels: The game will be enhanced to provide the ability for players to save there own levels on there profiles.
 
 - Overall Points Tracking: The project will include functionality to track and store players' overall points earned throughout their gameplay sessions. This feature will enable players to see their progress and potentially compete for high scores.
 

@@ -4,7 +4,7 @@ type El = HTMLElement | (Window & typeof globalThis);
 
 type EventHandler<T extends Event> = (this: El, event: T) => void;
 
-export class EventListener extends Common {
+export class EventListener extends Common<false> {
   private listeners = new Map<El, EventHandler<any>[]>();
 
   public add<T extends keyof HTMLElementEventMap, _E extends Event>(

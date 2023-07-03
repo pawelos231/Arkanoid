@@ -1,4 +1,4 @@
-import { PADDLE_WIDTH, PADDLE_HEIGHT } from "../constants/gameState";
+import { PADDLE_HEIGHT } from "../constants/gameState";
 
 interface ReturnTypeCB {
   WIDTH: number;

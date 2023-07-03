@@ -65,7 +65,7 @@ export class Buff implements BuffsInterface {
     ) {
       this.AppliedBuffs.push({
         timeStart: Date.now(),
-        timeEnd: Date.now() + 4500,
+        timeEnd: Date.now() + 10000,
         appliedBuffId: this.BuffType,
       });
       return applyBuff();
@@ -79,7 +79,7 @@ export class Buff implements BuffsInterface {
   }
 
   private applyAddLivesBuff(): void {
-    this.gameState.setLives = this.gameState.getLives + 1;
+    this.gameState.setLives = Number(this.gameState.getLives) + 1;
   }
 
   private async applySpeedBuff() {
@@ -130,15 +130,23 @@ export class Buff implements BuffsInterface {
     }
   }
 
-  private clearBuffsEffects(): void {
-    if (this.BuffType == BuffTypes.DestroyerBuff) {
-      console.log("wyczyszczono efekty buffa", this.BuffType);
-      console.log(this.tabOfBricks);
-
-      this.tabOfBricks = this.cachedBrickArray;
-
-      console.log(this.tabOfBricks);
-      console.log("cached", this.cachedBrickArray);
+  private static clearBuffEffect(
+    buffType: BuffTypes,
+    gameState: GameState
+  ): void {
+    switch (buffType) {
+      case BuffTypes.PaddleSpeed: {
+        gameState.set_paddle_move_rate_X =
+          gameState.get_paddle_move_rate_X / DEFAULT_PADDLE_SPEED_MULTIPLIER;
+        break;
+      }
+      case BuffTypes.SpeedBuff: {
+        gameState.BallMoveRateSetX =
+          gameState.BallMoveRateGetX / DEFAULT_BALL_SPEED_MULTIPLIER;
+        gameState.BallMoveRateSetY =
+          gameState.BallMoveRateGetY / DEFAULT_BALL_SPEED_MULTIPLIER;
+        break;
+      }
     }
   }
 

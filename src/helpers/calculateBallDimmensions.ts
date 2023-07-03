@@ -1,5 +1,3 @@
-import { PADDLE_WIDTH, PADDLE_HEIGHT } from "../constants/gameState";
-
 export const calculateBallSize = (): number => {
   const windowHeight = window.innerHeight;
   const windowWidth = window.innerWidth;

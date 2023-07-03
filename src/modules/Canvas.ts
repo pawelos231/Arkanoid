@@ -367,7 +367,6 @@ export class Canvas extends Common<true> implements ICanvas {
   }
 
   private drawBall(): void {
-    //change to fix resizeable
     const ball: Ball = new Ball(this.ctx, calculateBallSize());
     const RADIUS: number = ball.radiusOfBallGetter;
 
@@ -427,27 +426,6 @@ export class Canvas extends Common<true> implements ICanvas {
     paddle.drawPaddle(this.gameState.paddle_positions);
   }
 
-  private buffColidedWithPaddle() {
-    const { paddle_x, paddle_y } = this.gameState.paddle_positions;
-
-    for (const [key, value] of this.Buffs) {
-      const buff = value;
-      const buffYPosition = buff?.buff_y_Pos!;
-      const buffXPostion = buff?.buff_x_Pos!;
-
-      const isCollsion: boolean =
-        buffXPostion > paddle_x &&
-        buffXPostion < paddle_x + PADDLE_WIDTH &&
-        buffYPosition > paddle_y &&
-        buffYPosition < paddle_y + PADDLE_HEIGHT;
-
-      if (isCollsion) {
-        this.applyBuffEffects(key);
-        this.Buffs.delete(key);
-      }
-    }
-  }
-
   private addBricksToArray(
     brick_x: number,
     brick_y: number,
@@ -492,21 +470,6 @@ export class Canvas extends Common<true> implements ICanvas {
     }
   }
 
-  private drawBuffOuter() {
-    if (this.Buffs.size === 0) return;
-
-    if (this.drawBuffFlag) {
-      for (const [key, buff] of this.Buffs) {
-        this.drawBuff(key);
-
-        if (buff.buff_y_Pos - 100 > window.innerHeight) {
-          this.Buffs.delete(key);
-          continue;
-        }
-      }
-    }
-  }
-
   private drawBricks() {
     for (let i = 0; i < this.bricksArray.length; i++) {
       this.bricksArray[i].drawBrick(this.image);
@@ -529,7 +492,7 @@ export class Canvas extends Common<true> implements ICanvas {
 
   private handleKeyPress(): void {
     const paddle_x: number = this.gameState.paddle_positions.paddle_x;
-    const { WIDTH, HEIGHT } = calculatePaddleDimmensions();
+    const { WIDTH } = calculatePaddleDimmensions();
     if (this.keyPressedLeft && paddle_x > 0) {
       this.gameState.paddle_positions.paddle_x -=
         this.gameState.get_paddle_move_rate_X;
@@ -541,12 +504,6 @@ export class Canvas extends Common<true> implements ICanvas {
     }
   }
 
-  private cleanUpListeners = () => {
-    this.eventListener.removeListenersOnGivenNode(window, "resize");
-    this.eventListener.removeListenersOnGivenNode(window, "keyup");
-    this.eventListener.removeListenersOnGivenNode(window, "keydown");
-  };
-
   private drawClock() {
     this.ctx.font = "24px Arial";
     this.ctx.fillStyle = "red";
@@ -554,6 +511,68 @@ export class Canvas extends Common<true> implements ICanvas {
     const x = this.canvas.width - 100;
     const y = this.canvas.height - 30;
     this.ctx.fillText(clock(this.levelData.timer), x, y);
+  }
+
+  private buffColidedWithPaddle() {
+    const { paddle_x, paddle_y } = this.gameState.paddle_positions;
+
+    for (const [key, value] of this.Buffs) {
+      const buff = value;
+      const buffYPosition = buff?.buff_y_Pos!;
+      const buffXPostion = buff?.buff_x_Pos!;
+
+      const isCollsion: boolean =
+        buffXPostion > paddle_x &&
+        buffXPostion < paddle_x + PADDLE_WIDTH &&
+        buffYPosition > paddle_y &&
+        buffYPosition < paddle_y + PADDLE_HEIGHT;
+
+      if (isCollsion) {
+        this.applyBuffEffects(key);
+        this.Buffs.delete(key);
+      }
+    }
+  }
+
+  private drawBuffOuter() {
+    if (this.Buffs.size === 0) return;
+
+    if (this.drawBuffFlag) {
+      for (const [key, buff] of this.Buffs) {
+        this.drawBuff(key);
+
+        if (buff.buff_y_Pos - 100 > window.innerHeight) {
+          this.Buffs.delete(key);
+          continue;
+        }
+      }
+    }
+  }
+
+  private ShouldBeRemovedFromBuffsStack() {
+    for (let i = 0; i < this.appliedBuffs.length; i++) {
+      if (this.appliedBuffs[i].timeEnd < Date.now()) {
+        this.appliedBuffs.splice(i, 1);
+      }
+    }
+  }
+
+  private drawBuffStack() {
+    this.ShouldBeRemovedFromBuffsStack();
+    for (let i = 0; i < this.appliedBuffs.length; i++) {
+      this.ctx.font = "24px Arial";
+      this.ctx.fillStyle = "green";
+      this.ctx.textAlign = "center";
+      const x = this.canvas.width - 150;
+      const y = this.canvas.height - (60 + i * 30);
+      this.ctx.fillText(
+        `${BuffTypes[this.appliedBuffs[i].appliedBuffId]}${clock(
+          (this.appliedBuffs[i].timeEnd - Date.now()) / 1000
+        )}`,
+        x,
+        y
+      );
+    }
   }
 
   private drawLives() {
@@ -592,12 +611,19 @@ export class Canvas extends Common<true> implements ICanvas {
     }
   }
 
+  private cleanUpListeners = () => {
+    this.eventListener.removeListenersOnGivenNode(window, "resize");
+    this.eventListener.removeListenersOnGivenNode(window, "keyup");
+    this.eventListener.removeListenersOnGivenNode(window, "keydown");
+  };
+
   public draw(): IFinishedGame | void {
     this.handleKeyPress();
     this.setInitCanvasSize();
     this.clearCanvas();
     this.drawClock();
     this.drawLives();
+    this.drawBuffStack();
 
     return this.drawGame();
   }

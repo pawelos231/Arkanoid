@@ -213,7 +213,6 @@ export class Canvas extends Common {
         }
     }
     drawBall() {
-        //change to fix resizeable
         const ball = new Ball(this.ctx, calculateBallSize());
         const RADIUS = ball.radiusOfBallGetter;
         if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
@@ -257,22 +256,6 @@ export class Canvas extends Common {
         this.buffColidedWithPaddle();
         paddle.drawPaddle(this.gameState.paddle_positions);
     }
-    buffColidedWithPaddle() {
-        const { paddle_x, paddle_y } = this.gameState.paddle_positions;
-        for (const [key, value] of this.Buffs) {
-            const buff = value;
-            const buffYPosition = buff === null || buff === void 0 ? void 0 : buff.buff_y_Pos;
-            const buffXPostion = buff === null || buff === void 0 ? void 0 : buff.buff_x_Pos;
-            const isCollsion = buffXPostion > paddle_x &&
-                buffXPostion < paddle_x + PADDLE_WIDTH &&
-                buffYPosition > paddle_y &&
-                buffYPosition < paddle_y + PADDLE_HEIGHT;
-            if (isCollsion) {
-                this.applyBuffEffects(key);
-                this.Buffs.delete(key);
-            }
-        }
-    }
     addBricksToArray(brick_x, brick_y, specialBrick, brickData) {
         const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, specialBrick, 1, brick_x, brick_y, brickData);
         this.bricksArray.push(brick);
@@ -289,19 +272,6 @@ export class Canvas extends Common {
             };
             count++;
             this.addBricksToArray(sortedLevel[i].columnNumber, sortedLevel[i].rowNumber, count === SpecialBrickIndex ? true : false, levelData);
-        }
-    }
-    drawBuffOuter() {
-        if (this.Buffs.size === 0)
-            return;
-        if (this.drawBuffFlag) {
-            for (const [key, buff] of this.Buffs) {
-                this.drawBuff(key);
-                if (buff.buff_y_Pos - 100 > window.innerHeight) {
-                    this.Buffs.delete(key);
-                    continue;
-                }
-            }
         }
     }
     drawBricks() {
@@ -323,7 +293,7 @@ export class Canvas extends Common {
     }
     handleKeyPress() {
         const paddle_x = this.gameState.paddle_positions.paddle_x;
-        const { WIDTH, HEIGHT } = calculatePaddleDimmensions();
+        const { WIDTH } = calculatePaddleDimmensions();
         if (this.keyPressedLeft && paddle_x > 0) {
             this.gameState.paddle_positions.paddle_x -=
                 this.gameState.get_paddle_move_rate_X;
@@ -340,6 +310,53 @@ export class Canvas extends Common {
         const x = this.canvas.width - 100;
         const y = this.canvas.height - 30;
         this.ctx.fillText(clock(this.levelData.timer), x, y);
+    }
+    buffColidedWithPaddle() {
+        const { paddle_x, paddle_y } = this.gameState.paddle_positions;
+        for (const [key, value] of this.Buffs) {
+            const buff = value;
+            const buffYPosition = buff === null || buff === void 0 ? void 0 : buff.buff_y_Pos;
+            const buffXPostion = buff === null || buff === void 0 ? void 0 : buff.buff_x_Pos;
+            const isCollsion = buffXPostion > paddle_x &&
+                buffXPostion < paddle_x + PADDLE_WIDTH &&
+                buffYPosition > paddle_y &&
+                buffYPosition < paddle_y + PADDLE_HEIGHT;
+            if (isCollsion) {
+                this.applyBuffEffects(key);
+                this.Buffs.delete(key);
+            }
+        }
+    }
+    drawBuffOuter() {
+        if (this.Buffs.size === 0)
+            return;
+        if (this.drawBuffFlag) {
+            for (const [key, buff] of this.Buffs) {
+                this.drawBuff(key);
+                if (buff.buff_y_Pos - 100 > window.innerHeight) {
+                    this.Buffs.delete(key);
+                    continue;
+                }
+            }
+        }
+    }
+    ShouldBeRemovedFromBuffsStack() {
+        for (let i = 0; i < this.appliedBuffs.length; i++) {
+            if (this.appliedBuffs[i].timeEnd < Date.now()) {
+                this.appliedBuffs.splice(i, 1);
+            }
+        }
+    }
+    drawBuffStack() {
+        this.ShouldBeRemovedFromBuffsStack();
+        for (let i = 0; i < this.appliedBuffs.length; i++) {
+            this.ctx.font = "24px Arial";
+            this.ctx.fillStyle = "green";
+            this.ctx.textAlign = "center";
+            const x = this.canvas.width - 150;
+            const y = this.canvas.height - (60 + i * 30);
+            this.ctx.fillText(`${BuffTypes[this.appliedBuffs[i].appliedBuffId]}${clock((this.appliedBuffs[i].timeEnd - Date.now()) / 1000)}`, x, y);
+        }
     }
     drawLives() {
         this.ctx.font = "24px Arial";
@@ -369,6 +386,7 @@ export class Canvas extends Common {
         this.clearCanvas();
         this.drawClock();
         this.drawLives();
+        this.drawBuffStack();
         return this.drawGame();
     }
 }
