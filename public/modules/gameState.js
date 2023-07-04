@@ -15,6 +15,12 @@ export class GameState {
         this.ballMoveRateX = rate;
         this.ballMoveRateY = rate;
     }
+    get BallMoveRateGet() {
+        return {
+            rate_x: this.ballMoveRateX,
+            rate_y: this.ballMoveRateY,
+        };
+    }
     set BallMoveRateSetY(rate) {
         this.ballMoveRateY = rate;
     }

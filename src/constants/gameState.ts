@@ -22,8 +22,8 @@ export const DEFAULT_BALL_MOVEMENT_X_SPEED = -12;
 export const NO_SPECIAL_BRICK_INDEX = -100;
 export const DEFAULT_PADDLE_MOVEMENT_X = 15;
 export const BUFF_EXPIRATION = 5000;
-export const DEFAULT_BALL_SPEED_MULTIPLIER = 1.2;
-export const DEFAULT_PADDLE_SPEED_MULTIPLIER = 1.5;
+export const DEFAULT_BALL_SPEED_MULTIPLIER = 1.5;
+export const DEFAULT_PADDLE_SPEED_MULTIPLIER = 2;
 
 export let BRICK_HEIGHT: number = window.innerHeight / 18;
 export let BRICK_WIDTH: number = window.innerWidth / 8;

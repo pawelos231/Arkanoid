@@ -1,6 +1,5 @@
 import { Paddle_Pos, Ball_Pos } from "../interfaces/gameStateInterface";
 
-
 export class GameState {
   level: number;
   pointsToWin: number;
@@ -40,6 +39,13 @@ export class GameState {
   set BallMoveRateSet(rate: number) {
     this.ballMoveRateX = rate;
     this.ballMoveRateY = rate;
+  }
+
+  get BallMoveRateGet() {
+    return {
+      rate_x: this.ballMoveRateX,
+      rate_y: this.ballMoveRateY,
+    };
   }
 
   set BallMoveRateSetY(rate: number) {

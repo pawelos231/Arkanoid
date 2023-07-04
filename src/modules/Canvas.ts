@@ -10,7 +10,10 @@ import { gameOverStatus } from "../helpers/gameOverStatusCheck";
 import { calculateBrickDimmenssions } from "../helpers/calculateBrickDimmensions";
 import { clock } from "../helpers/Clock";
 import { EventListener } from "../helpers/Events/EventListener";
-import { BUFF_EXPIRATION } from "../constants/gameState";
+import {
+  BUFF_EXPIRATION,
+  DEFAULT_BALL_SPEED_MULTIPLIER,
+} from "../constants/gameState";
 import { media } from "./Media";
 
 import {
@@ -369,24 +372,35 @@ export class Canvas extends Common<true> implements ICanvas {
   private drawBall(): void {
     const ball: Ball = new Ball(this.ctx, calculateBallSize());
     const RADIUS: number = ball.radiusOfBallGetter;
+    const appliedSpeedBuff = this.appliedBuffs.find(
+      (item) => item.appliedBuffId === BuffTypes.SpeedBuff
+    );
 
     if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
-      this.gameState.BallMoveRateSetX = 12;
+      this.gameState.BallMoveRateSetX = appliedSpeedBuff
+        ? 12 * DEFAULT_BALL_SPEED_MULTIPLIER
+        : 12;
     }
 
     if (this.gameState.ball_positions.ball_y - RADIUS < 0) {
-      this.gameState.BallMoveRateSetY = 12;
+      this.gameState.BallMoveRateSetY = appliedSpeedBuff
+        ? 12 * DEFAULT_BALL_SPEED_MULTIPLIER
+        : 12;
     }
 
     if (this.gameState.ball_positions.ball_x + RADIUS > window.innerWidth) {
-      this.gameState.BallMoveRateSetX = -12;
+      this.gameState.BallMoveRateSetX = appliedSpeedBuff
+        ? -12 * DEFAULT_BALL_SPEED_MULTIPLIER
+        : -12;
     }
 
     if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
       this.gameState.lives = this.gameState.lives - 1;
       this.CheckWin();
 
-      this.ballMoveRateY = -12;
+      this.ballMoveRateY = appliedSpeedBuff
+        ? -12 * DEFAULT_BALL_SPEED_MULTIPLIER
+        : -12;
 
       this.gameState.ball_positions = {
         ball_x: window.innerWidth / 2,
@@ -552,6 +566,10 @@ export class Canvas extends Common<true> implements ICanvas {
   private ShouldBeRemovedFromBuffsStack() {
     for (let i = 0; i < this.appliedBuffs.length; i++) {
       if (this.appliedBuffs[i].timeEnd < Date.now()) {
+        Buff.clearBuffEffect(
+          this.appliedBuffs[i].appliedBuffId,
+          this.gameState
+        );
         this.appliedBuffs.splice(i, 1);
       }
     }

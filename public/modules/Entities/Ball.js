@@ -23,7 +23,7 @@ export class Ball {
         this.ctx.arc(this.ballPosition.ball_x, this.ballPosition.ball_y, this.radius, 0, Math.PI * 2, false);
         this.ctx.fillStyle = LIGHT_BLUE;
         this.ctx.fill();
-        this.renderFireParticlesAroundBall();
+        //this.renderFireParticlesAroundBall();
     }
     renderFireParticlesAroundBall() {
         const numParticles = 10;

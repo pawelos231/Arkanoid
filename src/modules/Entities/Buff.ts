@@ -19,6 +19,8 @@ import {
   DEFAULT_BALL_SPEED_MULTIPLIER,
 } from "../../constants/gameState";
 
+const DEFAULT_ACTIVE_BUFF_TIME = 10000;
+
 export class Buff implements BuffsInterface {
   private BuffType: BuffTypes;
   private tabOfBricks: Array<Brick>;
@@ -59,16 +61,21 @@ export class Buff implements BuffsInterface {
       this.AppliedBuffs = [];
     }, this.time - 4500);
 
+    const BuffAlreadyActive = this.AppliedBuffs.find(
+      (item) => item.appliedBuffId == this.BuffType
+    );
+
     if (this.BuffType == BuffTypes.AddLive) return applyBuff();
-    if (
-      !this.AppliedBuffs.find((item) => item.appliedBuffId == this.BuffType)
-    ) {
+    if (!BuffAlreadyActive) {
       this.AppliedBuffs.push({
         timeStart: Date.now(),
-        timeEnd: Date.now() + 10000,
+        timeEnd: Date.now() + DEFAULT_ACTIVE_BUFF_TIME,
         appliedBuffId: this.BuffType,
       });
       return applyBuff();
+    } else {
+      BuffAlreadyActive.timeStart = Date.now();
+      BuffAlreadyActive.timeEnd = Date.now() + DEFAULT_ACTIVE_BUFF_TIME;
     }
 
     return false;
@@ -130,7 +137,7 @@ export class Buff implements BuffsInterface {
     }
   }
 
-  private static clearBuffEffect(
+  public static clearBuffEffect(
     buffType: BuffTypes,
     gameState: GameState
   ): void {
@@ -141,6 +148,7 @@ export class Buff implements BuffsInterface {
         break;
       }
       case BuffTypes.SpeedBuff: {
+        console.log(gameState.BallMoveRateGetX, gameState.BallMoveRateGetY);
         gameState.BallMoveRateSetX =
           gameState.BallMoveRateGetX / DEFAULT_BALL_SPEED_MULTIPLIER;
         gameState.BallMoveRateSetY =

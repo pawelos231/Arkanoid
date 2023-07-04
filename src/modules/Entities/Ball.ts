@@ -37,7 +37,7 @@ export class Ball {
     );
     this.ctx.fillStyle = LIGHT_BLUE;
     this.ctx.fill();
-    this.renderFireParticlesAroundBall();
+    //this.renderFireParticlesAroundBall();
   }
 
   public renderFireParticlesAroundBall(): void {

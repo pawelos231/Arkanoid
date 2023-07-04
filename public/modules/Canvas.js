@@ -10,7 +10,7 @@ import { gameOverStatus } from "../helpers/gameOverStatusCheck";
 import { calculateBrickDimmenssions } from "../helpers/calculateBrickDimmensions";
 import { clock } from "../helpers/Clock";
 import { EventListener } from "../helpers/Events/EventListener";
-import { BUFF_EXPIRATION } from "../constants/gameState";
+import { BUFF_EXPIRATION, DEFAULT_BALL_SPEED_MULTIPLIER, } from "../constants/gameState";
 import { media } from "./Media";
 import { PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS, DEFAULT_PADDLE_MOVEMENT_X, DEFAULT_BRICK_WIDTH, DEFAULT_BRICK_HEIGHT, DEFAULT_BALL_MOVEMENT_Y_SPEED, DEFAULT_BALL_MOVEMENT_X_SPEED, NO_SPECIAL_BRICK_INDEX, } from "../constants/gameState";
 import { Directions, BuffTypes } from "../interfaces/HelperEnums";
@@ -215,19 +215,28 @@ export class Canvas extends Common {
     drawBall() {
         const ball = new Ball(this.ctx, calculateBallSize());
         const RADIUS = ball.radiusOfBallGetter;
+        const appliedSpeedBuff = this.appliedBuffs.find((item) => item.appliedBuffId === BuffTypes.SpeedBuff);
         if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
-            this.gameState.BallMoveRateSetX = 12;
+            this.gameState.BallMoveRateSetX = appliedSpeedBuff
+                ? 12 * DEFAULT_BALL_SPEED_MULTIPLIER
+                : 12;
         }
         if (this.gameState.ball_positions.ball_y - RADIUS < 0) {
-            this.gameState.BallMoveRateSetY = 12;
+            this.gameState.BallMoveRateSetY = appliedSpeedBuff
+                ? 12 * DEFAULT_BALL_SPEED_MULTIPLIER
+                : 12;
         }
         if (this.gameState.ball_positions.ball_x + RADIUS > window.innerWidth) {
-            this.gameState.BallMoveRateSetX = -12;
+            this.gameState.BallMoveRateSetX = appliedSpeedBuff
+                ? -12 * DEFAULT_BALL_SPEED_MULTIPLIER
+                : -12;
         }
         if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
             this.gameState.lives = this.gameState.lives - 1;
             this.CheckWin();
-            this.ballMoveRateY = -12;
+            this.ballMoveRateY = appliedSpeedBuff
+                ? -12 * DEFAULT_BALL_SPEED_MULTIPLIER
+                : -12;
             this.gameState.ball_positions = {
                 ball_x: window.innerWidth / 2,
                 ball_y: window.innerHeight - 150,
@@ -343,6 +352,7 @@ export class Canvas extends Common {
     ShouldBeRemovedFromBuffsStack() {
         for (let i = 0; i < this.appliedBuffs.length; i++) {
             if (this.appliedBuffs[i].timeEnd < Date.now()) {
+                Buff.clearBuffEffect(this.appliedBuffs[i].appliedBuffId, this.gameState);
                 this.appliedBuffs.splice(i, 1);
             }
         }
