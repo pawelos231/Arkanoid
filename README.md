@@ -1,3 +1,4 @@
+
 # Arkanoid
 
 <p align='center'>
@@ -76,4 +77,15 @@ Feel free to provide feedback, or share the custom levels you create. Let your c
 
 Arkanoid project aimed at recreating the classic game with added features, customization options, and enhanced gameplay experiences. Stay tuned for future updates and additions as the project evolves.
 
-Feel free to explore, contribute, and have fun with Arkanoid!
+Feel free to explore, contribute, and have fun with Arkanoid
+
+
+https://github.com/pawelos231/Arkanoid/assets/93586648/eb6062c2-c395-471c-9404-c804c574efe3
+
+https://github.com/pawelos231/Arkanoid/assets/93586648/b2b83800-8cf7-48b0-b553-cd9cbb5c69f8
+
+
+
+
+
+
