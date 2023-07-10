@@ -13,6 +13,7 @@ import { EventListener } from "../helpers/Events/EventListener";
 import { BUFF_EXPIRATION, DEFAULT_BALL_SPEED_MULTIPLIER, } from "../constants/gameState";
 import { media } from "./Media";
 import { PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS, DEFAULT_PADDLE_MOVEMENT_X, DEFAULT_BRICK_WIDTH, DEFAULT_BRICK_HEIGHT, DEFAULT_BALL_MOVEMENT_Y_SPEED, DEFAULT_BALL_MOVEMENT_X_SPEED, NO_SPECIAL_BRICK_INDEX, } from "../constants/gameState";
+import { EscapeView } from "./EscapeLevel";
 import { Directions, BuffTypes } from "../interfaces/HelperEnums";
 import { calculatePaddleDimmensions } from "../helpers/calculatePaddleDimmensions";
 import { calculateBallSize } from "../helpers/calculateBallDimmensions";
@@ -36,6 +37,7 @@ export class Canvas extends Common {
         this.appliedBuffs = [];
         this.Buffs = new Map();
         this.eventListener = new EventListener();
+        this.backToMenu = false;
         this.cleanUpListeners = () => {
             this.eventListener.removeListenersOnGivenNode(window, "resize");
             this.eventListener.removeListenersOnGivenNode(window, "keyup");
@@ -111,9 +113,17 @@ export class Canvas extends Common {
         });
     }
     setListenerMoveBackToMenu() {
+        const keepGoingButton = this.bindElementByClass("keepGoing");
+        const escapeView = new EscapeView();
+        this.eventListener.add(keepGoingButton, "click", () => {
+            escapeView.hideScreen();
+            this.backToMenu = false;
+        });
         this.eventListener.add(window, "keydown", (event) => {
             const keyCode = event.keyCode;
             if (keyCode === ESCAPE) {
+                escapeView.ShowUserScreenOver();
+                this.backToMenu = true;
             }
         });
     }
@@ -170,7 +180,7 @@ export class Canvas extends Common {
             this.drawBuffFlag = true;
         }
     }
-    CheckCollisionWithBricks(ball_x, ball_y, RADIUS) {
+    CheckCollisionWithBricks(ball_x, ball_y) {
         for (let i = 0; i < this.bricksArray.length; i++) {
             const BRICK = this.bricksArray[i];
             if (BRICK.brickStateGet.status === 0)
@@ -188,6 +198,19 @@ export class Canvas extends Common {
                 const status = this.bricksArray[i].getStatus;
                 if (IsSpecialBrick && status == 1) {
                     const specialBrick = new SpecialBrick(this.image, KRZYSIU_SPECIAL_IMAGE.sound);
+                    const buffDropPosition = {
+                        buff_x: BRICK.brickStateGet.brick_x * this.BRICK_WIDTH + 110,
+                        buff_y: BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT,
+                    };
+                    for (const value of Object.values(BuffTypes)) {
+                        if (typeof value !== "number")
+                            continue;
+                        const BuffInstance = new Buff(value, JSON.parse(JSON.stringify(this.bricksArray)), this.appliedBuffs, BUFF_EXPIRATION, this.ctx, buffDropPosition, this.gameState);
+                        const key = `${String(value)};${BuffInstance.createdAtVal}`;
+                        this.Buffs.set(key, BuffInstance);
+                        this.applyBuffEffects(key);
+                        this.Buffs.delete(key);
+                    }
                     specialBrick.displayViewOfSpecialBrick();
                 }
                 this.gameState.BallMoveRateSetY = -MoveRateY;
@@ -242,6 +265,8 @@ export class Canvas extends Common {
         if (this.gameState.ball_positions.ball_y + RADIUS > window.innerHeight) {
             this.gameState.lives = this.gameState.lives - 1;
             this.CheckWin();
+            //reset buffs
+            this.Buffs = new Map();
             this.ballMoveRateY = appliedSpeedBuff
                 ? -12 * DEFAULT_BALL_SPEED_MULTIPLIER
                 : -12;
@@ -259,7 +284,7 @@ export class Canvas extends Common {
         const paddle_x = this.gameState.paddle_positions.paddle_x;
         const paddle_y = this.gameState.paddle_positions.paddle_y;
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);
-        this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS);
+        this.CheckCollisionWithBricks(ball_x, ball_y);
         ball.drawBall({
             ball_x: (this.gameState.ball_positions.ball_x +=
                 this.gameState.BallMoveRateGetX),
@@ -301,6 +326,9 @@ export class Canvas extends Common {
         this.drawBricks();
         this.drawBall();
         this.drawBuffOuter();
+        if (this.backToMenu) {
+            return;
+        }
         if (this.endGame) {
             return this.endLevelData;
         }

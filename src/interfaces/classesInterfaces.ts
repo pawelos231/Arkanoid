@@ -3,6 +3,12 @@ import { GameState } from "../modules/gameState";
 export interface GameOverInterface {
   SendUserLevelData: () => void;
   ShowUserScreenOver: () => void;
+  hideScreen: () => void;
+}
+
+export interface EcapeViewInterface {
+  ShowUserScreenOver: () => void;
+  hideScreen: () => void;
 }
 
 export interface PaginatorInterface<T> {
@@ -10,7 +16,7 @@ export interface PaginatorInterface<T> {
 }
 
 export interface BuffsInterface {
-  WrapperIfBuffIsActive: <T extends Function>(arg0: T) => void;
+  ActivateBuffWrapper: <F extends Function>(arg0: F) => void;
   applyBuffEffects: () => void;
   drawBuff: () => void;
 }

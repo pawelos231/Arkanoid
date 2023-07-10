@@ -56,12 +56,9 @@ export class Buff implements BuffsInterface {
     this.gameState = gameState;
   }
 
-  public WrapperIfBuffIsActive<F extends Function>(applyBuff: F): F | false {
-    setTimeout(() => {
-      this.AppliedBuffs = [];
-    }, this.time - 4500);
-
-    const BuffAlreadyActive = this.AppliedBuffs.find(
+  public ActivateBuffWrapper<F extends Function>(applyBuff: F): F | false {
+    let BuffAlreadyActive: AppliedBuff | undefined;
+    BuffAlreadyActive = this.AppliedBuffs.find(
       (item) => item.appliedBuffId == this.BuffType
     );
 
@@ -109,27 +106,27 @@ export class Buff implements BuffsInterface {
     switch (this.BuffType) {
       case BuffTypes.PaddleSpeed: {
         await Media.spanwCustomSound(PADDLE_SPEED_BUFF_SOUND);
-        this.WrapperIfBuffIsActive(this.applyPaddleSpeedBuff.bind(this));
+        this.ActivateBuffWrapper(this.applyPaddleSpeedBuff.bind(this));
         break;
       }
       case BuffTypes.AddLive: {
         await Media.spanwCustomSound(ADD_LIVE_BUFF_SOUND);
-        this.WrapperIfBuffIsActive(this.applyAddLivesBuff.bind(this));
+        this.ActivateBuffWrapper(this.applyAddLivesBuff.bind(this));
         break;
       }
       case BuffTypes.DestroyerBuff: {
         await Media.spanwCustomSound(DESTROYER_BUFF_SOUND);
-        this.WrapperIfBuffIsActive(this.applyDestroyerBuff.bind(this));
+        this.ActivateBuffWrapper(this.applyDestroyerBuff.bind(this));
         break;
       }
       case BuffTypes.SpeedBuff: {
         await Media.spanwCustomSound(SPEED_BUFF_SOUND);
-        this.WrapperIfBuffIsActive(this.applySpeedBuff.bind(this));
+        this.ActivateBuffWrapper(this.applySpeedBuff.bind(this));
         break;
       }
       case BuffTypes.InvincibilityBuff: {
         await Media.spanwCustomSound(INVINCIBILITY_BUFF_SOUND);
-        this.WrapperIfBuffIsActive(this.applyInvincibiltyBuff.bind(this));
+        this.ActivateBuffWrapper(this.applyInvincibiltyBuff.bind(this));
         break;
       }
       default:

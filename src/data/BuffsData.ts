@@ -10,19 +10,19 @@ export interface Buff {
 export const tabOfBuffs: Buff[] = [
   {
     id: BuffTypes.PaddleSpeed,
-    color: "FF0000",
+    color: "#FF0000",
     description: "enchances your paddle speed",
     pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png",
   },
   {
     id: BuffTypes.AddLive,
-    color: "00FF00",
+    color: "#00FF00",
     description: "Adds one live",
     pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png",
   },
   {
     id: BuffTypes.SpeedBuff,
-    color: "0000FF",
+    color: "#0000FF",
     description: "enchances your ball and paddle speed by small amounts",
     pathToImage: "http://localhost:1234/Krzysiu.a065cfe0.png",
   },

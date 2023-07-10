@@ -28,7 +28,7 @@ import {
   DEFAULT_BALL_MOVEMENT_X_SPEED,
   NO_SPECIAL_BRICK_INDEX,
 } from "../constants/gameState";
-
+import { EscapeView } from "./EscapeLevel";
 import { IFinishedGame, Buff_Pos } from "../interfaces/gameStateInterface";
 import { Directions, BuffTypes, AppliedBuff } from "../interfaces/HelperEnums";
 import { Level, BrickData } from "../interfaces/level";
@@ -68,6 +68,7 @@ export class Canvas extends Common<true> implements ICanvas {
   private appliedBuffs: AppliedBuff[] = [];
   private Buffs = new Map<string, Buff>();
   private eventListener: EventListener = new EventListener();
+  private backToMenu = false;
 
   constructor(image: HTMLImageElement | null, levelData: Level) {
     super(GAME_CANVAS);
@@ -183,9 +184,21 @@ export class Canvas extends Common<true> implements ICanvas {
   }
 
   public setListenerMoveBackToMenu() {
+    const keepGoingButton = this.bindElementByClass("keepGoing");
+
+    const escapeView = new EscapeView();
+
+    this.eventListener.add(keepGoingButton, "click", () => {
+      escapeView.hideScreen();
+      this.backToMenu = false;
+    });
+
     this.eventListener.add(window, "keydown", (event: KeyboardEvent) => {
       const keyCode: number = event.keyCode;
+
       if (keyCode === ESCAPE) {
+        escapeView.ShowUserScreenOver();
+        this.backToMenu = true;
       }
     });
   }
@@ -288,11 +301,7 @@ export class Canvas extends Common<true> implements ICanvas {
     }
   }
 
-  private CheckCollisionWithBricks(
-    ball_x: number,
-    ball_y: number,
-    RADIUS: number
-  ): void {
+  private CheckCollisionWithBricks(ball_x: number, ball_y: number): void {
     for (let i = 0; i < this.bricksArray.length; i++) {
       const BRICK: Brick = this.bricksArray[i];
 
@@ -327,6 +336,28 @@ export class Canvas extends Common<true> implements ICanvas {
             this.image as HTMLImageElement,
             KRZYSIU_SPECIAL_IMAGE.sound
           );
+
+          const buffDropPosition: Buff_Pos = {
+            buff_x: BRICK.brickStateGet.brick_x * this.BRICK_WIDTH + 110,
+            buff_y: BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT,
+          };
+
+          for (const value of Object.values(BuffTypes)) {
+            if (typeof value !== "number") continue;
+            const BuffInstance: Buff = new Buff(
+              value as BuffTypes,
+              JSON.parse(JSON.stringify(this.bricksArray)),
+              this.appliedBuffs,
+              BUFF_EXPIRATION,
+              this.ctx,
+              buffDropPosition,
+              this.gameState
+            );
+            const key = `${String(value)};${BuffInstance.createdAtVal}`;
+            this.Buffs.set(key, BuffInstance);
+            this.applyBuffEffects(key);
+            this.Buffs.delete(key);
+          }
 
           specialBrick.displayViewOfSpecialBrick();
         }
@@ -407,6 +438,9 @@ export class Canvas extends Common<true> implements ICanvas {
       this.gameState.lives = this.gameState.lives - 1;
       this.CheckWin();
 
+      //reset buffs
+      this.Buffs = new Map<string, Buff>();
+
       this.ballMoveRateY = appliedSpeedBuff
         ? -12 * DEFAULT_BALL_SPEED_MULTIPLIER
         : -12;
@@ -429,7 +463,7 @@ export class Canvas extends Common<true> implements ICanvas {
 
     this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);
 
-    this.CheckCollisionWithBricks(ball_x, ball_y, RADIUS);
+    this.CheckCollisionWithBricks(ball_x, ball_y);
 
     ball.drawBall({
       ball_x: (this.gameState.ball_positions.ball_x +=
@@ -504,6 +538,9 @@ export class Canvas extends Common<true> implements ICanvas {
     this.drawBricks();
     this.drawBall();
     this.drawBuffOuter();
+    if (this.backToMenu) {
+      return;
+    }
     if (this.endGame) {
       return this.endLevelData!;
     }
