@@ -78,7 +78,7 @@ Arkanoid project aimed at recreating the classic game with added features, custo
 
 Feel free to explore, contribute, and have fun with Arkanoid
 
-Below you can see showcasing how info, songs and sounds are handled, how to create a new level, how to play it, everything is done from scratch
+Below, you will find a showcase of how information, songs, and sounds are handled, as well as a guide on creating new levels and playing them. Everything is built from scratch with love and care. During gameplay, only two types of buffs drop, and their distribution depends solely on the player's luck. Feel free to create diverse levels with blank bricks or even an "Amogus" level, as highlighted in the documentation example. The only thing truly holding you back from having fun is your imagination. Let's dive in and unlock the laughter-filled adventure that awaits!
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/eb6062c2-c395-471c-9404-c804c574efe3
 
