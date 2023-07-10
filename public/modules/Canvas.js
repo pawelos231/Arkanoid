@@ -8,7 +8,7 @@ import { Buff } from "./Entities/Buff";
 import { generateRandomNumber } from "../helpers/randomNumber";
 import { gameOverStatus } from "../helpers/gameOverStatusCheck";
 import { calculateBrickDimmenssions } from "../helpers/calculateBrickDimmensions";
-import { clock } from "../helpers/Clock";
+import { clock, normalClock } from "../helpers/Clock";
 import { EventListener } from "../helpers/Events/EventListener";
 import { BUFF_EXPIRATION, DEFAULT_BALL_SPEED_MULTIPLIER, } from "../constants/gameState";
 import { media } from "./Media";
@@ -17,6 +17,7 @@ import { Directions, BuffTypes } from "../interfaces/HelperEnums";
 import { calculatePaddleDimmensions } from "../helpers/calculatePaddleDimmensions";
 import { calculateBallSize } from "../helpers/calculateBallDimmensions";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
+import { ESCAPE } from "../constants/gameState";
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor(image, levelData) {
@@ -106,6 +107,13 @@ export class Canvas extends Common {
             if (keyCode == Directions.RigthArrows ||
                 keyCode == Directions.RigthNormal) {
                 this.keyPressedRight = false;
+            }
+        });
+    }
+    setListenerMoveBackToMenu() {
+        this.eventListener.add(window, "keydown", (event) => {
+            const keyCode = event.keyCode;
+            if (keyCode === ESCAPE) {
             }
         });
     }
@@ -318,7 +326,7 @@ export class Canvas extends Common {
         this.ctx.textAlign = "center";
         const x = this.canvas.width - 100;
         const y = this.canvas.height - 30;
-        this.ctx.fillText(clock(this.levelData.timer), x, y);
+        this.ctx.fillText(normalClock(this.levelData.timer), x, y);
     }
     buffColidedWithPaddle() {
         const { paddle_x, paddle_y } = this.gameState.paddle_positions;

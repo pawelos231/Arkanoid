@@ -1,7 +1,7 @@
 import { Common } from "./Common";
 import { Fetcher } from "../helpers/Fetcher";
 import { SEND_STATS_ABOUT_GAME } from "../constants/api/Urls";
-import { clock } from "../helpers/Clock";
+import { normalClock } from "../helpers/Clock";
 import { calculateOverallPoints } from "../helpers/calculateOverallLevelPoints";
 const INNER_GAME_OVER = "innerGameOver";
 export class GameOver extends Common {
@@ -32,7 +32,7 @@ export class GameOver extends Common {
       <ul>
         <li>Poziom: ${this.LevelInfo.level}</li>
         <li>Zdobyte punkty za zbite cegły: ${this.LevelInfo.points}</li>
-        <li>czas gry: ${clock(this.LevelInfo.elapsedTime)}</li>
+        <li>czas gry: ${normalClock(this.LevelInfo.elapsedTime)}</li>
         <li>powód: ${this.LevelInfo.reason}</li>
         <li>zdobyte punkty za ogólny wynik: ${calculateOverallPoints(this.LevelInfo.points, this.LevelInfo.elapsedTime, this.LevelInfo.level)}</li>
       </ul>

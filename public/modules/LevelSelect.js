@@ -8,7 +8,6 @@ import { REFRESH_RATE_MS } from "../constants/gameState";
 import { GameEndStatus } from "../interfaces/HelperEnums";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
-const POINTS_TO_GET = 10000000;
 class LevelSelect extends Common {
     constructor() {
         super();
@@ -55,6 +54,7 @@ class LevelSelect extends Common {
             canvas.configureCanvas(true, randomBrick);
             canvas.addEventOnResize();
             canvas.setListenerMovePaddle();
+            canvas.setListenerMoveBackToMenu();
             this.DrawOnCanvas(canvas);
         });
     }
@@ -79,11 +79,17 @@ class LevelSelect extends Common {
             }
         });
     }
+    createViewIfNoLevels(parentNode) {
+        const H = document.createElement("h1");
+        H.textContent = "";
+        H.textContent = "Nothing here :(";
+        parentNode.appendChild(H);
+    }
     createViewForLevels(levelData, parentNode) {
         const divChild = document.createElement("div");
         const divParent = document.createElement("div");
         const p = document.createElement("p");
-        divChild.textContent = String(levelData.level);
+        divChild.textContent = String(levelData.levelName);
         p.textContent = "Level info";
         parentNode.appendChild(divParent);
         divParent.appendChild(p);
@@ -93,8 +99,11 @@ class LevelSelect extends Common {
     }
     async handleOnClickLevel() {
         const levelData = (await this.fetchLevels());
-        console.log(levelData);
         const levelSelect = this.bindElementByClass(MAIN_LEVEL_SELECT_MENU);
+        if (!levelData || levelData.length === 0 || levelData.error) {
+            this.createViewIfNoLevels(levelSelect);
+            return;
+        }
         levelSelect.textContent = "";
         levelData.forEach((item, i) => {
             this.createViewForLevels(item, levelSelect);

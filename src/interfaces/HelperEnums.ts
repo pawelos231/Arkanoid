@@ -21,6 +21,7 @@ export enum MediaEnum {
   Music = "music",
 }
 
+
 export enum Directions {
   LeftArrows = LEFT_ARROW,
   LeftNormal = LEFT_NORMAL,

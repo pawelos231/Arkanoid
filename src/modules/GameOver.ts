@@ -3,7 +3,7 @@ import { GameOverInterface } from "../interfaces/classesInterfaces";
 import { Fetcher } from "../helpers/Fetcher";
 import { SEND_STATS_ABOUT_GAME } from "../constants/api/Urls";
 import { IFinishedGame } from "../interfaces/gameStateInterface";
-import { clock } from "../helpers/Clock";
+import { clock, normalClock } from "../helpers/Clock";
 import { calculateOverallPoints } from "../helpers/calculateOverallLevelPoints";
 
 const INNER_GAME_OVER = "innerGameOver";
@@ -55,7 +55,7 @@ export class GameOver extends Common<true> implements GameOverInterface {
       <ul>
         <li>Poziom: ${this.LevelInfo.level}</li>
         <li>Zdobyte punkty za zbite cegły: ${this.LevelInfo.points}</li>
-        <li>czas gry: ${clock(this.LevelInfo.elapsedTime)}</li>
+        <li>czas gry: ${normalClock(this.LevelInfo.elapsedTime)}</li>
         <li>powód: ${this.LevelInfo.reason}</li>
         <li>zdobyte punkty za ogólny wynik: ${calculateOverallPoints(
           this.LevelInfo.points,

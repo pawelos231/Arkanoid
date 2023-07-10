@@ -20,3 +20,7 @@ export interface Level {
   highScore: number;
   requiredScore: number;
 }
+
+export interface levelError {
+  error: string;
+}

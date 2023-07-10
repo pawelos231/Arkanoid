@@ -1,17 +1,15 @@
 import { Common } from "./Common";
 import { Canvas } from "./Canvas";
-import { tabOfBrickData } from "../data/tabOfBrickData";
 import { loader } from "./Loader";
 import { Fetcher } from "../helpers/Fetcher";
 import { GameOver } from "./GameOver";
-import { GET_LEVELS_URL, GET_MOD_LEVELS_URL } from "../constants/api/Urls";
-import { Level } from "../interfaces/level";
+import { GET_MOD_LEVELS_URL } from "../constants/api/Urls";
+import { Level, levelError } from "../interfaces/level";
 import { REFRESH_RATE_MS } from "../constants/gameState";
 import { GameEndStatus } from "../interfaces/HelperEnums";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 
 const MAIN_LEVEL_SELECT_MENU = "mainLevelSelectMenu";
-const POINTS_TO_GET = 10000000;
 
 class LevelSelect extends Common {
   constructor() {
@@ -81,6 +79,7 @@ class LevelSelect extends Common {
       canvas.configureCanvas(true, randomBrick);
       canvas.addEventOnResize();
       canvas.setListenerMovePaddle();
+      canvas.setListenerMoveBackToMenu();
       this.DrawOnCanvas(canvas);
     });
   }
@@ -108,12 +107,19 @@ class LevelSelect extends Common {
     });
   }
 
+  private createViewIfNoLevels(parentNode: HTMLElement) {
+    const H: HTMLParagraphElement = document.createElement("h1");
+    H.textContent = "";
+    H.textContent = "Nothing here :(";
+    parentNode.appendChild(H);
+  }
+
   private createViewForLevels(levelData: Level, parentNode: HTMLElement): void {
     const divChild: HTMLDivElement = document.createElement("div");
     const divParent: HTMLDivElement = document.createElement("div");
     const p: HTMLParagraphElement = document.createElement("p");
 
-    divChild.textContent = String(levelData.level);
+    divChild.textContent = String(levelData.levelName);
     p.textContent = "Level info";
 
     parentNode.appendChild(divParent);
@@ -125,12 +131,17 @@ class LevelSelect extends Common {
   }
 
   public async handleOnClickLevel(): Promise<void> {
-    const levelData: Level[] = (await this.fetchLevels()) as Level[];
-    console.log(levelData);
+    const levelData: Level[] & levelError =
+      (await this.fetchLevels()) as Level[] & levelError;
 
     const levelSelect: HTMLElement = this.bindElementByClass(
       MAIN_LEVEL_SELECT_MENU
     );
+
+    if (!levelData || levelData.length === 0 || levelData.error) {
+      this.createViewIfNoLevels(levelSelect);
+      return;
+    }
 
     levelSelect.textContent = "";
 
