@@ -1,4 +1,3 @@
-
 # Arkanoid
 
 <p align='center'>
@@ -79,12 +78,10 @@ Arkanoid project aimed at recreating the classic game with added features, custo
 
 Feel free to explore, contribute, and have fun with Arkanoid
 
+Below you can see showcasing how info, songs and sounds are handled, how to create a new level, how to play it, everything is done from scratch
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/eb6062c2-c395-471c-9404-c804c574efe3
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/b2b83800-8cf7-48b0-b553-cd9cbb5c69f8
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/4dc1c2c6-1d23-49b4-a684-ee265b76f124
-
-
-
