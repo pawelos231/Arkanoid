@@ -37,6 +37,8 @@ export class Canvas extends Common {
         this.appliedBuffs = [];
         this.Buffs = new Map();
         this.eventListener = new EventListener();
+        this.paddle = null;
+        this.ball = null;
         this.backToMenu = false;
         this.cleanUpListeners = () => {
             this.eventListener.removeListenersOnGivenNode(window, "resize");
@@ -68,6 +70,9 @@ export class Canvas extends Common {
         this.canvas.style.backgroundColor = "black";
         this.ctx = this.canvas.getContext("2d");
         const { WIDTH, HEIGHT } = calculateBrickDimmenssions(this.rowsCount, this.columnsCount);
+        const { WIDTHP, HEIGHTP } = calculatePaddleDimmensions();
+        this.paddle = new Paddle(WIDTHP, HEIGHTP, this.ctx);
+        this.ball = new Ball(this.ctx, calculateBallSize());
         this.BRICK_HEIGHT = HEIGHT;
         this.BRICK_WIDTH = WIDTH;
         isSpecialLevel
@@ -244,8 +249,7 @@ export class Canvas extends Common {
         }
     }
     drawBall() {
-        const ball = new Ball(this.ctx, calculateBallSize());
-        const RADIUS = ball.radiusOfBallGetter;
+        const RADIUS = this.ball.radiusOfBallGetter;
         const appliedSpeedBuff = this.appliedBuffs.find((item) => item.appliedBuffId === BuffTypes.SpeedBuff);
         if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
             this.gameState.BallMoveRateSetX = appliedSpeedBuff
@@ -285,7 +289,7 @@ export class Canvas extends Common {
         const paddle_y = this.gameState.paddle_positions.paddle_y;
         this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);
         this.CheckCollisionWithBricks(ball_x, ball_y);
-        ball.drawBall({
+        this.ball.drawBall({
             ball_x: (this.gameState.ball_positions.ball_x +=
                 this.gameState.BallMoveRateGetX),
             ball_y: (this.gameState.ball_positions.ball_y +=
@@ -293,10 +297,8 @@ export class Canvas extends Common {
         });
     }
     drawPaddle() {
-        const { WIDTH, HEIGHT } = calculatePaddleDimmensions();
-        const paddle = new Paddle(WIDTH, HEIGHT, this.ctx);
         this.buffColidedWithPaddle();
-        paddle.drawPaddle(this.gameState.paddle_positions);
+        this.paddle.drawPaddle(this.gameState.paddle_positions);
     }
     addBricksToArray(brick_x, brick_y, specialBrick, brickData) {
         const brick = new Brick(this.BRICK_WIDTH, this.BRICK_HEIGHT, this.ctx, specialBrick, 1, brick_x, brick_y, brickData);
@@ -338,12 +340,12 @@ export class Canvas extends Common {
     }
     handleKeyPress() {
         const paddle_x = this.gameState.paddle_positions.paddle_x;
-        const { WIDTH } = calculatePaddleDimmensions();
+        const { WIDTHP } = calculatePaddleDimmensions();
         if (this.keyPressedLeft && paddle_x > 0) {
             this.gameState.paddle_positions.paddle_x -=
                 this.gameState.get_paddle_move_rate_X;
         }
-        if (this.keyPressedRight && paddle_x + WIDTH < window.innerWidth) {
+        if (this.keyPressedRight && paddle_x + WIDTHP < window.innerWidth) {
             this.gameState.paddle_positions.paddle_x +=
                 this.gameState.get_paddle_move_rate_X;
         }

@@ -1,8 +1,8 @@
 import { PADDLE_HEIGHT } from "../constants/gameState";
 
 interface ReturnTypeCB {
-  WIDTH: number;
-  HEIGHT: number;
+  WIDTHP: number;
+  HEIGHTP: number;
 }
 
 export const calculatePaddleDimmensions = (): ReturnTypeCB => {
@@ -14,5 +14,5 @@ export const calculatePaddleDimmensions = (): ReturnTypeCB => {
     paddleHeight = 15;
   }
 
-  return { WIDTH: window.innerWidth / 8, HEIGHT: paddleHeight };
+  return { WIDTHP: window.innerWidth / 8, HEIGHTP: paddleHeight };
 };

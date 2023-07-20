@@ -68,6 +68,8 @@ export class Canvas extends Common<true> implements ICanvas {
   private appliedBuffs: AppliedBuff[] = [];
   private Buffs = new Map<string, Buff>();
   private eventListener: EventListener = new EventListener();
+  private paddle: Paddle | null = null;
+  private ball: Ball | null = null;
   private backToMenu = false;
 
   constructor(image: HTMLImageElement | null, levelData: Level) {
@@ -121,6 +123,10 @@ export class Canvas extends Common<true> implements ICanvas {
       this.rowsCount,
       this.columnsCount
     );
+
+    const { WIDTHP, HEIGHTP } = calculatePaddleDimmensions();
+    this.paddle = new Paddle(WIDTHP, HEIGHTP, this.ctx);
+    this.ball = new Ball(this.ctx, calculateBallSize());
 
     this.BRICK_HEIGHT = HEIGHT;
     this.BRICK_WIDTH = WIDTH;
@@ -410,8 +416,7 @@ export class Canvas extends Common<true> implements ICanvas {
   }
 
   private drawBall(): void {
-    const ball: Ball = new Ball(this.ctx, calculateBallSize());
-    const RADIUS: number = ball.radiusOfBallGetter;
+    const RADIUS: number = this.ball!.radiusOfBallGetter;
     const appliedSpeedBuff = this.appliedBuffs.find(
       (item) => item.appliedBuffId === BuffTypes.SpeedBuff
     );
@@ -465,7 +470,7 @@ export class Canvas extends Common<true> implements ICanvas {
 
     this.CheckCollisionWithBricks(ball_x, ball_y);
 
-    ball.drawBall({
+    this.ball!.drawBall({
       ball_x: (this.gameState.ball_positions.ball_x +=
         this.gameState.BallMoveRateGetX),
 
@@ -475,12 +480,9 @@ export class Canvas extends Common<true> implements ICanvas {
   }
 
   private drawPaddle(): void {
-    const { WIDTH, HEIGHT } = calculatePaddleDimmensions();
-    const paddle: Paddle = new Paddle(WIDTH, HEIGHT, this.ctx);
-
     this.buffColidedWithPaddle();
 
-    paddle.drawPaddle(this.gameState.paddle_positions);
+    this.paddle!.drawPaddle(this.gameState.paddle_positions);
   }
 
   private addBricksToArray(
@@ -552,13 +554,13 @@ export class Canvas extends Common<true> implements ICanvas {
 
   private handleKeyPress(): void {
     const paddle_x: number = this.gameState.paddle_positions.paddle_x;
-    const { WIDTH } = calculatePaddleDimmensions();
+    const { WIDTHP } = calculatePaddleDimmensions();
     if (this.keyPressedLeft && paddle_x > 0) {
       this.gameState.paddle_positions.paddle_x -=
         this.gameState.get_paddle_move_rate_X;
     }
 
-    if (this.keyPressedRight && paddle_x + WIDTH < window.innerWidth) {
+    if (this.keyPressedRight && paddle_x + WIDTHP < window.innerWidth) {
       this.gameState.paddle_positions.paddle_x +=
         this.gameState.get_paddle_move_rate_X;
     }

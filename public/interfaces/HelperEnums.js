@@ -17,10 +17,10 @@ export var MediaEnum;
 })(MediaEnum || (MediaEnum = {}));
 export var Directions;
 (function (Directions) {
-    Directions[Directions["LeftArrows"] = LEFT_ARROW] = "LeftArrows";
-    Directions[Directions["LeftNormal"] = LEFT_NORMAL] = "LeftNormal";
-    Directions[Directions["RigthArrows"] = RIGHT_ARROW] = "RigthArrows";
-    Directions[Directions["RigthNormal"] = RIGHT_NORMAL] = "RigthNormal";
+    Directions[Directions["LeftArrows"] = 65] = "LeftArrows";
+    Directions[Directions["LeftNormal"] = 37] = "LeftNormal";
+    Directions[Directions["RigthArrows"] = 68] = "RigthArrows";
+    Directions[Directions["RigthNormal"] = 39] = "RigthNormal";
 })(Directions || (Directions = {}));
 export var BuffTypes;
 (function (BuffTypes) {

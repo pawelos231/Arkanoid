@@ -8,7 +8,7 @@ import { HIDDEN } from "../constants/classNames";
 import { sealed } from "../decorators/seal";
 import { Logger } from "../interfaces/HelperEnums";
 const REGISTER_FORMS = "RegisterElement";
-let Common = class Common {
+export let Common = class Common {
     constructor(...elementId) {
         if (elementId && elementId[0]) {
             this.elementId = this.bindElementById(elementId[0]);
@@ -67,4 +67,3 @@ let Common = class Common {
 Common = __decorate([
     sealed
 ], Common);
-export { Common };
