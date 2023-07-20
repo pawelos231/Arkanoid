@@ -25,7 +25,7 @@ The game includes eight different types of bricks, each with unique characterist
 It is worth noting that on every level you will encounter so called special brick (it will activate every buff available in the game), you can recognize it beacuse it in fact is not normal colored brick, but stupid image of the face of my friend:
 
 <div style="text-align:center">
-  <img alt="PaddleSpeed" src="./public/krzysiatwarz.png" />
+  <img alt="PaddleSpeed" src="./src/docs/krzysiatwarz.png" />
 </div>
 
 ### Buffs
