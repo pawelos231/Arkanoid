@@ -32,13 +32,13 @@ It is worth noting that on every level you will encounter so called special bric
 
 The game introduces five different types of buffs that can enhance gameplay. Each buff has a specific color, description, and image associated with it. The table below provides an overview of the available buffs:
 
-| Color   | Description                                          | Image                                                                                            |
-| ------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Red     | Enhances your paddle speed                           | ![PaddleSpeed](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)       |
-| Green   | Adds one life                                        | ![AddLive](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)           |
-| Blue    | Enhances your ball and paddle speed by small amounts | ![SpeedBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)         |
-| Yellow  | Makes you invincible for about 1 minute              | ![InvincibilityBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png) |
-| Magenta | Makes your ball go through EVERYTHING, broken buff   | ![DestroyerBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)     |
+| Color   | Description                                                     | Image                                                                                            |
+| ------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Red     | Enhances your paddle speed                                      | ![PaddleSpeed](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)       |
+| Green   | Adds one life                                                   | ![AddLive](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)           |
+| Blue    | Enhances your ball and paddle speed by small amounts            | ![SpeedBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)         |
+| Yellow  | I dont now what this buff should do, so for now it does nothing | ![InvincibilityBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png) |
+| Magenta | I dont now what this buff should do, so for now it does nothing | ![DestroyerBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)     |
 
 ### Grid Resizing
 
