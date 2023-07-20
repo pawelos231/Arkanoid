@@ -92,4 +92,4 @@ https://github.com/pawelos231/Arkanoid/assets/93586648/b2b83800-8cf7-48b0-b553-c
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/4dd8babe-79bd-449b-ae8b-cc9f197acfcb
 
-for the purpose of more interesting gameplay the buff drop rate was increased to 50%, unfortonutely i was unable to hit special brick, but if i were to, every buff would have been acivated simultaneously
+for the purpose of more interesting gameplay the buff drop rate was increased to 50%, unfortonutely i was unable to hit special brick, but if i were to, every buff would have been acivated simultaneously, i am also sorry for poor quality of recordings, but github only allows movies up to 10MB, which is pretty low, considering each is about 1 minute long
