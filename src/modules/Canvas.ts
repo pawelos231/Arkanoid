@@ -37,6 +37,7 @@ import { calculatePaddleDimmensions } from "../helpers/calculatePaddleDimmension
 import { calculateBallSize } from "../helpers/calculateBallDimmensions";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 import { ESCAPE } from "../constants/gameState";
+import { InputController } from "../helpers/Events/InputController";
 
 const GAME_CANVAS = "game_canvas";
 
@@ -51,8 +52,6 @@ export class Canvas extends Common<true> implements ICanvas {
   private columnsCount: number;
   private hitCounter: number;
   private playerPoints: number;
-  private keyPressedLeft: boolean = false;
-  private keyPressedRight: boolean = false;
   private pointsToWin: number;
   private ctx: CanvasRenderingContext2D;
   private canvas: HTMLCanvasElement;
@@ -68,6 +67,9 @@ export class Canvas extends Common<true> implements ICanvas {
   private appliedBuffs: AppliedBuff[] = [];
   private Buffs = new Map<string, Buff>();
   private eventListener: EventListener = new EventListener();
+  private inputController: InputController = new InputController(
+    this.eventListener
+  );
   private paddle: Paddle | null = null;
   private ball: Ball | null = null;
   private backToMenu = false;
@@ -101,6 +103,7 @@ export class Canvas extends Common<true> implements ICanvas {
       this.ballMoveRateY,
       this.paddleMoveRateX
     );
+    this.inputController.addKeyPressEvents();
   }
 
   public get getGameState() {
@@ -151,40 +154,6 @@ export class Canvas extends Common<true> implements ICanvas {
       for (let i = 0; i < this.bricksArray.length; i++) {
         this.bricksArray[i].widthSetter = this.BRICK_WIDTH;
         this.bricksArray[i].heightSetter = this.BRICK_HEIGHT;
-      }
-    });
-  }
-
-  public setListenerMovePaddle(): void {
-    this.eventListener.add(window, "keydown", (event: KeyboardEvent) => {
-      const keyCode: number = event.keyCode;
-      if (
-        keyCode == Directions.LeftArrows ||
-        keyCode == Directions.LeftNormal
-      ) {
-        this.keyPressedLeft = true;
-      }
-      if (
-        keyCode == Directions.RigthArrows ||
-        keyCode == Directions.RigthNormal
-      ) {
-        this.keyPressedRight = true;
-      }
-    });
-    this.eventListener.add(window, "keyup", (event: KeyboardEvent) => {
-      const keyCode: number = event.keyCode;
-
-      if (
-        keyCode == Directions.LeftArrows ||
-        keyCode == Directions.LeftNormal
-      ) {
-        this.keyPressedLeft = false;
-      }
-      if (
-        keyCode == Directions.RigthArrows ||
-        keyCode == Directions.RigthNormal
-      ) {
-        this.keyPressedRight = false;
       }
     });
   }
@@ -279,7 +248,7 @@ export class Canvas extends Common<true> implements ICanvas {
 
   private DropBuff(BRICK: Brick) {
     //declare some buff dropping condtion here
-    //1 IN 10 CHANCE
+    //1 IN 4 CHANCE
 
     if (Math.floor(Math.random() * 2) == 1) {
       const buffDropPosition: Buff_Pos = {
@@ -555,12 +524,15 @@ export class Canvas extends Common<true> implements ICanvas {
   private handleKeyPress(): void {
     const paddle_x: number = this.gameState.paddle_positions.paddle_x;
     const { WIDTHP } = calculatePaddleDimmensions();
-    if (this.keyPressedLeft && paddle_x > 0) {
+    if (this.inputController.keyPressedLeft && paddle_x > 0) {
       this.gameState.paddle_positions.paddle_x -=
         this.gameState.get_paddle_move_rate_X;
     }
 
-    if (this.keyPressedRight && paddle_x + WIDTHP < window.innerWidth) {
+    if (
+      this.inputController.keyPressedRight &&
+      paddle_x + WIDTHP < window.innerWidth
+    ) {
       this.gameState.paddle_positions.paddle_x +=
         this.gameState.get_paddle_move_rate_X;
     }

@@ -53,7 +53,6 @@ class LevelSelect extends Common {
             const canvas = new Canvas(image, levelData);
             canvas.configureCanvas(true, randomBrick);
             canvas.addEventOnResize();
-            canvas.setListenerMovePaddle();
             canvas.setListenerMoveBackToMenu();
             this.DrawOnCanvas(canvas);
         });

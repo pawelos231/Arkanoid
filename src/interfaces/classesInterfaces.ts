@@ -25,5 +25,4 @@ export interface ICanvas {
   getGameState: GameState;
   configureCanvas: (isSpecialLevel: boolean, randomBrickIndex?: number) => void;
   addEventOnResize: () => void;
-  setListenerMovePaddle: () => void;
 }

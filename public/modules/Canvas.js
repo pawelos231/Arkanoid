@@ -14,11 +14,12 @@ import { BUFF_EXPIRATION, DEFAULT_BALL_SPEED_MULTIPLIER, } from "../constants/ga
 import { media } from "./Media";
 import { PADDLE_WIDTH, PADDLE_HEIGHT, INIT_BALL_POS, INIT_PADDLE_POS, DEFAULT_PADDLE_MOVEMENT_X, DEFAULT_BRICK_WIDTH, DEFAULT_BRICK_HEIGHT, DEFAULT_BALL_MOVEMENT_Y_SPEED, DEFAULT_BALL_MOVEMENT_X_SPEED, NO_SPECIAL_BRICK_INDEX, } from "../constants/gameState";
 import { EscapeView } from "./EscapeLevel";
-import { Directions, BuffTypes } from "../interfaces/HelperEnums";
+import { BuffTypes } from "../interfaces/HelperEnums";
 import { calculatePaddleDimmensions } from "../helpers/calculatePaddleDimmensions";
 import { calculateBallSize } from "../helpers/calculateBallDimmensions";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
 import { ESCAPE } from "../constants/gameState";
+import { InputController } from "../helpers/Events/InputController";
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor(image, levelData) {
@@ -28,8 +29,6 @@ export class Canvas extends Common {
         this.ballMoveRateX = DEFAULT_BALL_MOVEMENT_X_SPEED;
         this.ballMoveRateY = DEFAULT_BALL_MOVEMENT_Y_SPEED;
         this.paddleMoveRateX = DEFAULT_PADDLE_MOVEMENT_X;
-        this.keyPressedLeft = false;
-        this.keyPressedRight = false;
         this.drawBuffFlag = false;
         this.endGame = false;
         this.elapsedTime = 0;
@@ -37,6 +36,7 @@ export class Canvas extends Common {
         this.appliedBuffs = [];
         this.Buffs = new Map();
         this.eventListener = new EventListener();
+        this.inputController = new InputController(this.eventListener);
         this.paddle = null;
         this.ball = null;
         this.backToMenu = false;
@@ -60,6 +60,7 @@ export class Canvas extends Common {
             this.elapsedTime++;
         }, 1000);
         this.gameState = new GameState(this.levelData.level, this.levelData.lives, this.pointsToWin, this.hitCounter, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS, this.ballMoveRateX, this.ballMoveRateY, this.paddleMoveRateX);
+        this.inputController.addKeyPressEvents();
     }
     get getGameState() {
         return this.gameState;
@@ -90,30 +91,6 @@ export class Canvas extends Common {
             for (let i = 0; i < this.bricksArray.length; i++) {
                 this.bricksArray[i].widthSetter = this.BRICK_WIDTH;
                 this.bricksArray[i].heightSetter = this.BRICK_HEIGHT;
-            }
-        });
-    }
-    setListenerMovePaddle() {
-        this.eventListener.add(window, "keydown", (event) => {
-            const keyCode = event.keyCode;
-            if (keyCode == Directions.LeftArrows ||
-                keyCode == Directions.LeftNormal) {
-                this.keyPressedLeft = true;
-            }
-            if (keyCode == Directions.RigthArrows ||
-                keyCode == Directions.RigthNormal) {
-                this.keyPressedRight = true;
-            }
-        });
-        this.eventListener.add(window, "keyup", (event) => {
-            const keyCode = event.keyCode;
-            if (keyCode == Directions.LeftArrows ||
-                keyCode == Directions.LeftNormal) {
-                this.keyPressedLeft = false;
-            }
-            if (keyCode == Directions.RigthArrows ||
-                keyCode == Directions.RigthNormal) {
-                this.keyPressedRight = false;
             }
         });
     }
@@ -172,7 +149,7 @@ export class Canvas extends Common {
     }
     DropBuff(BRICK) {
         //declare some buff dropping condtion here
-        //1 IN 10 CHANCE
+        //1 IN 4 CHANCE
         if (Math.floor(Math.random() * 2) == 1) {
             const buffDropPosition = {
                 buff_x: BRICK.brickStateGet.brick_x * this.BRICK_WIDTH + 110,
@@ -341,11 +318,12 @@ export class Canvas extends Common {
     handleKeyPress() {
         const paddle_x = this.gameState.paddle_positions.paddle_x;
         const { WIDTHP } = calculatePaddleDimmensions();
-        if (this.keyPressedLeft && paddle_x > 0) {
+        if (this.inputController.keyPressedLeft && paddle_x > 0) {
             this.gameState.paddle_positions.paddle_x -=
                 this.gameState.get_paddle_move_rate_X;
         }
-        if (this.keyPressedRight && paddle_x + WIDTHP < window.innerWidth) {
+        if (this.inputController.keyPressedRight &&
+            paddle_x + WIDTHP < window.innerWidth) {
             this.gameState.paddle_positions.paddle_x +=
                 this.gameState.get_paddle_move_rate_X;
         }

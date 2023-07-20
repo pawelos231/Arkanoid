@@ -22,6 +22,12 @@ The game includes eight different types of bricks, each with unique characterist
 | Black       | 4             | 50     | 0.05           |
 | Gray        | 1,000,000,000 | 0      | 0.05           |
 
+It is worth noting that on every level you will encounter so called special brick (it will activate every buff available in the game), you can recognize it beacuse it in fact is not normal colored brick, but stupid image of the face of my friend:
+
+<div style="text-align:center">
+  <img alt="PaddleSpeed" src="./dist/krzysiatwarz.png" />
+</div>
+
 ### Buffs
 
 The game introduces five different types of buffs that can enhance gameplay. Each buff has a specific color, description, and image associated with it. The table below provides an overview of the available buffs:
@@ -74,7 +80,7 @@ Feel free to provide feedback, or share the custom levels you create. Let your c
 
 ## Conclusion
 
-Arkanoid project aimed at recreating the classic game with added features, customization options, and enhanced gameplay experiences. Stay tuned for future updates and additions as the project evolves.
+Arkanoid project aimed at recreating the classic game with added features, customization options, and enhanced gameplay experiences. Stay tuned for future updates and additions as the project evolves. Game was created without usage of any libraries that would make my job easier in any way, it is bare bones, html, css and typescript, well there is also three js for rendering menu view but i dont count that, beacuse it is only a view and not a game feature
 
 Feel free to explore, contribute, and have fun with Arkanoid
 
