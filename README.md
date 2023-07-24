@@ -88,7 +88,7 @@ Below, you will find a showcase of how information, songs, and sounds are handle
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/ad242bde-7587-4766-9496-a8b802faeba7
 
-https://github.com/pawelos231/Arkanoid/assets/93586648/eb6062c2-c395-471c-9404-c804c574efe3
+https://github.com/pawelos231/Arkanoid/assets/93586648/ad242bde-7587-4766-9496-a8b802faeba7
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/b2b83800-8cf7-48b0-b553-cd9cbb5c69f8
 
