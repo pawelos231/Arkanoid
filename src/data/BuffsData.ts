@@ -1,11 +1,5 @@
 import { BuffTypes } from "../interfaces/HelperEnums";
-
-export interface Buff {
-  id: number;
-  color: string;
-  description: string;
-  pathToImage: string;
-}
+import { Buff } from "../interfaces/dataInterfaces";
 
 export const tabOfBuffs: Buff[] = [
   {

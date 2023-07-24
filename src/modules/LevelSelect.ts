@@ -49,7 +49,6 @@ class LevelSelect extends Common {
               reason
             );
             gameOver.ShowUserScreenOver();
-            console.log("przegrałeś");
             break;
           }
         }

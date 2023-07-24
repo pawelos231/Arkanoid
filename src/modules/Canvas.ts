@@ -30,7 +30,7 @@ import {
 } from "../constants/gameState";
 import { EscapeView } from "./EscapeLevel";
 import { IFinishedGame, Buff_Pos } from "../interfaces/gameStateInterface";
-import { Directions, BuffTypes, AppliedBuff } from "../interfaces/HelperEnums";
+import { BuffTypes, AppliedBuff } from "../interfaces/HelperEnums";
 import { Level, BrickData } from "../interfaces/level";
 import { ICanvas } from "../interfaces/classesInterfaces";
 import { calculatePaddleDimmensions } from "../helpers/calculatePaddleDimmensions";

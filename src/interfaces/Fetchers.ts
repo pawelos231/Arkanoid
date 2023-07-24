@@ -1,3 +1,6 @@
+//this interface is mainly for further app development
+
+
 type RegisterType = {
   imie: string;
   nick: string;

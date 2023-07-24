@@ -1,10 +1,8 @@
-import { Sounds } from "../data/temporarySoundsData";
-import { Songs } from "../data/temporarySongsData";
 import { Logger } from "../interfaces/HelperEnums";
 import { media } from "../modules/Media";
 import { Common } from "../modules/Common";
 import { StatusOfSong } from "../interfaces/HelperEnums";
-import { Buff } from "../data/BuffsData";
+import { Buff, Songs, Sounds } from "../interfaces/dataInterfaces";
 
 export class ViewsCreator extends Common {
   constructor() {

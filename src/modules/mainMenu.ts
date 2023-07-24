@@ -4,15 +4,13 @@ import { Fetcher } from "../helpers/Fetcher.js";
 import { media } from "./Media.js";
 import { levelSelect } from "./LevelSelect.js";
 import { Paginator } from "./Paginator";
-import { Songs } from "../data/temporarySongsData.js";
-import { Sounds, tempTabOfSounds } from "../data/temporarySoundsData.js";
 import { GET_STATS_URL } from "../constants/api/Urls.js";
 import { ViewsCreator } from "../helpers/viewCreator.js";
 import { VisulizerFunc } from "../interfaces/PaginationInterfaces.js";
 import { StarsBackgroundView } from "../scenes/MainMenuThree.js";
-import { Buff } from "../data/BuffsData.js";
 import { EventListener } from "../helpers/Events/EventListener";
 import { GET_SONGS, GET_BUFFS, GET_SOUNDS } from "../constants/api/Urls.js";
+import { Buff, Songs, Sounds } from "../interfaces/dataInterfaces.js";
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
