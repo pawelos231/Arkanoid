@@ -8,7 +8,7 @@ export const PADDLE_WIDTH = 200;
 export const PADDLE_HEIGHT = 25;
 
 export const INIT_PADDLE_POS = {
-  paddle_y: window.innerHeight - 25,
+  paddle_y: window.innerHeight - 40,
   paddle_x: window.innerWidth / 2 - 100,
 };
 

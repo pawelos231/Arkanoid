@@ -12,8 +12,7 @@ import { VisulizerFunc } from "../interfaces/PaginationInterfaces.js";
 import { StarsBackgroundView } from "../scenes/MainMenuThree.js";
 import { Buff } from "../data/BuffsData.js";
 import { EventListener } from "../helpers/Events/EventListener";
-import { GET_SONGS } from "../constants/api/Urls.js";
-import { GET_BUFFS } from "../constants/api/Urls.js";
+import { GET_SONGS, GET_BUFFS, GET_SOUNDS } from "../constants/api/Urls.js";
 
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
@@ -271,7 +270,7 @@ class Menu extends Common<true> {
         htmlElements.RIGHT_ITERATOR,
         htmlElements.LEFT_ITERATOR,
         ITEMS_PER_PAGE,
-        tempTabOfSounds,
+        await Fetcher.FetchData(GET_SOUNDS),
         createViewForSounds,
         PAGINATE_SONGS_RESULT_CLASS,
         this.eventListener

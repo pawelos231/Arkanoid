@@ -84,10 +84,12 @@ Arkanoid project aimed at recreating the classic game with added features, custo
 
 Feel free to explore, contribute, and have fun with Arkanoid
 
-Below, you will find a showcase of how information, songs, and sounds are handled, as well as a guide on creating new levels and playing them. Everything is built from scratch with love and care. During gameplay, only two types of buffs drop, and their distribution depends solely on the player's luck. Feel free to create diverse levels with blank bricks or even an "Amogus" level, as highlighted in the documentation example. The only thing truly holding you back from having fun is your imagination. Let's dive in and unlock the laughter-filled adventure that awaits!
+Below, you will find a showcase of how information, songs, and sounds are handled, as well as a guide on creating new levels and playing them. Everything is built from scratch. During gameplay, only two types of buffs drop, and their distribution depends solely on the player's luck. Feel free to create diverse levels with blank bricks or even an "Amogus" level, as highlighted in the documentation example. The only thing truly holding you back from having fun is your imagination. Let's dive in and unlock the laughter-filled adventure that awaits!
+
+https://github.com/pawelos231/Arkanoid/assets/93586648/ad242bde-7587-4766-9496-a8b802faeba7
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/eb6062c2-c395-471c-9404-c804c574efe3
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/b2b83800-8cf7-48b0-b553-cd9cbb5c69f8
 
-// gameplay will be added later
+for the purpose of more interesting gameplay the buff drop rate was increased to 50%, unfortonutely i was unable to hit special brick, but if i were to, every buff would have been acivated simultaneously, i am also sorry for poor quality of recordings, but github only allows movies up to 10MB, which is pretty low, considering each is about 1 minute long

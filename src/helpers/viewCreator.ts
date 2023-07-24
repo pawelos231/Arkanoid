@@ -1,10 +1,8 @@
 import { Sounds } from "../data/temporarySoundsData";
 import { Songs } from "../data/temporarySongsData";
-import { MediaEnum } from "../interfaces/HelperEnums";
 import { Logger } from "../interfaces/HelperEnums";
 import { media } from "../modules/Media";
 import { Common } from "../modules/Common";
-import { tempTabOfSongs } from "../data/temporarySongsData";
 import { StatusOfSong } from "../interfaces/HelperEnums";
 import { Buff } from "../data/BuffsData";
 
@@ -38,7 +36,7 @@ export class ViewsCreator extends Common {
 
         if (BackroundSong.play) {
           this.displayMessageAtTheTopOfTheScreen(
-            `Ustawiono piosenkę o nazwie: ${SongsArray[i].name}`,
+            `Playing song: ${SongsArray[i].name}`,
             Logger.Message
           );
         } else if (
@@ -46,7 +44,7 @@ export class ViewsCreator extends Common {
           BackroundSong.reason == StatusOfSong.Error
         ) {
           this.displayMessageAtTheTopOfTheScreen(
-            `nie mozemy zagrać nuty: ${SongsArray[i].name}, coś poszło nie tak`,
+            `the song: ${SongsArray[i].name}, could not be played, something went wrong`,
             Logger.Error
           );
           throw new Error("nie mozemy zagrać tej piosenki");
@@ -55,7 +53,7 @@ export class ViewsCreator extends Common {
           BackroundSong.reason == StatusOfSong.AlreadyPlaying
         ) {
           this.displayMessageAtTheTopOfTheScreen(
-            `Nuta ${SongsArray[i].name}, Juz bangla, wczytaj co innego`,
+            `Song ${SongsArray[i].name}, is already playing, pick other song`,
             Logger.Warn
           );
         }
@@ -91,23 +89,23 @@ export class ViewsCreator extends Common {
 
         if (Sound.play) {
           this.displayMessageAtTheTopOfTheScreen(
-            `Ustawiono dźwięk o nazwie: ${tempTabOfSongs[i].name}`,
+            `Playing sound: ${SoundsArray[i].name}`,
             Logger.Message
           );
         } else if (
           (Sound.play === false, Sound.reason === StatusOfSong.Error)
         ) {
           this.displayMessageAtTheTopOfTheScreen(
-            `nie wczytać dźwięku: ${SoundsArray[i].name}, coś poszło nie tak`,
+            `The sound: ${SoundsArray[i].name}, could not be played, something went wrong`,
             Logger.Error
           );
 
-          throw new Error("nie mozemy wczytać tego dźwięku");
+          throw new Error("Cannot load the sound");
         } else if (
           (Sound.play === false, Sound.reason === StatusOfSong.AlreadyPlaying)
         ) {
           this.displayMessageAtTheTopOfTheScreen(
-            `Dźwięk: ${SoundsArray[i].name}, juz jest ustawiony, wczytaj jakiś inny`,
+            `Sound: ${SoundsArray[i].name}, is already set, pick something different`,
             Logger.Warn
           );
         }

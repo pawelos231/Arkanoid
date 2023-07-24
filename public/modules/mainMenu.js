@@ -4,13 +4,11 @@ import { Fetcher } from "../helpers/Fetcher.js";
 import { media } from "./Media.js";
 import { levelSelect } from "./LevelSelect.js";
 import { Paginator } from "./Paginator";
-import { tempTabOfSounds } from "../data/temporarySoundsData.js";
 import { GET_STATS_URL } from "../constants/api/Urls.js";
 import { ViewsCreator } from "../helpers/viewCreator.js";
 import { StarsBackgroundView } from "../scenes/MainMenuThree.js";
 import { EventListener } from "../helpers/Events/EventListener";
-import { GET_SONGS } from "../constants/api/Urls.js";
-import { GET_BUFFS } from "../constants/api/Urls.js";
+import { GET_SONGS, GET_BUFFS, GET_SOUNDS } from "../constants/api/Urls.js";
 const I_WANT_TO_REGISTER = "Chce się zarejestrować";
 const I_WANT_TO_LOGIN = "Chce się zalogować";
 const REGISTER_FORMS = "RegisterElement";
@@ -170,7 +168,7 @@ class Menu extends Common {
         const createViewForSounds = viewsCreator.createViewForSounds.bind(viewsCreator);
         htmlElements.OpenSettings.addEventListener("click", async () => {
             const SongsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, await Fetcher.FetchData(GET_SONGS), createViewForSongs, PAGINATE_SONGS_RESULT_CLASS, this.eventListener);
-            const SoundsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, tempTabOfSounds, createViewForSounds, PAGINATE_SONGS_RESULT_CLASS, this.eventListener);
+            const SoundsPaginator = new Paginator(htmlElements.songsList, htmlElements.RIGHT_ITERATOR, htmlElements.LEFT_ITERATOR, ITEMS_PER_PAGE, await Fetcher.FetchData(GET_SOUNDS), createViewForSounds, PAGINATE_SONGS_RESULT_CLASS, this.eventListener);
             htmlElements.SOUNDS.addEventListener("click", () => {
                 SoundsPaginator.PaginateResults();
             });
