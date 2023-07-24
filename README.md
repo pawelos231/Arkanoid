@@ -88,8 +88,8 @@ Below, you will find a showcase of how information, songs, and sounds are handle
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/ad242bde-7587-4766-9496-a8b802faeba7
 
-https://github.com/pawelos231/Arkanoid/assets/93586648/ad242bde-7587-4766-9496-a8b802faeba7
-
 https://github.com/pawelos231/Arkanoid/assets/93586648/b2b83800-8cf7-48b0-b553-cd9cbb5c69f8
+
+https://github.com/pawelos231/Arkanoid/assets/93586648/83bcb404-b3e0-44db-85ae-e8943c611eb2
 
 for the purpose of more interesting gameplay the buff drop rate was increased to 50%, unfortonutely i was unable to hit special brick, but if i were to, every buff would have been acivated simultaneously, i am also sorry for poor quality of recordings, but github only allows movies up to 10MB, which is pretty low, considering each is about 1 minute long
