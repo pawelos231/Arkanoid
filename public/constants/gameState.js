@@ -18,6 +18,7 @@ export const DEFAULT_BRICK_HEIGHT = 0;
 export const DEFAULT_BRICK_WIDTH = 0;
 export const DEFAULT_BALL_MOVEMENT_Y_SPEED = -12;
 export const DEFAULT_BALL_MOVEMENT_X_SPEED = -12;
+export const DEFAULT_BALL_SPEED = 12;
 export const NO_SPECIAL_BRICK_INDEX = -100;
 export const DEFAULT_PADDLE_MOVEMENT_X = 15;
 export const BUFF_EXPIRATION = 5000;

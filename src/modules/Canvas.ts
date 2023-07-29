@@ -12,14 +12,13 @@ import { clock, normalClock } from "../helpers/Clock";
 import { EventListener } from "../helpers/Events/EventListener";
 import {
   BUFF_EXPIRATION,
+  DEFAULT_BALL_SPEED,
   DEFAULT_BALL_SPEED_MULTIPLIER,
   DEFAULT_PADDLE_SIZE_MULTIPLIER,
 } from "../constants/gameState";
 import { media } from "./Media";
 
 import {
-  PADDLE_WIDTH,
-  PADDLE_HEIGHT,
   INIT_BALL_POS,
   INIT_PADDLE_POS,
   DEFAULT_PADDLE_MOVEMENT_X,
@@ -53,7 +52,6 @@ export class Canvas extends Common<true> implements ICanvas {
 
   private rowsCount: number;
   private columnsCount: number;
-  private hitCounter: number;
   private playerPoints: number;
   private pointsToWin: number;
   private ctx: CanvasRenderingContext2D;
@@ -70,11 +68,8 @@ export class Canvas extends Common<true> implements ICanvas {
   private appliedBuffs: AppliedBuff[] = [];
   private Buffs = new Map<string, Buff>();
   private eventListener: EventListener = new EventListener();
-  private inputController: InputController = new InputController(
-    this.eventListener
-  );
-  private paddle: Paddle | null = null;
-  private ball: Ball | null = null;
+  private paddle: Paddle;
+  private ball: Ball;
   private backToMenu = false;
 
   constructor(image: HTMLImageElement | null, levelData: Level) {
@@ -87,7 +82,6 @@ export class Canvas extends Common<true> implements ICanvas {
     this.rowsCount = this.levelData.numberOfRows;
     this.columnsCount = this.levelData.numberOfColumns;
     this.playerPoints = 0;
-    this.hitCounter = 0;
     this.pointsToWin = this.levelData.requiredScore;
     this.timer = setInterval(() => {
       this.levelData.timer -= 1;
@@ -98,12 +92,12 @@ export class Canvas extends Common<true> implements ICanvas {
       this.levelData.level,
       this.levelData.lives,
       this.pointsToWin,
-      this.hitCounter,
       this.playerPoints,
       INIT_PADDLE_POS,
       INIT_BALL_POS,
       this.ballMoveRateX,
       this.ballMoveRateY,
+      DEFAULT_BALL_SPEED,
       this.paddleMoveRateX
     );
     this.canvas = this.elementId as HTMLCanvasElement;
@@ -112,10 +106,8 @@ export class Canvas extends Common<true> implements ICanvas {
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     const { WIDTHP, HEIGHTP } = calculatePaddleDimmensions();
     console.log(WIDTHP, HEIGHTP);
-    this.paddle = new Paddle(WIDTHP, HEIGHTP, this.ctx);
+    this.paddle = new Paddle(WIDTHP, HEIGHTP, this.ctx, this.eventListener);
     this.ball = new Ball(this.ctx, calculateBallSize());
-
-    this.inputController.addKeyPressEvents();
   }
 
   public get getGameState() {
@@ -324,7 +316,6 @@ export class Canvas extends Common<true> implements ICanvas {
 
       if (IS_COLLISION) {
         this.ball!.SetAngle = Math.atan(Math.random() * Math.PI);
-        console.log(this.ball!.GetAngle);
         const MoveRateX: number =
           this.getGameState.BallMoveRateGetX === 0
             ? 12
@@ -360,7 +351,7 @@ export class Canvas extends Common<true> implements ICanvas {
             if (typeof value !== "number") continue;
             const BuffInstance: Buff = new Buff(
               value as BuffTypes,
-              JSON.parse(JSON.stringify(this.bricksArray)),
+              this.appliedBuffs,
               BUFF_EXPIRATION,
               this.ctx,
               buffDropPosition,
@@ -415,6 +406,21 @@ export class Canvas extends Common<true> implements ICanvas {
       media.spawnSoundWhenHitPaddle();
       this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
       this.gameState.BallMoveRateSetX = MoveRateX;
+
+      const appliedSpeedBuff = this.appliedBuffs.find(
+        (item) => item.appliedBuffId === BuffTypes.PaddleSpeed
+      );
+
+      if (appliedSpeedBuff) {
+        this.paddle.makeCollisionEffect();
+      }
+
+      this.ball!.reflectOffPaddle(
+        paddle_x,
+        this.paddle!.getPaddleSize.paddleWidth,
+        this.gameState,
+        this.paddle!.GetPaddleSpeed
+      );
     }
   }
 
@@ -426,12 +432,10 @@ export class Canvas extends Common<true> implements ICanvas {
       (item) => item.appliedBuffId === BuffTypes.SpeedBuff
     );
 
-    this.ball!.SetAngle = Math.atan(Math.random() * Math.PI) + 0.1;
-
     if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
       this.gameState.BallMoveRateSetX = appliedSpeedBuff
-        ? 12 * DEFAULT_BALL_SPEED_MULTIPLIER * this.ball!.GetAngle
-        : 12 * this.ball!.GetAngle;
+        ? 12 * DEFAULT_BALL_SPEED_MULTIPLIER
+        : 12;
     }
 
     if (this.gameState.ball_positions.ball_y - RADIUS < 0) {
@@ -442,7 +446,7 @@ export class Canvas extends Common<true> implements ICanvas {
 
     if (this.gameState.ball_positions.ball_x + RADIUS > window.innerWidth) {
       this.gameState.BallMoveRateSetX = appliedSpeedBuff
-        ? -12 * DEFAULT_BALL_SPEED_MULTIPLIER * this.ball!.GetAngle
+        ? -12 * DEFAULT_BALL_SPEED_MULTIPLIER
         : -12 * this.ball!.GetAngle;
     }
 
@@ -575,6 +579,7 @@ export class Canvas extends Common<true> implements ICanvas {
     this.drawPaddle();
     this.drawBricks();
     this.drawBall();
+    this.paddle.drawParticles();
     this.drawBuffOuter();
     if (this.backToMenu) {
       return;
@@ -586,23 +591,6 @@ export class Canvas extends Common<true> implements ICanvas {
 
   private clearCanvas(): void {
     this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  }
-
-  private handleKeyPress(): void {
-    const paddle_x: number = this.gameState.paddle_positions.paddle_x;
-    const { WIDTHP } = calculatePaddleDimmensions();
-    if (this.inputController.keyPressedLeft && paddle_x > 0) {
-      this.gameState.paddle_positions.paddle_x -=
-        this.gameState.get_paddle_move_rate_X;
-    }
-
-    if (
-      this.inputController.keyPressedRight &&
-      paddle_x + WIDTHP < window.innerWidth
-    ) {
-      this.gameState.paddle_positions.paddle_x +=
-        this.gameState.get_paddle_move_rate_X;
-    }
   }
 
   private drawClock() {
@@ -657,6 +645,7 @@ export class Canvas extends Common<true> implements ICanvas {
   private ShouldBeRemovedFromBuffsStack() {
     for (let i = 0; i < this.appliedBuffs.length; i++) {
       if (this.appliedBuffs[i].timeEnd < Date.now()) {
+        this.paddle.particles = [];
         Buff.clearBuffEffect(
           this.appliedBuffs[i].appliedBuffId,
           this.gameState,
@@ -728,7 +717,7 @@ export class Canvas extends Common<true> implements ICanvas {
   };
 
   public draw(): IFinishedGame | void {
-    this.handleKeyPress();
+    this.paddle!.handleKeyPress(this.gameState);
     this.setInitCanvasSize();
     this.clearCanvas();
     this.drawClock();

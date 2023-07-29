@@ -102,8 +102,8 @@ export class Buff implements BuffsInterface {
   }
 
   private applyPaddleSpeedBuff(): void {
-    this.gameState.set_paddle_move_rate_X =
-      this.gameState.get_paddle_move_rate_X * DEFAULT_PADDLE_SPEED_MULTIPLIER;
+    this.gameState.SetMaxPaddleSpeed =
+      this.gameState.GetMaxPaddleSpeed * DEFAULT_PADDLE_SPEED_MULTIPLIER;
   }
 
   public async applyBuffEffects(): Promise<void> {

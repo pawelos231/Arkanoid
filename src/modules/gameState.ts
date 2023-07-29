@@ -1,38 +1,43 @@
 import { Paddle_Pos, Ball_Pos } from "../interfaces/gameStateInterface";
 
+const DEFAULT_MAX_SPEED_PADDLE = 15;
+
 export class GameState {
   level: number;
   pointsToWin: number;
   paddle_positions: Paddle_Pos;
   lives: number;
   ball_positions: Ball_Pos;
-  private counter: number;
   private ballMoveRateX: number;
   private ballMoveRateY: number;
   private playerPoints: number;
   private paddleMoveRateX: number;
+  private ballSpeed: number;
+  private maxPaddleSpeed: number;
 
   constructor(
     level: number,
     lives: number,
     pointsToWin: number,
-    counter: number,
     playerPoints: number,
     paddle_positions: Paddle_Pos,
     ball_positions: Ball_Pos,
     ballMoveRateX: number,
     ballMoveRateY: number,
-    paddleMoveRateX: number
+    ballSpeed: number,
+    paddleMoveRateX: number,
+    maxPaddleSpeed: number = DEFAULT_MAX_SPEED_PADDLE
   ) {
     this.level = level;
     this.pointsToWin = pointsToWin;
     this.paddle_positions = paddle_positions;
     this.lives = lives;
-    this.counter = counter;
     this.ball_positions = ball_positions;
     this.playerPoints = playerPoints;
     this.ballMoveRateX = ballMoveRateX;
     this.ballMoveRateY = ballMoveRateY;
+    this.ballSpeed = ballSpeed;
+    this.maxPaddleSpeed = maxPaddleSpeed;
     this.paddleMoveRateX = paddleMoveRateX;
   }
 
@@ -54,6 +59,22 @@ export class GameState {
 
   set BallMoveRateSetX(rate: number) {
     this.ballMoveRateX = rate;
+  }
+
+  set SetMaxPaddleSpeed(maxSpeed: number) {
+    this.maxPaddleSpeed = maxSpeed;
+  }
+
+  get GetMaxPaddleSpeed() {
+    return this.maxPaddleSpeed;
+  }
+
+  set SetBallSpeed(speed: number) {
+    this.ballSpeed = speed;
+  }
+
+  get GetBallSpeed() {
+    return this.ballSpeed;
   }
 
   get BallMoveRateGetX(): number {

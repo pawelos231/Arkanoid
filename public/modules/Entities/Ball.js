@@ -21,6 +21,17 @@ export class Ball {
     get GetAngle() {
         return this.angle;
     }
+    reflectOffPaddle(paddleX, paddleWidth, gameState, paddleSpeed) {
+        const ballCenterX = this.ballPosition.ball_x;
+        const paddleCenterX = paddleX + paddleWidth / 2;
+        const distanceX = ballCenterX - paddleCenterX;
+        const normalizedDistance = distanceX / (paddleWidth / 2);
+        const reflectionAngle = normalizedDistance * (Math.PI / 3);
+        console.log(Math.sin(reflectionAngle));
+        gameState.BallMoveRateSetX =
+            gameState.BallMoveRateGetY * Math.tan(reflectionAngle);
+        gameState.BallMoveRateSetY = gameState.BallMoveRateGetY;
+    }
     initBallPos() {
         //to fix
         const ball_y = window.innerHeight - 100;

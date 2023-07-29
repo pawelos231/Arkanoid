@@ -1,5 +1,6 @@
 import { Ball_Pos } from "../../interfaces/gameStateInterface";
 import { LIGHT_BLUE } from "../../constants/colors";
+import { GameState } from "../gameState";
 export class Ball {
   private ballPosition: Ball_Pos;
   private ctx: CanvasRenderingContext2D;
@@ -30,6 +31,26 @@ export class Ball {
 
   get GetAngle(): number {
     return this.angle;
+  }
+
+  reflectOffPaddle(
+    paddleX: number,
+    paddleWidth: number,
+    gameState: GameState,
+    paddleSpeed: number
+  ) {
+    const ballCenterX = this.ballPosition.ball_x;
+    const paddleCenterX = paddleX + paddleWidth / 2;
+
+    const distanceX = ballCenterX - paddleCenterX;
+    const normalizedDistance = distanceX / (paddleWidth / 2);
+
+    const reflectionAngle = normalizedDistance * (Math.PI / 3);
+    console.log(Math.sin(reflectionAngle));
+
+    gameState.BallMoveRateSetX =
+      gameState.BallMoveRateGetY * Math.tan(reflectionAngle);
+    gameState.BallMoveRateSetY = gameState.BallMoveRateGetY;
   }
 
   private initBallPos(): Ball_Pos {
