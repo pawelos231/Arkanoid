@@ -87,7 +87,7 @@ export class Brick {
     }
 
     if (this.brickState.status == 0) return;
-
+    this.ctx.lineWidth = 0.5;
     this.setColor<T | null>(
       this.brickState.specialBrick,
       this.brickState.brick_x * this.width,

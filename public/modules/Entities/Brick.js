@@ -46,6 +46,7 @@ export class Brick {
         }
         if (this.brickState.status == 0)
             return;
+        this.ctx.lineWidth = 0.5;
         this.setColor(this.brickState.specialBrick, this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, image);
         this.ctx.strokeStyle = "white";
         this.ctx.strokeRect(this.brickState.brick_x * this.width, this.brickState.brick_y * this.height, this.width, this.height);

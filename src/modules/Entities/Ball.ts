@@ -6,11 +6,13 @@ export class Ball {
   private ctx: CanvasRenderingContext2D;
   private radius: number;
   private angle: number;
+  private speed: number;
   public constructor(ctx: CanvasRenderingContext2D, radius: number) {
     this.ballPosition = { ball_x: 0, ball_y: 0 };
     this.ctx = ctx;
     this.radius = radius;
     this.angle = Math.cos(1);
+    this.speed = 12;
   }
 
   set setRadius(radius: number) {
@@ -46,11 +48,16 @@ export class Ball {
     const normalizedDistance = distanceX / (paddleWidth / 2);
 
     const reflectionAngle = normalizedDistance * (Math.PI / 3);
-    console.log(Math.sin(reflectionAngle));
 
     gameState.BallMoveRateSetX =
-      gameState.BallMoveRateGetY * Math.tan(reflectionAngle);
+      gameState.BallMoveRateGetX * Math.tan(reflectionAngle);
     gameState.BallMoveRateSetY = gameState.BallMoveRateGetY;
+
+    if (paddleSpeed !== 0) {
+      const paddleDirection = paddleSpeed > 0 ? 1 : -1;
+      gameState.BallMoveRateSetX =
+        paddleDirection * Math.abs(paddleSpeed * 0.35);
+    }
   }
 
   private initBallPos(): Ball_Pos {
@@ -76,7 +83,7 @@ export class Ball {
     //this.renderFireParticlesAroundBall();
   }
 
-  public renderFireParticlesAroundBall(): void {
+  public drawFireParticlesAroundBall(): void {
     const numParticles = 10;
     const particleRadius = 2;
 

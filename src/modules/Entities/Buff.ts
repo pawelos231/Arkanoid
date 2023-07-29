@@ -109,6 +109,7 @@ export class Buff implements BuffsInterface {
   public async applyBuffEffects(): Promise<void> {
     switch (this.BuffType) {
       case BuffTypes.PaddleSpeed: {
+        this.paddle.specialColor = true;
         await Media.spanwCustomSound(PADDLE_SPEED_BUFF_SOUND);
         this.ActivateBuffWrapper(this.applyPaddleSpeedBuff.bind(this));
         break;
@@ -145,8 +146,10 @@ export class Buff implements BuffsInterface {
   ): void {
     switch (buffType) {
       case BuffTypes.PaddleSpeed: {
-        gameState.set_paddle_move_rate_X =
-          gameState.get_paddle_move_rate_X / DEFAULT_PADDLE_SPEED_MULTIPLIER;
+        paddle.particles = [];
+        paddle.deactivateSpecialColor();
+        gameState.SetMaxPaddleSpeed =
+          gameState.GetMaxPaddleSpeed / DEFAULT_PADDLE_SPEED_MULTIPLIER;
         break;
       }
       case BuffTypes.SpeedBuff: {

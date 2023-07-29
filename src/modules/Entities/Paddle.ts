@@ -3,7 +3,8 @@ import { InputController } from "../../helpers/Events/InputController";
 import { EventListener } from "../../helpers/Events/EventListener";
 import { GameState } from "../gameState";
 
-const DEFAULT_ACCELERATION = 0.5;
+const DEFAULT_ACCELERATION = 3;
+const DEFAULT_FRICTION = 3;
 
 type Particle = {
   x: number;
@@ -20,11 +21,13 @@ export class Paddle {
   private ctx: CanvasRenderingContext2D;
   private positions: Paddle_Pos;
   private acceleration: number;
+  private friction: number;
   private paddleSpeed: number;
-  private specialColor: boolean;
-  public particles: Particle[] = [];
   private inputController: InputController;
   private hue: number;
+  private paddleMoveRateX: number;
+  public particles: Particle[] = [];
+  public specialColor: boolean;
 
   constructor(
     width: number,
@@ -35,13 +38,15 @@ export class Paddle {
     this.width = width;
     this.height = height;
     this.ctx = ctx;
-    this.acceleration = DEFAULT_ACCELERATION;
     this.paddleSpeed = 0;
     this.positions = { paddle_y: 0, paddle_x: 0 };
-    this.inputController = new InputController(eventListener);
-    this.inputController.addKeyPressEvents();
     this.specialColor = false;
     this.hue = 0;
+    this.acceleration = DEFAULT_ACCELERATION;
+    this.friction = DEFAULT_FRICTION;
+    this.paddleMoveRateX = 0;
+    this.inputController = new InputController(eventListener);
+    this.inputController.addKeyPressEvents();
   }
 
   initPaddlePos(): Paddle_Pos {
@@ -66,6 +71,9 @@ export class Paddle {
   get GetPaddleSpeed() {
     return this.paddleSpeed;
   }
+  get GetPaddleMoveRateX() {
+    return this.paddleMoveRateX;
+  }
 
   clearPaddle(heightOffset: number): void {
     this.ctx.clearRect(
@@ -81,7 +89,7 @@ export class Paddle {
   }
 
   makeCollisionEffect() {
-    // Particle explosion effect
+    // Particle explosion effecte;
     this.specialColor = true;
     this.particles = [];
     const numParticles = 30;
@@ -140,13 +148,15 @@ export class Paddle {
 
   public drawPaddle(positions: Paddle_Pos = { ...this.initPaddlePos() }): void {
     this.positions = positions;
+    this.ctx.beginPath();
+    this.ctx.lineWidth = 3.8;
     this.ctx.fillStyle = this.specialColor
       ? `hsl(${this.hue}, 100%, 50%)`
       : "white";
 
     if (this.specialColor) {
-      this.hue += 2.4;
-      this.ctx.strokeStyle = "yellow";
+      this.hue += 5;
+      this.ctx.strokeStyle = "white";
       this.ctx.strokeRect(
         positions.paddle_x,
         positions.paddle_y,
@@ -169,11 +179,25 @@ export class Paddle {
 
   public handleKeyPress(gameState: GameState): void {
     const paddle_x: number = gameState.paddle_positions.paddle_x;
+
     if (this.inputController.keyPressedLeft && paddle_x > 0) {
       if (this.paddleSpeed <= gameState.GetMaxPaddleSpeed) {
         this.paddleSpeed += this.acceleration;
+        this.paddleMoveRateX = -this.paddleSpeed;
       }
       gameState.paddle_positions.paddle_x -= this.paddleSpeed;
+    }
+
+    if (
+      !this.inputController.keyPressedLeft &&
+      !this.inputController.keyPressedRight &&
+      paddle_x > 0 &&
+      this.paddleSpeed > 0 &&
+      paddle_x + this.width < window.innerWidth
+    ) {
+      this.paddleSpeed -= this.friction;
+      this.paddleMoveRateX =
+        this.paddleMoveRateX > 0 ? this.paddleSpeed : -this.paddleSpeed;
     }
 
     if (
@@ -182,6 +206,7 @@ export class Paddle {
     ) {
       if (this.paddleSpeed <= gameState.GetMaxPaddleSpeed) {
         this.paddleSpeed += this.acceleration;
+        this.paddleMoveRateX = this.paddleSpeed;
       }
       gameState.paddle_positions.paddle_x += this.paddleSpeed;
     }

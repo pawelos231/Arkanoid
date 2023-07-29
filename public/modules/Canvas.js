@@ -61,7 +61,6 @@ export class Canvas extends Common {
         this.canvas.style.backgroundColor = "black";
         this.ctx = this.canvas.getContext("2d");
         const { WIDTHP, HEIGHTP } = calculatePaddleDimmensions();
-        console.log(WIDTHP, HEIGHTP);
         this.paddle = new Paddle(WIDTHP, HEIGHTP, this.ctx, this.eventListener);
         this.ball = new Ball(this.ctx, calculateBallSize());
     }
@@ -189,7 +188,6 @@ export class Canvas extends Common {
                 continue;
             const IS_COLLISION = this.isCollision(i, ball_x, ball_y, calculateBallSize());
             if (IS_COLLISION) {
-                this.ball.SetAngle = Math.atan(Math.random() * Math.PI);
                 const MoveRateX = this.getGameState.BallMoveRateGetX === 0
                     ? 12
                     : this.gameState.BallMoveRateGetX;
@@ -242,10 +240,9 @@ export class Canvas extends Common {
             this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
             this.gameState.BallMoveRateSetX = MoveRateX;
             const appliedSpeedBuff = this.appliedBuffs.find((item) => item.appliedBuffId === BuffTypes.PaddleSpeed);
-            if (appliedSpeedBuff) {
+            if (appliedSpeedBuff)
                 this.paddle.makeCollisionEffect();
-            }
-            this.ball.reflectOffPaddle(paddle_x, this.paddle.getPaddleSize.paddleWidth, this.gameState, this.paddle.GetPaddleSpeed);
+            this.ball.reflectOffPaddle(paddle_x, this.paddle.getPaddleSize.paddleWidth, this.gameState, this.paddle.GetPaddleMoveRateX);
         }
     }
     drawBall() {
@@ -403,7 +400,6 @@ export class Canvas extends Common {
     ShouldBeRemovedFromBuffsStack() {
         for (let i = 0; i < this.appliedBuffs.length; i++) {
             if (this.appliedBuffs[i].timeEnd < Date.now()) {
-                this.paddle.particles = [];
                 Buff.clearBuffEffect(this.appliedBuffs[i].appliedBuffId, this.gameState, this.paddle);
                 this.appliedBuffs.splice(i, 1);
             }

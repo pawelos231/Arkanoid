@@ -1,18 +1,21 @@
 import { InputController } from "../../helpers/Events/InputController";
-const DEFAULT_ACCELERATION = 0.5;
+const DEFAULT_ACCELERATION = 3;
+const DEFAULT_FRICTION = 3;
 export class Paddle {
     constructor(width, height, ctx, eventListener) {
         this.particles = [];
         this.width = width;
         this.height = height;
         this.ctx = ctx;
-        this.acceleration = DEFAULT_ACCELERATION;
         this.paddleSpeed = 0;
         this.positions = { paddle_y: 0, paddle_x: 0 };
-        this.inputController = new InputController(eventListener);
-        this.inputController.addKeyPressEvents();
         this.specialColor = false;
         this.hue = 0;
+        this.acceleration = DEFAULT_ACCELERATION;
+        this.friction = DEFAULT_FRICTION;
+        this.paddleMoveRateX = 0;
+        this.inputController = new InputController(eventListener);
+        this.inputController.addKeyPressEvents();
     }
     initPaddlePos() {
         return {
@@ -33,6 +36,9 @@ export class Paddle {
     get GetPaddleSpeed() {
         return this.paddleSpeed;
     }
+    get GetPaddleMoveRateX() {
+        return this.paddleMoveRateX;
+    }
     clearPaddle(heightOffset) {
         this.ctx.clearRect(this.positions.paddle_x, heightOffset, this.width + 1, this.height + 1);
     }
@@ -40,7 +46,7 @@ export class Paddle {
         this.specialColor = false;
     }
     makeCollisionEffect() {
-        // Particle explosion effect
+        // Particle explosion effecte;
         this.specialColor = true;
         this.particles = [];
         const numParticles = 30;
@@ -84,12 +90,14 @@ export class Paddle {
     }
     drawPaddle(positions = Object.assign({}, this.initPaddlePos())) {
         this.positions = positions;
+        this.ctx.beginPath();
+        this.ctx.lineWidth = 3.8;
         this.ctx.fillStyle = this.specialColor
             ? `hsl(${this.hue}, 100%, 50%)`
             : "white";
         if (this.specialColor) {
-            this.hue += 2.4;
-            this.ctx.strokeStyle = "yellow";
+            this.hue += 5;
+            this.ctx.strokeStyle = "white";
             this.ctx.strokeRect(positions.paddle_x, positions.paddle_y, this.width - 1, this.height - 1);
         }
         this.ctx.fillRect(positions.paddle_x, positions.paddle_y, this.width - 1, this.height - 1);
@@ -102,13 +110,24 @@ export class Paddle {
         if (this.inputController.keyPressedLeft && paddle_x > 0) {
             if (this.paddleSpeed <= gameState.GetMaxPaddleSpeed) {
                 this.paddleSpeed += this.acceleration;
+                this.paddleMoveRateX = -this.paddleSpeed;
             }
             gameState.paddle_positions.paddle_x -= this.paddleSpeed;
+        }
+        if (!this.inputController.keyPressedLeft &&
+            !this.inputController.keyPressedRight &&
+            paddle_x > 0 &&
+            this.paddleSpeed > 0 &&
+            paddle_x + this.width < window.innerWidth) {
+            this.paddleSpeed -= this.friction;
+            this.paddleMoveRateX =
+                this.paddleMoveRateX > 0 ? this.paddleSpeed : -this.paddleSpeed;
         }
         if (this.inputController.keyPressedRight &&
             paddle_x + this.width < window.innerWidth) {
             if (this.paddleSpeed <= gameState.GetMaxPaddleSpeed) {
                 this.paddleSpeed += this.acceleration;
+                this.paddleMoveRateX = this.paddleSpeed;
             }
             gameState.paddle_positions.paddle_x += this.paddleSpeed;
         }

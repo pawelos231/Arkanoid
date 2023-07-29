@@ -105,7 +105,6 @@ export class Canvas extends Common<true> implements ICanvas {
     this.canvas.style.backgroundColor = "black";
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     const { WIDTHP, HEIGHTP } = calculatePaddleDimmensions();
-    console.log(WIDTHP, HEIGHTP);
     this.paddle = new Paddle(WIDTHP, HEIGHTP, this.ctx, this.eventListener);
     this.ball = new Ball(this.ctx, calculateBallSize());
   }
@@ -315,7 +314,6 @@ export class Canvas extends Common<true> implements ICanvas {
       );
 
       if (IS_COLLISION) {
-        this.ball!.SetAngle = Math.atan(Math.random() * Math.PI);
         const MoveRateX: number =
           this.getGameState.BallMoveRateGetX === 0
             ? 12
@@ -411,15 +409,13 @@ export class Canvas extends Common<true> implements ICanvas {
         (item) => item.appliedBuffId === BuffTypes.PaddleSpeed
       );
 
-      if (appliedSpeedBuff) {
-        this.paddle.makeCollisionEffect();
-      }
+      if (appliedSpeedBuff) this.paddle.makeCollisionEffect();
 
       this.ball!.reflectOffPaddle(
         paddle_x,
         this.paddle!.getPaddleSize.paddleWidth,
         this.gameState,
-        this.paddle!.GetPaddleSpeed
+        this.paddle!.GetPaddleMoveRateX
       );
     }
   }
@@ -645,7 +641,6 @@ export class Canvas extends Common<true> implements ICanvas {
   private ShouldBeRemovedFromBuffsStack() {
     for (let i = 0; i < this.appliedBuffs.length; i++) {
       if (this.appliedBuffs[i].timeEnd < Date.now()) {
-        this.paddle.particles = [];
         Buff.clearBuffEffect(
           this.appliedBuffs[i].appliedBuffId,
           this.gameState,
