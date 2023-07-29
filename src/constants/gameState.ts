@@ -3,6 +3,7 @@ export const LEFT_NORMAL = 37;
 export const RIGHT_ARROW = 68;
 export const RIGHT_NORMAL = 39;
 export const ESCAPE = 27;
+export const SPACE = 32;
 
 export const PADDLE_WIDTH = 200;
 export const PADDLE_HEIGHT = 25;
@@ -24,8 +25,9 @@ export const DEFAULT_BALL_MOVEMENT_X_SPEED = -12;
 export const NO_SPECIAL_BRICK_INDEX = -100;
 export const DEFAULT_PADDLE_MOVEMENT_X = 15;
 export const BUFF_EXPIRATION = 5000;
-export const DEFAULT_BALL_SPEED_MULTIPLIER = 1.5;
-export const DEFAULT_PADDLE_SPEED_MULTIPLIER = 2;
+export const DEFAULT_BALL_SPEED_MULTIPLIER = 1.3;
+export const DEFAULT_PADDLE_SPEED_MULTIPLIER = 1.5;
+export const DEFAULT_PADDLE_SIZE_MULTIPLIER = 1.5;
 
 export let BRICK_HEIGHT: number = window.innerHeight / 18;
 export let BRICK_WIDTH: number = window.innerWidth / 8;

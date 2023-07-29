@@ -19,6 +19,17 @@ export class Paddle {
     };
   }
 
+  set setPaddleSize({ width, height }: { width: number; height: number }) {
+    this.width = width;
+    this.height = height;
+  }
+  get getPaddleSize() {
+    return {
+      paddleWidth: this.width,
+      paddleHeight: this.height,
+    };
+  }
+
   clearPaddle(heightOffset: number): void {
     this.ctx.clearRect(
       this.positions.paddle_x,

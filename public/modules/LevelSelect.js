@@ -33,7 +33,6 @@ class LevelSelect extends Common {
                     case GameEndStatus.Loss: {
                         const gameOver = new GameOver(points, status, elapsedTime, level, reason);
                         gameOver.ShowUserScreenOver();
-                        console.log("przegrałeś");
                         break;
                     }
                 }
@@ -53,6 +52,7 @@ class LevelSelect extends Common {
             const canvas = new Canvas(image, levelData);
             canvas.configureCanvas(true, randomBrick);
             canvas.addEventOnResize();
+            canvas.setListenerResumeGame();
             canvas.setListenerMoveBackToMenu();
             this.DrawOnCanvas(canvas);
         });

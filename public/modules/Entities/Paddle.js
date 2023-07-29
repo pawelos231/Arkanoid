@@ -11,6 +11,16 @@ export class Paddle {
             paddle_y: window.innerHeight - 70,
         };
     }
+    set setPaddleSize({ width, height }) {
+        this.width = width;
+        this.height = height;
+    }
+    get getPaddleSize() {
+        return {
+            paddleWidth: this.width,
+            paddleHeight: this.height,
+        };
+    }
     clearPaddle(heightOffset) {
         this.ctx.clearRect(this.positions.paddle_x, heightOffset, this.width + 1, this.height + 1);
     }

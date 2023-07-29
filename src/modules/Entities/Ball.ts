@@ -4,17 +4,32 @@ export class Ball {
   private ballPosition: Ball_Pos;
   private ctx: CanvasRenderingContext2D;
   private radius: number;
+  private angle: number;
   public constructor(ctx: CanvasRenderingContext2D, radius: number) {
     this.ballPosition = { ball_x: 0, ball_y: 0 };
     this.ctx = ctx;
+    this.radius = radius;
+    this.angle = Math.cos(1);
+  }
+
+  set setRadius(radius: number) {
     this.radius = radius;
   }
 
   get radiusOfBallGetter(): number {
     return this.radius;
   }
+
   get BallPositionGetter(): Ball_Pos {
     return this.ballPosition;
+  }
+
+  set SetAngle(angle: number) {
+    this.angle = angle;
+  }
+
+  get GetAngle(): number {
+    return this.angle;
   }
 
   private initBallPos(): Ball_Pos {

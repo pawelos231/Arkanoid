@@ -17,18 +17,19 @@ import { calculateBallSize } from "../../helpers/calculateBallDimmensions";
 import {
   DEFAULT_PADDLE_SPEED_MULTIPLIER,
   DEFAULT_BALL_SPEED_MULTIPLIER,
+  DEFAULT_PADDLE_SIZE_MULTIPLIER,
 } from "../../constants/gameState";
+import { Paddle } from "./Paddle";
 
 const DEFAULT_ACTIVE_BUFF_TIME = 10000;
 
 export class Buff implements BuffsInterface {
   private BuffType: BuffTypes;
-  private tabOfBricks: Array<Brick>;
-  private cachedBrickArray: Array<Brick>;
   private AppliedBuffs: AppliedBuff[];
   private time: number = 1000;
   private buff_x: number = window.innerWidth / 2;
   private buff_y: number = 100;
+  private paddle: Paddle;
   private buffVelocity: number = 7;
   private ctx: CanvasRenderingContext2D;
   private particles: Particle[] = [];
@@ -38,22 +39,21 @@ export class Buff implements BuffsInterface {
 
   constructor(
     BuffType: BuffTypes,
-    tabOfBricks: Array<Brick>,
     AppliedBuffs: AppliedBuff[] = [],
     time: number,
     ctx: CanvasRenderingContext2D,
     { buff_x, buff_y }: Buff_Pos,
-    gameState: GameState
+    gameState: GameState,
+    paddle: Paddle
   ) {
     this.BuffType = BuffType;
-    this.tabOfBricks = tabOfBricks;
-    this.cachedBrickArray = [...tabOfBricks];
     this.AppliedBuffs = AppliedBuffs;
     this.buff_x = buff_x;
     this.buff_y = buff_y;
     this.time = time;
     this.ctx = ctx;
     this.gameState = gameState;
+    this.paddle = paddle;
   }
 
   public ActivateBuffWrapper<F extends Function>(applyBuff: F): F | false {
@@ -79,7 +79,11 @@ export class Buff implements BuffsInterface {
   }
 
   private applyDestroyerBuff(): void {
-    console.log("apply DESTROYER");
+    const { paddleWidth, paddleHeight } = this.paddle.getPaddleSize;
+    this.paddle.setPaddleSize = {
+      width: paddleWidth * DEFAULT_PADDLE_SIZE_MULTIPLIER,
+      height: paddleHeight * DEFAULT_PADDLE_SIZE_MULTIPLIER,
+    };
   }
 
   private applyAddLivesBuff(): void {
@@ -136,7 +140,8 @@ export class Buff implements BuffsInterface {
 
   public static clearBuffEffect(
     buffType: BuffTypes,
-    gameState: GameState
+    gameState: GameState,
+    paddle: Paddle
   ): void {
     switch (buffType) {
       case BuffTypes.PaddleSpeed: {
@@ -145,11 +150,18 @@ export class Buff implements BuffsInterface {
         break;
       }
       case BuffTypes.SpeedBuff: {
-        console.log(gameState.BallMoveRateGetX, gameState.BallMoveRateGetY);
         gameState.BallMoveRateSetX =
           gameState.BallMoveRateGetX / DEFAULT_BALL_SPEED_MULTIPLIER;
         gameState.BallMoveRateSetY =
           gameState.BallMoveRateGetY / DEFAULT_BALL_SPEED_MULTIPLIER;
+        break;
+      }
+      case BuffTypes.DestroyerBuff: {
+        const { paddleWidth, paddleHeight } = paddle.getPaddleSize;
+        paddle.setPaddleSize = {
+          width: paddleWidth / DEFAULT_PADDLE_SIZE_MULTIPLIER,
+          height: paddleHeight / DEFAULT_PADDLE_SIZE_MULTIPLIER,
+        };
         break;
       }
     }

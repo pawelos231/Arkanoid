@@ -4,12 +4,22 @@ export class Ball {
         this.ballPosition = { ball_x: 0, ball_y: 0 };
         this.ctx = ctx;
         this.radius = radius;
+        this.angle = Math.cos(1);
+    }
+    set setRadius(radius) {
+        this.radius = radius;
     }
     get radiusOfBallGetter() {
         return this.radius;
     }
     get BallPositionGetter() {
         return this.ballPosition;
+    }
+    set SetAngle(angle) {
+        this.angle = angle;
+    }
+    get GetAngle() {
+        return this.angle;
     }
     initBallPos() {
         //to fix

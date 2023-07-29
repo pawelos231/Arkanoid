@@ -77,6 +77,7 @@ class LevelSelect extends Common {
 
       canvas.configureCanvas(true, randomBrick);
       canvas.addEventOnResize();
+      canvas.setListenerResumeGame();
       canvas.setListenerMoveBackToMenu();
 
       this.DrawOnCanvas(canvas);
