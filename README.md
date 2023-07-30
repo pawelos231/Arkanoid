@@ -90,6 +90,6 @@ https://github.com/pawelos231/Arkanoid/assets/93586648/ad242bde-7587-4766-9496-a
 
 https://github.com/pawelos231/Arkanoid/assets/93586648/b2b83800-8cf7-48b0-b553-cd9cbb5c69f8
 
-https://github.com/pawelos231/Arkanoid/assets/93586648/83bcb404-b3e0-44db-85ae-e8943c611eb2
+https://github.com/pawelos231/Arkanoid/assets/93586648/64e99abc-05b1-47c1-bcae-9f3730efa965
 
-for the purpose of more interesting gameplay the buff drop rate was increased to 50%, unfortonutely i was unable to hit special brick, but if i were to, every buff would have been acivated simultaneously, i am also sorry for poor quality of recordings, but github only allows movies up to 10MB, which is pretty low, considering each is about 1 minute long
+for the purpose of more interesting gameplay the buff drop rate was increased to 50%, i am sorry for poor quality of recordings, but github only allows movies up to 10MB, which is pretty low, considering each video is about 1 minute long, also the level played in the gameplay showcase is different beacuse the other one was way too long xD
