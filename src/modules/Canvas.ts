@@ -36,9 +36,7 @@ import { ICanvas } from "../interfaces/classesInterfaces";
 import { calculatePaddleDimmensions } from "../helpers/calculatePaddleDimmensions";
 import { calculateBallSize } from "../helpers/calculateBallDimmensions";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
-import { ESCAPE } from "../constants/gameState";
-import { InputController } from "../helpers/Events/InputController";
-import { SPACE } from "../constants/gameState";
+import { ESCAPE, SPACE } from "../constants/gameState";
 
 const GAME_CANVAS = "game_canvas";
 
@@ -88,18 +86,6 @@ export class Canvas extends Common<true> implements ICanvas {
       this.elapsedTime++;
     }, 1000);
 
-    this.gameState = new GameState(
-      this.levelData.level,
-      this.levelData.lives,
-      this.pointsToWin,
-      this.playerPoints,
-      INIT_PADDLE_POS,
-      INIT_BALL_POS,
-      this.ballMoveRateX,
-      this.ballMoveRateY,
-      DEFAULT_BALL_SPEED,
-      this.paddleMoveRateX
-    );
     this.canvas = this.elementId as HTMLCanvasElement;
 
     this.canvas.style.backgroundColor = "black";
@@ -107,6 +93,25 @@ export class Canvas extends Common<true> implements ICanvas {
     const { WIDTHP, HEIGHTP } = calculatePaddleDimmensions();
     this.paddle = new Paddle(WIDTHP, HEIGHTP, this.ctx, this.eventListener);
     this.ball = new Ball(this.ctx, calculateBallSize());
+
+    const initPaddlePos = {
+      paddle_y: window.innerHeight - this.paddle.getPaddleSize.paddleHeight,
+      paddle_x:
+        window.innerWidth / 2 - this.paddle!.getPaddleSize.paddleWidth / 2,
+    };
+
+    this.gameState = new GameState(
+      this.levelData.level,
+      this.levelData.lives,
+      this.pointsToWin,
+      this.playerPoints,
+      initPaddlePos,
+      INIT_BALL_POS,
+      this.ballMoveRateX,
+      this.ballMoveRateY,
+      DEFAULT_BALL_SPEED,
+      this.paddleMoveRateX
+    );
   }
 
   public get getGameState() {
@@ -139,7 +144,8 @@ export class Canvas extends Common<true> implements ICanvas {
       this.drawPaddle();
       this.gameState.paddle_positions = this.gameState.paddle_positions = {
         paddle_y: window.innerHeight - this.paddle!.getPaddleSize.paddleHeight,
-        paddle_x: window.innerWidth / 2 - 100,
+        paddle_x:
+          window.innerWidth / 2 - this.paddle!.getPaddleSize.paddleWidth / 2,
       };
       this.gameState.ball_positions = {
         ball_x:
@@ -510,7 +516,6 @@ export class Canvas extends Common<true> implements ICanvas {
       appliedDestroyer.appliedBuffId === BuffTypes.DestroyerBuff
     ) {
       WIDTHP = WIDTHP * DEFAULT_PADDLE_SIZE_MULTIPLIER;
-      HEIGHTP = HEIGHTP * DEFAULT_PADDLE_SIZE_MULTIPLIER - 0.3;
     }
 
     this.paddle!.setPaddleSize = {

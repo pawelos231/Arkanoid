@@ -12,14 +12,13 @@ import { clock, normalClock } from "../helpers/Clock";
 import { EventListener } from "../helpers/Events/EventListener";
 import { BUFF_EXPIRATION, DEFAULT_BALL_SPEED, DEFAULT_BALL_SPEED_MULTIPLIER, DEFAULT_PADDLE_SIZE_MULTIPLIER, } from "../constants/gameState";
 import { media } from "./Media";
-import { INIT_BALL_POS, INIT_PADDLE_POS, DEFAULT_PADDLE_MOVEMENT_X, DEFAULT_BRICK_WIDTH, DEFAULT_BRICK_HEIGHT, DEFAULT_BALL_MOVEMENT_Y_SPEED, DEFAULT_BALL_MOVEMENT_X_SPEED, NO_SPECIAL_BRICK_INDEX, } from "../constants/gameState";
+import { INIT_BALL_POS, DEFAULT_PADDLE_MOVEMENT_X, DEFAULT_BRICK_WIDTH, DEFAULT_BRICK_HEIGHT, DEFAULT_BALL_MOVEMENT_Y_SPEED, DEFAULT_BALL_MOVEMENT_X_SPEED, NO_SPECIAL_BRICK_INDEX, } from "../constants/gameState";
 import { EscapeView } from "./EscapeLevel";
 import { BuffTypes } from "../interfaces/HelperEnums";
 import { calculatePaddleDimmensions } from "../helpers/calculatePaddleDimmensions";
 import { calculateBallSize } from "../helpers/calculateBallDimmensions";
 import { KRZYSIU_SPECIAL_IMAGE } from "../data/SpecialImages";
-import { ESCAPE } from "../constants/gameState";
-import { SPACE } from "../constants/gameState";
+import { ESCAPE, SPACE } from "../constants/gameState";
 const GAME_CANVAS = "game_canvas";
 export class Canvas extends Common {
     constructor(image, levelData) {
@@ -56,13 +55,17 @@ export class Canvas extends Common {
             this.levelData.timer -= 1;
             this.elapsedTime++;
         }, 1000);
-        this.gameState = new GameState(this.levelData.level, this.levelData.lives, this.pointsToWin, this.playerPoints, INIT_PADDLE_POS, INIT_BALL_POS, this.ballMoveRateX, this.ballMoveRateY, DEFAULT_BALL_SPEED, this.paddleMoveRateX);
         this.canvas = this.elementId;
         this.canvas.style.backgroundColor = "black";
         this.ctx = this.canvas.getContext("2d");
         const { WIDTHP, HEIGHTP } = calculatePaddleDimmensions();
         this.paddle = new Paddle(WIDTHP, HEIGHTP, this.ctx, this.eventListener);
         this.ball = new Ball(this.ctx, calculateBallSize());
+        const initPaddlePos = {
+            paddle_y: window.innerHeight - this.paddle.getPaddleSize.paddleHeight,
+            paddle_x: window.innerWidth / 2 - this.paddle.getPaddleSize.paddleWidth / 2,
+        };
+        this.gameState = new GameState(this.levelData.level, this.levelData.lives, this.pointsToWin, this.playerPoints, initPaddlePos, INIT_BALL_POS, this.ballMoveRateX, this.ballMoveRateY, DEFAULT_BALL_SPEED, this.paddleMoveRateX);
     }
     get getGameState() {
         return this.gameState;
@@ -83,7 +86,7 @@ export class Canvas extends Common {
             this.drawPaddle();
             this.gameState.paddle_positions = this.gameState.paddle_positions = {
                 paddle_y: window.innerHeight - this.paddle.getPaddleSize.paddleHeight,
-                paddle_x: window.innerWidth / 2 - 100,
+                paddle_x: window.innerWidth / 2 - this.paddle.getPaddleSize.paddleWidth / 2,
             };
             this.gameState.ball_positions = {
                 ball_x: this.gameState.paddle_positions.paddle_x +
@@ -310,7 +313,6 @@ export class Canvas extends Common {
         if (appliedDestroyer &&
             appliedDestroyer.appliedBuffId === BuffTypes.DestroyerBuff) {
             WIDTHP = WIDTHP * DEFAULT_PADDLE_SIZE_MULTIPLIER;
-            HEIGHTP = HEIGHTP * DEFAULT_PADDLE_SIZE_MULTIPLIER - 0.3;
         }
         this.paddle.setPaddleSize = {
             width: WIDTHP,

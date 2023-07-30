@@ -34,7 +34,7 @@ export class Ball {
         if (paddleSpeed !== 0) {
             const paddleDirection = paddleSpeed > 0 ? 1 : -1;
             gameState.BallMoveRateSetX =
-                paddleDirection * Math.abs(paddleSpeed * 0.35);
+                paddleDirection * Math.abs(paddleSpeed * 0.65);
         }
     }
     initBallPos() {

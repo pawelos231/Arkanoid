@@ -116,9 +116,7 @@ export class Paddle {
         }
         if (!this.inputController.keyPressedLeft &&
             !this.inputController.keyPressedRight &&
-            paddle_x > 0 &&
-            this.paddleSpeed > 0 &&
-            paddle_x + this.width < window.innerWidth) {
+            this.paddleSpeed > 0) {
             this.paddleSpeed -= this.friction;
             this.paddleMoveRateX =
                 this.paddleMoveRateX > 0 ? this.paddleSpeed : -this.paddleSpeed;
