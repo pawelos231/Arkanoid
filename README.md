@@ -38,7 +38,7 @@ The game introduces five different types of buffs that can enhance gameplay. Eac
 | Green   | Adds one life                                                   | ![AddLive](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)           |
 | Blue    | Enhances your ball and paddle speed by small amounts            | ![SpeedBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)         |
 | Yellow  | I dont now what this buff should do, so for now it does nothing | ![InvincibilityBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png) |
-| Magenta | I dont now what this buff should do, so for now it does nothing | ![DestroyerBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)     |
+| Magenta | Extends paddle by 50% | ![DestroyerBuff](https://upload.wikimedia.org/wikipedia/commons/0/0a/No-image-available.png)     |
 
 ### Grid Resizing
 
