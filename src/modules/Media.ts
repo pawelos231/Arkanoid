@@ -10,24 +10,15 @@ interface ReturnType {
 export class Media {
   private musicVolume: number;
   private soundVolume: number;
-  private allowedMusic: boolean;
-  private allowedSound: boolean;
   backgroundMusic: any;
   sound: any;
   bricksound: any;
   cachedSongId: string = "";
   cachedSoundId: string = "";
 
-  constructor(
-    musicVolume: number = 0.5,
-    soundVolume: number = 0.5,
-    allowedMusic: boolean = true,
-    allowedSound: boolean = true
-  ) {
+  constructor(musicVolume: number = 0.5, soundVolume: number = 0.5) {
     this.musicVolume = musicVolume;
     this.soundVolume = soundVolume;
-    this.allowedMusic = allowedMusic;
-    this.allowedSound = allowedSound;
   }
 
   public async setBackroundMusic(path: string): Promise<ReturnType> {
@@ -56,9 +47,12 @@ export class Media {
   }
 
   public async setSound(path: string = DEFAULT_SOUND): Promise<ReturnType> {
+    
     if (path.length == 0) return { play: false, reason: StatusOfSong.Error };
+
     if (this.cachedSoundId === path)
       return { play: false, reason: StatusOfSong.AlreadyPlaying };
+
     else if (this.cachedSoundId.length != 0 && this.cachedSoundId !== path) {
       this.sound.pause();
       this.sound = null;
@@ -106,8 +100,6 @@ export class Media {
   }
 
   public resetValuesToDefault(music: Element, sound: Element): void {
-    this.allowedMusic = true;
-    this.allowedSound = true;
     this.musicVolume = 0.5;
     this.soundVolume = 0.5;
 
@@ -120,10 +112,6 @@ export class Media {
     this.backgroundMusic.volume = this.musicVolume;
     this.sound.volume = this.soundVolume;
   }
-
-  muteMusic(): void {}
-
-  muteSound(): void {}
 
   public spawnSoundWhenHitPaddle(): void {
     if (this.sound) {

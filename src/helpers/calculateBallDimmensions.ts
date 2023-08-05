@@ -9,5 +9,5 @@ export const calculateBallSize = (): number => {
 
   const ballSize = Math.floor(defaultBallSize * ratio);
 
-  return ballSize;
+  return ballSize / 1.3;
 };

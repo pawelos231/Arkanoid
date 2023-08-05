@@ -14,5 +14,5 @@ export const calculatePaddleDimmensions = (): ReturnTypeCB => {
     paddleHeight = 15;
   }
 
-  return { WIDTHP: window.innerWidth / 8, HEIGHTP: paddleHeight };
+  return { WIDTHP: window.innerWidth / 8, HEIGHTP: paddleHeight / 1.6 };
 };

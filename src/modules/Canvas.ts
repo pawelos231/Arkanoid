@@ -213,12 +213,14 @@ export class Canvas extends Common<true> implements ICanvas {
       this.getGameState.playerPointsGet;
   }
 
-  private isCollisonFromSide(
+  //TODO: Think about moving this accordingly to direction
+  private isCollisionFromSide(
     i: number,
     ball_x: number,
     ball_y: number,
     RADIUS: number
   ): boolean {
+    console.log("from side");
     const brick_pos_x: number =
       this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH;
 
@@ -226,13 +228,17 @@ export class Canvas extends Common<true> implements ICanvas {
       this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT;
 
     return (
-      (brick_pos_x + this.BRICK_WIDTH <= ball_x - RADIUS &&
-        brick_pos_x + this.BRICK_WIDTH >=
-          ball_x - RADIUS - Math.floor(RADIUS / 2)) ||
-      (brick_pos_x <= ball_x + RADIUS &&
-        brick_pos_x >= ball_x + RADIUS + Math.floor(RADIUS / 3) &&
-        ball_y - RADIUS > brick_pos_y + this.BRICK_HEIGHT &&
-        brick_pos_y < brick_pos_y + RADIUS)
+      // Check for collision from the left side of the brick
+      (ball_x + RADIUS >= brick_pos_x &&
+        ball_x + RADIUS <= brick_pos_x + Math.floor(RADIUS / 2) &&
+        ball_y >= brick_pos_y &&
+        ball_y <= brick_pos_y + this.BRICK_HEIGHT) ||
+      // Check for collision from the right side of the brick
+      (ball_x - RADIUS <= brick_pos_x + this.BRICK_WIDTH &&
+        ball_x - RADIUS >=
+          brick_pos_x + this.BRICK_WIDTH - Math.floor(RADIUS / 2) &&
+        ball_y >= brick_pos_y &&
+        ball_y <= brick_pos_y + this.BRICK_HEIGHT)
     );
   }
 
@@ -249,7 +255,7 @@ export class Canvas extends Common<true> implements ICanvas {
       brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS &&
       brick_pos_y < ball_y + RADIUS &&
       brick_pos_x < ball_x + RADIUS + RADIUS / 2 &&
-      brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS - RADIUS / 2
+      brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS / 2
     );
   }
 
@@ -331,7 +337,7 @@ export class Canvas extends Common<true> implements ICanvas {
 
         this.upadateScore(i);
 
-        this.isCollisonFromSide(i, ball_x, ball_y, calculateBallSize())
+        this.isCollisionFromSide(i, ball_x, ball_y, calculateBallSize())
           ? (this.gameState.BallMoveRateSetX = -MoveRateX)
           : null;
 
@@ -458,7 +464,7 @@ export class Canvas extends Common<true> implements ICanvas {
       this.gameState.ball_positions = {
         ball_x:
           this.gameState.paddle_positions.paddle_x +
-          calculatePaddleDimmensions().WIDTHP / 2,
+          this.paddle!.getPaddleSize.paddleWidth / 2,
         ball_y: this.gameState.paddle_positions.paddle_y - 40,
       };
     }
@@ -476,7 +482,7 @@ export class Canvas extends Common<true> implements ICanvas {
 
       this.gameState.ball_positions = {
         ball_x: window.innerWidth / 2,
-        ball_y: window.innerHeight - 50,
+        ball_y: window.innerHeight - 60,
       };
 
       this.gameState.paddle_positions = {

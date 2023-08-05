@@ -2,13 +2,11 @@ import { loader } from "./Loader";
 import { StatusOfSong } from "../interfaces/HelperEnums";
 const DEFAULT_SOUND = "http://localhost:1234/hitPaddle.mp3";
 export class Media {
-    constructor(musicVolume = 0.5, soundVolume = 0.5, allowedMusic = true, allowedSound = true) {
+    constructor(musicVolume = 0.5, soundVolume = 0.5) {
         this.cachedSongId = "";
         this.cachedSoundId = "";
         this.musicVolume = musicVolume;
         this.soundVolume = soundVolume;
-        this.allowedMusic = allowedMusic;
-        this.allowedSound = allowedSound;
     }
     async setBackroundMusic(path) {
         //do better error handling
@@ -72,8 +70,6 @@ export class Media {
         });
     }
     resetValuesToDefault(music, sound) {
-        this.allowedMusic = true;
-        this.allowedSound = true;
         this.musicVolume = 0.5;
         this.soundVolume = 0.5;
         let inputMusic = music.children[0];
@@ -83,8 +79,6 @@ export class Media {
         this.backgroundMusic.volume = this.musicVolume;
         this.sound.volume = this.soundVolume;
     }
-    muteMusic() { }
-    muteSound() { }
     spawnSoundWhenHitPaddle() {
         if (this.sound) {
             this.sound.play();

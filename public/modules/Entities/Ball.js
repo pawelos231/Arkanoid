@@ -23,11 +23,11 @@ export class Ball {
         return this.angle;
     }
     reflectOffPaddle(paddleX, paddleWidth, gameState, paddleSpeed) {
-        const ballCenterX = this.ballPosition.ball_x;
+        const ballCenterX = this.ballPosition.ball_x - this.radius;
         const paddleCenterX = paddleX + paddleWidth / 2;
         const distanceX = ballCenterX - paddleCenterX;
         const normalizedDistance = distanceX / (paddleWidth / 2);
-        const reflectionAngle = normalizedDistance * (Math.PI / 3);
+        const reflectionAngle = normalizedDistance * (Math.PI / 4);
         gameState.BallMoveRateSetX =
             gameState.BallMoveRateGetX * Math.tan(reflectionAngle);
         gameState.BallMoveRateSetY = gameState.BallMoveRateGetY;
