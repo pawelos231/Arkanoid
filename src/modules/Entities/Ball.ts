@@ -38,8 +38,9 @@ export class Ball {
   reflectOffPaddle(
     paddleX: number,
     paddleWidth: number,
-    gameState: GameState,
-    paddleSpeed: number
+    paddleHeight: number,
+    paddleSpeed: number,
+    gameState: GameState
   ) {
     const ballCenterX = this.ballPosition.ball_x - this.radius;
     const paddleCenterX = paddleX + paddleWidth / 2;
@@ -48,13 +49,14 @@ export class Ball {
     const normalizedDistance = distanceX / (paddleWidth / 2);
 
     const reflectionAngle = normalizedDistance * (Math.PI / 4);
-
+    gameState.ball_positions.ball_y =
+      gameState.paddle_positions.paddle_y - paddleHeight;
     gameState.BallMoveRateSetX =
-      gameState.BallMoveRateGetX * Math.tan(reflectionAngle);
-    gameState.BallMoveRateSetY = gameState.BallMoveRateGetY;
+      gameState.BallMoveRateGetX * Math.abs(Math.tan(reflectionAngle));
 
     if (paddleSpeed !== 0) {
       const paddleDirection = paddleSpeed > 0 ? 1 : -1;
+      console.log("DIRECTION:", paddleDirection);
       gameState.BallMoveRateSetX =
         paddleDirection * Math.abs(paddleSpeed * 0.65);
     }

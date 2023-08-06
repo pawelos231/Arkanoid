@@ -91,7 +91,6 @@ export class Media {
     }
     static async spanwCustomSound(soundString) {
         const sound = await loader.loadSound(soundString);
-        console.log(sound);
         sound.play();
         sound.loop = false;
     }

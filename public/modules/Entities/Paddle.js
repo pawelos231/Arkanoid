@@ -1,6 +1,5 @@
 import { InputController } from "../../helpers/Events/InputController";
 const DEFAULT_ACCELERATION = 3;
-const DEFAULT_FRICTION = 3;
 export class Paddle {
     constructor(width, height, ctx, eventListener) {
         this.particles = [];
@@ -12,7 +11,6 @@ export class Paddle {
         this.specialColor = false;
         this.hue = 0;
         this.acceleration = DEFAULT_ACCELERATION;
-        this.friction = DEFAULT_FRICTION;
         this.paddleMoveRateX = 0;
         this.inputController = new InputController(eventListener);
         this.inputController.addKeyPressEvents();
@@ -117,9 +115,11 @@ export class Paddle {
         if (!this.inputController.keyPressedLeft &&
             !this.inputController.keyPressedRight &&
             this.paddleSpeed > 0) {
-            this.paddleSpeed -= this.friction;
+            this.paddleSpeed -= this.acceleration;
+            if (this.paddleSpeed < 0)
+                this.paddleSpeed = 0;
             this.paddleMoveRateX =
-                this.paddleMoveRateX > 0 ? this.paddleSpeed : -this.paddleSpeed;
+                this.paddleMoveRateX >= 0 ? this.paddleSpeed : -this.paddleSpeed;
         }
         if (this.inputController.keyPressedRight &&
             paddle_x + this.width < window.innerWidth) {

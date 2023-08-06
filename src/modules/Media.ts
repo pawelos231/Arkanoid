@@ -47,12 +47,10 @@ export class Media {
   }
 
   public async setSound(path: string = DEFAULT_SOUND): Promise<ReturnType> {
-    
     if (path.length == 0) return { play: false, reason: StatusOfSong.Error };
 
     if (this.cachedSoundId === path)
       return { play: false, reason: StatusOfSong.AlreadyPlaying };
-
     else if (this.cachedSoundId.length != 0 && this.cachedSoundId !== path) {
       this.sound.pause();
       this.sound = null;
@@ -127,7 +125,6 @@ export class Media {
 
   public static async spanwCustomSound(soundString: string): Promise<void> {
     const sound: HTMLAudioElement = await loader.loadSound(soundString);
-    console.log(sound);
     sound.play();
     sound.loop = false;
   }

@@ -40,6 +40,14 @@ import { ESCAPE, SPACE } from "../constants/gameState";
 
 const GAME_CANVAS = "game_canvas";
 
+type CollisionType = {
+  BRICK: Brick;
+  shouldBounceFromLeft: boolean;
+  shouldBounceFromRight: boolean;
+  shouldBounceFromTop: boolean;
+  shouldBounceFromBottom: boolean;
+};
+
 export class Canvas extends Common<true> implements ICanvas {
   private BRICK_HEIGHT: number = DEFAULT_BRICK_HEIGHT;
   private BRICK_WIDTH: number = DEFAULT_BRICK_WIDTH;
@@ -52,6 +60,7 @@ export class Canvas extends Common<true> implements ICanvas {
   private columnsCount: number;
   private playerPoints: number;
   private pointsToWin: number;
+  private collisionList: CollisionType[];
   private ctx: CanvasRenderingContext2D;
   private canvas: HTMLCanvasElement;
   private gameState: GameState;
@@ -76,6 +85,7 @@ export class Canvas extends Common<true> implements ICanvas {
     this.canvas = null as any;
     this.ctx = null as any;
     this.bricksArray = [];
+    this.collisionList = [];
     this.image = image;
     this.rowsCount = this.levelData.numberOfRows;
     this.columnsCount = this.levelData.numberOfColumns;
@@ -213,33 +223,75 @@ export class Canvas extends Common<true> implements ICanvas {
       this.getGameState.playerPointsGet;
   }
 
-  //TODO: Think about moving this accordingly to direction
-  private isCollisionFromSide(
-    i: number,
-    ball_x: number,
-    ball_y: number,
-    RADIUS: number
-  ): boolean {
-    console.log("from side");
-    const brick_pos_x: number =
-      this.bricksArray[i].brickStateGet.brick_x * this.BRICK_WIDTH;
+  private resolveCollisions(RADIUS: number) {
+    for (const {
+      BRICK,
+      shouldBounceFromLeft,
+      shouldBounceFromBottom,
+      shouldBounceFromRight,
+      shouldBounceFromTop,
+    } of this.collisionList) {
+      const brick_pos_x: number =
+        BRICK.brickStateGet.brick_x * this.BRICK_WIDTH;
+      const brick_pos_y: number =
+        BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT;
 
-    const brick_pos_y: number =
-      this.bricksArray[i].brickStateGet.brick_y * this.BRICK_HEIGHT;
+      // Calculate the center coordinates of the brick
+      console.log(
+        "LEFT :",
+        shouldBounceFromLeft,
+        "RIGHT:",
+        shouldBounceFromRight,
+        "TOP:",
+        shouldBounceFromTop,
+        "BOTTOM:",
+        shouldBounceFromBottom
+      );
+      console.log(
+        this.gameState.BallMoveRateGetX,
+        this.gameState.BallMoveRateGetY
+      );
 
-    return (
-      // Check for collision from the left side of the brick
-      (ball_x + RADIUS >= brick_pos_x &&
-        ball_x + RADIUS <= brick_pos_x + Math.floor(RADIUS / 2) &&
-        ball_y >= brick_pos_y &&
-        ball_y <= brick_pos_y + this.BRICK_HEIGHT) ||
-      // Check for collision from the right side of the brick
-      (ball_x - RADIUS <= brick_pos_x + this.BRICK_WIDTH &&
-        ball_x - RADIUS >=
-          brick_pos_x + this.BRICK_WIDTH - Math.floor(RADIUS / 2) &&
-        ball_y >= brick_pos_y &&
-        ball_y <= brick_pos_y + this.BRICK_HEIGHT)
-    );
+      // Check the side of collision and adjust the ball's position and velocity
+      if (shouldBounceFromLeft) {
+        // Collided from the left
+        if (shouldBounceFromTop || shouldBounceFromBottom) {
+          this.gameState.ball_positions.ball_x =
+            brick_pos_x - RADIUS / 4 - RADIUS;
+        }
+
+        this.gameState.BallMoveRateSetX = -this.gameState.BallMoveRateGetX;
+      } else if (shouldBounceFromRight) {
+        // Collided from the right
+        if (shouldBounceFromTop || shouldBounceFromBottom) {
+          this.gameState.ball_positions.ball_x =
+            brick_pos_x + this.BRICK_WIDTH + RADIUS + RADIUS / 4;
+        }
+
+        this.gameState.BallMoveRateSetX = -this.gameState.BallMoveRateGetX;
+      }
+
+      if (
+        shouldBounceFromBottom &&
+        (!shouldBounceFromLeft || !shouldBounceFromRight)
+      ) {
+        // Collided from the top
+
+        this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
+      } else if (
+        shouldBounceFromTop &&
+        (!shouldBounceFromLeft || !shouldBounceFromRight)
+      ) {
+        // Collided from the bottom
+
+        this.gameState.BallMoveRateSetY = -this.gameState.BallMoveRateGetY;
+      }
+      console.log(
+        this.gameState.BallMoveRateGetX,
+        this.gameState.BallMoveRateGetY
+      );
+    }
+    this.collisionList = [];
   }
 
   private isCollision(
@@ -251,12 +303,47 @@ export class Canvas extends Common<true> implements ICanvas {
     const BRICK: Brick = this.bricksArray[i];
     const brick_pos_x: number = BRICK.brickStateGet.brick_x * this.BRICK_WIDTH;
     const brick_pos_y: number = BRICK.brickStateGet.brick_y * this.BRICK_HEIGHT;
-    return (
+
+    const shouldBounceFromLeft =
+      ball_x + RADIUS >= brick_pos_x &&
+      ball_y <= brick_pos_y + this.BRICK_HEIGHT &&
+      ball_y >= brick_pos_y &&
+      this.gameState.BallMoveRateGetX >= 0;
+
+    const shouldBounceFromRight =
+      ball_x - RADIUS <= brick_pos_x + this.BRICK_WIDTH &&
+      ball_y <= brick_pos_y + this.BRICK_HEIGHT &&
+      ball_y >= brick_pos_y &&
+      this.gameState.BallMoveRateGetX < 0;
+
+    const shouldBounceFromTop =
+      brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS &&
+      brick_pos_y < ball_y + RADIUS;
+
+    const shouldBounceFromBottom =
+      brick_pos_y < ball_y + RADIUS &&
+      brick_pos_y + this.BRICK_HEIGHT > ball_y + RADIUS &&
+      !shouldBounceFromTop;
+
+    const collided =
       brick_pos_y + this.BRICK_HEIGHT > ball_y - RADIUS &&
       brick_pos_y < ball_y + RADIUS &&
       brick_pos_x < ball_x + RADIUS + RADIUS / 2 &&
-      brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS / 2
-    );
+      brick_pos_x + this.BRICK_WIDTH > ball_x - RADIUS / 2;
+
+    if (collided) {
+      this.collisionList.push({
+        BRICK,
+        shouldBounceFromLeft,
+        shouldBounceFromRight,
+        shouldBounceFromTop,
+        shouldBounceFromBottom,
+      });
+
+      return true;
+    }
+
+    return false;
   }
 
   private drawBuff(BuffId: string): void {
@@ -315,7 +402,6 @@ export class Canvas extends Common<true> implements ICanvas {
   private CheckCollisionWithBricks(ball_x: number, ball_y: number): void {
     for (let i = 0; i < this.bricksArray.length; i++) {
       const BRICK: Brick = this.bricksArray[i];
-
       if (BRICK.brickStateGet.status === 0) continue;
 
       const IS_COLLISION: boolean = this.isCollision(
@@ -326,20 +412,12 @@ export class Canvas extends Common<true> implements ICanvas {
       );
 
       if (IS_COLLISION) {
-        const MoveRateX: number =
-          this.getGameState.BallMoveRateGetX === 0
-            ? 12
-            : this.gameState.BallMoveRateGetX;
+        console.log(BRICK);
 
-        const MoveRateY: number = this.getGameState.BallMoveRateGetY;
-
+        this.resolveCollisions(calculateBallSize());
         this.DropBuff(BRICK);
 
         this.upadateScore(i);
-
-        this.isCollisionFromSide(i, ball_x, ball_y, calculateBallSize())
-          ? (this.gameState.BallMoveRateSetX = -MoveRateX)
-          : null;
 
         const IsSpecialBrick: boolean =
           this.bricksArray[i].brickStateGet.specialBrick;
@@ -376,8 +454,6 @@ export class Canvas extends Common<true> implements ICanvas {
 
           specialBrick.displayViewOfSpecialBrick();
         }
-
-        this.gameState.BallMoveRateSetY = -MoveRateY;
 
         let timesToHit: number = this.bricksArray[i].brickPointsGet.timesToHit;
 
@@ -426,8 +502,9 @@ export class Canvas extends Common<true> implements ICanvas {
       this.ball!.reflectOffPaddle(
         paddle_x,
         this.paddle!.getPaddleSize.paddleWidth,
-        this.gameState,
-        this.paddle!.GetPaddleMoveRateX
+        this.paddle!.getPaddleSize.paddleHeight,
+        this.paddle!.GetPaddleMoveRateX,
+        this.gameState
       );
     }
   }
@@ -436,26 +513,38 @@ export class Canvas extends Common<true> implements ICanvas {
     const RADIUS: number = calculateBallSize();
     this.ball!.setRadius = RADIUS;
 
+    const ball_x: number = this.gameState.ball_positions.ball_x;
+    const ball_y: number = this.gameState.ball_positions.ball_y;
+    const paddle_x: number = this.gameState.paddle_positions.paddle_x;
+    const paddle_y: number = this.gameState.paddle_positions.paddle_y;
+
+    this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);
+
+    this.CheckCollisionWithBricks(ball_x, ball_y);
+
     const appliedSpeedBuff = this.appliedBuffs.find(
       (item) => item.appliedBuffId === BuffTypes.SpeedBuff
     );
 
     if (this.gameState.ball_positions.ball_x - RADIUS < 0) {
       this.gameState.BallMoveRateSetX = appliedSpeedBuff
-        ? 12 * DEFAULT_BALL_SPEED_MULTIPLIER
-        : 12;
+        ? Math.abs(DEFAULT_BALL_MOVEMENT_X_SPEED) *
+          DEFAULT_BALL_SPEED_MULTIPLIER
+        : Math.abs(this.gameState.BallMoveRateGetX);
     }
 
     if (this.gameState.ball_positions.ball_y - RADIUS < 0) {
       this.gameState.BallMoveRateSetY = appliedSpeedBuff
-        ? 12 * DEFAULT_BALL_SPEED_MULTIPLIER
-        : 12;
+        ? Math.abs(DEFAULT_BALL_MOVEMENT_Y_SPEED) *
+          DEFAULT_BALL_SPEED_MULTIPLIER
+        : Math.abs(this.gameState.BallMoveRateGetY);
     }
 
     if (this.gameState.ball_positions.ball_x + RADIUS > window.innerWidth) {
       this.gameState.BallMoveRateSetX = appliedSpeedBuff
-        ? -12 * DEFAULT_BALL_SPEED_MULTIPLIER
-        : -12 * this.ball!.GetAngle;
+        ? -Math.abs(DEFAULT_BALL_MOVEMENT_X_SPEED) *
+          DEFAULT_BALL_SPEED_MULTIPLIER
+        : -Math.abs(this.gameState.BallMoveRateGetX);
     }
 
     if (!this.pressedWhenBallFell) {
@@ -477,8 +566,9 @@ export class Canvas extends Common<true> implements ICanvas {
       this.Buffs = new Map<string, Buff>();
 
       this.ballMoveRateY = appliedSpeedBuff
-        ? -12 * DEFAULT_BALL_SPEED_MULTIPLIER
-        : -12;
+        ? -Math.abs(DEFAULT_BALL_MOVEMENT_Y_SPEED) *
+          DEFAULT_BALL_SPEED_MULTIPLIER
+        : -Math.abs(DEFAULT_BALL_MOVEMENT_Y_SPEED);
 
       this.gameState.ball_positions = {
         ball_x: window.innerWidth / 2,
@@ -490,15 +580,6 @@ export class Canvas extends Common<true> implements ICanvas {
         paddle_x: window.innerWidth / 2 - 100,
       };
     }
-
-    const ball_x: number = this.gameState.ball_positions.ball_x;
-    const ball_y: number = this.gameState.ball_positions.ball_y;
-    const paddle_x: number = this.gameState.paddle_positions.paddle_x;
-    const paddle_y: number = this.gameState.paddle_positions.paddle_y;
-
-    this.CheckCollisionWithPaddle(ball_y, ball_x, RADIUS, paddle_x, paddle_y);
-
-    this.CheckCollisionWithBricks(ball_x, ball_y);
 
     this.ball!.drawBall({
       ball_x: (this.gameState.ball_positions.ball_x +=
@@ -583,9 +664,9 @@ export class Canvas extends Common<true> implements ICanvas {
   }
 
   private drawGame(): IFinishedGame | void {
+    this.drawBall();
     this.drawPaddle();
     this.drawBricks();
-    this.drawBall();
     this.paddle.drawParticles();
     this.drawBuffOuter();
     if (this.backToMenu) {
