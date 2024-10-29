@@ -1,4 +1,5 @@
 # Arkanoid
+## More of a fun little experiment, everything written from scratch
 
 <p align='center'>
 <br>
